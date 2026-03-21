@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fly.io/schemas/volume.json",
+  "title": "Fly.io Volume",
+  "description": "A Fly Volume is a persistent block storage resource that can be attached to a Fly Machine for durable data storage. Volumes are region-specific, encrypted by default, and support automatic daily snapshots with configurable retention periods. Volumes are identified by a unique ID and can be extended in size but not shrunk.",
+  "type": "object",
+  "required": ["id", "name", "size_gb", "region"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this Fly Volume."
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable name for the volume, used for identification within an app."
+    },
+    "state": {
+      "type": "string",
+      "description": "Current operational state of the volume.",
+      "enum": ["created", "hydrating", "available", "attached", "deleting", "deleted"]
+    },
+    "size_gb": {
+      "type": "integer",
+      "description": "Current size of the volume in gigabytes.",
+      "minimum": 1
+    },
+    "region": {
+      "type": "string",
+      "description": "The region code where this volume is provisioned.",
+      "pattern": "^[a-z]{3}$",
+      "example": "iad"
+    },
+    "zone": {
+      "type": "string",
+      "description": "The availability zone within the region where this volume resides."
+    },
+    "encrypted": {
+      "type": "boolean",
+      "description": "Whether the volume is encrypted at rest using platform-managed keys. Enabled by default for all volumes."
+    },
+    "attached_machine_id": {
+      "type": ["string", "null"],
+      "description": "The ID of the Fly Machine this volume is currently attached to. Null if unattached."
+    },
+    "attached_alloc_id": {
+      "type": ["string", "null"],
+      "description": "The allocation ID of the Machine this volume is attached to."
+    },
+    "filesystem_type": {
+      "type": "string",
+      "description": "The filesystem type provisioned on this volume.",
+      "example": "ext4"
+    },
+    "snapshot_retention": {
+      "type": "integer",
+      "description": "Number of days automatic snapshots are retained. Defaults to 5. Minimum 1, maximum 60.",
+      "default": 5,
+      "minimum": 1,
+      "maximum": 60
+    },
+    "block_size": {
+      "type": "integer",
+      "description": "Block size of the volume filesystem in bytes."
+    },
+    "blocks": {
+      "type": "integer",
+      "description": "Total number of filesystem blocks."
+    },
+    "blocks_free": {
+      "type": "integer",
+      "description": "Number of free filesystem blocks available for use."
+    },
+    "blocks_avail": {
+      "type": "integer",
+      "description": "Number of filesystem blocks available to non-root users."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when the volume was created."
+    }
+  },
+  "$defs": {
+    "VolumeSnapshot": {
+      "type": "object",
+      "description": "A point-in-time snapshot of a Fly Volume, used for backup and disaster recovery.",
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for this snapshot."
+        },
+        "size": {
+          "type": "integer",
+          "description": "Size of the snapshot data in bytes."
+        },
+        "digest": {
+          "type": "string",
+          "description": "Content hash of the snapshot for data integrity verification."
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the snapshot.",
+          "enum": ["created", "pending", "failed"]
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of when the snapshot was created."
+        }
+      }
+    }
+  }
+}

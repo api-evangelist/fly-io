@@ -1,0 +1,622 @@
+openapi: 3.1.0
+info:
+  title: Fly.io Extensions API
+  description: >-
+    The Fly.io Extensions API is a provider-facing HTTP interface that enables
+    third-party services to integrate with the Fly.io platform as extension
+    providers. When a Fly.io user provisions an extension via the flyctl CLI,
+    Fly.io forwards the provisioning request to the provider's API with details
+    about the requesting organization and user, and the provider responds with
+    environment variable configuration that is attached to the target
+    application. Providers must also support single sign-on login flows using
+    OAuth, daily billing detail endpoints, and webhook delivery for resource
+    lifecycle events. Extensions currently available through this program
+    include Sentry, Supabase, Tigris object storage, Upstash Redis and Vector,
+    and others.
+  version: '1.0'
+  contact:
+    name: Fly.io Extensions Program
+    url: https://fly.io/docs/reference/extensions_api/
+  termsOfService: https://fly.io/legal/terms-of-service/
+externalDocs:
+  description: Fly.io Extensions API Documentation
+  url: https://fly.io/docs/reference/extensions_api/
+servers:
+  - url: https://{provider_base_url}
+    description: >-
+      Provider-hosted API server. Each extension provider hosts their own
+      implementation of this API at a URL they register with Fly.io.
+    variables:
+      provider_base_url:
+        default: api.example.com
+        description: The base URL registered by the extension provider with Fly.io.
+  - url: https://api.fly.io
+    description: Fly.io platform server for OAuth and webhook endpoints.
+tags:
+  - name: Extensions
+    description: >-
+      Operations for provisioning, retrieving, and updating extension resource
+      instances. Fly.io calls these endpoints on the provider's server when
+      users interact with extensions via the flyctl CLI.
+  - name: SSO
+    description: >-
+      Single sign-on operations allowing Fly.io users to access provider
+      dashboards using their Fly.io credentials via OAuth.
+  - name: OAuth
+    description: >-
+      Fly.io platform OAuth endpoints used during the single sign-on flow to
+      authorize users and exchange tokens.
+  - name: Webhooks
+    description: >-
+      Webhook endpoints for bidirectional event delivery between Fly.io and
+      extension providers. Both sides sign their webhook payloads using
+      HMAC-SHA256 for verification.
+security:
+  - flySharedSecret: []
+paths:
+  /extensions:
+    post:
+      operationId: provisionExtension
+      summary: Provision an extension resource
+      description: >-
+        Called by Fly.io when a user provisions an extension via the flyctl CLI.
+        The provider must create the requested resource and respond with its
+        unique ID and a config object containing the environment variables to
+        inject into the user's Fly App. Provisioning must complete within 5
+        seconds; if the resource takes longer to create, the provider should
+        respond immediately and use the webhook endpoint to notify Fly.io when
+        the resource becomes available.
+      tags:
+        - Extensions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProvisionRequest'
+      responses:
+        '200':
+          description: Extension provisioned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProvisionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /extensions/{extension_id}:
+    get:
+      operationId: getExtension
+      summary: Get extension resource details
+      description: >-
+        Called by Fly.io to fetch the current status and usage information for
+        a specific extension resource. This endpoint is used for polling when
+        an extension is provisioned asynchronously and takes longer than 5
+        seconds to become ready.
+      tags:
+        - Extensions
+      parameters:
+        - $ref: '#/components/parameters/extensionId'
+      responses:
+        '200':
+          description: Extension resource details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExtensionResource'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateExtension
+      summary: Update an extension resource
+      description: >-
+        Called by Fly.io when a user updates the configuration of an extension
+        resource, such as changing the region or plan. The provider applies the
+        updated configuration and returns the updated resource details.
+      tags:
+        - Extensions
+      parameters:
+        - $ref: '#/components/parameters/extensionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProvisionRequest'
+      responses:
+        '200':
+          description: Extension updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProvisionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteExtension
+      summary: Delete an extension resource
+      description: >-
+        Called by Fly.io when a user removes an extension from their app.
+        The provider should clean up all resources associated with this
+        extension instance and remove the user's environment variables.
+      tags:
+        - Extensions
+      parameters:
+        - $ref: '#/components/parameters/extensionId'
+      responses:
+        '200':
+          description: Extension deleted successfully.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /extensions/{extension_id}/sso:
+    get:
+      operationId: initiateSso
+      summary: Initiate SSO for an extension
+      description: >-
+        Called by Fly.io when a user runs a flyctl command to access the
+        provider's dashboard (e.g., flyctl ext redis dashboard). The provider
+        should verify the request signature and redirect the user to the
+        appropriate dashboard page, using information from the Fly.io OAuth
+        token to identify the user.
+      tags:
+        - SSO
+      parameters:
+        - $ref: '#/components/parameters/extensionId'
+      responses:
+        '302':
+          description: Redirect to the provider's dashboard.
+          headers:
+            Location:
+              description: URL of the provider dashboard for this extension resource.
+              schema:
+                type: string
+                format: uri
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /oauth/authorize:
+    get:
+      operationId: oauthAuthorize
+      summary: OAuth authorization endpoint
+      description: >-
+        Fly.io platform OAuth authorization endpoint. Redirects the user to
+        approve the OAuth application and returns an authorization code to the
+        specified redirect URI. Used by extension providers during the SSO
+        flow to verify Fly.io user identity.
+      tags:
+        - OAuth
+      servers:
+        - url: https://api.fly.io
+          description: Fly.io platform OAuth server.
+      security: []
+      parameters:
+        - name: client_id
+          in: query
+          description: OAuth client ID issued to the extension provider by Fly.io.
+          required: true
+          schema:
+            type: string
+        - name: response_type
+          in: query
+          description: OAuth response type. Must be code for the authorization code flow.
+          required: true
+          schema:
+            type: string
+            enum: [code]
+        - name: redirect_uri
+          in: query
+          description: Provider callback URL to redirect the user to after authorization.
+          required: true
+          schema:
+            type: string
+            format: uri
+        - name: scope
+          in: query
+          description: Space-separated list of requested OAuth scopes.
+          required: false
+          schema:
+            type: string
+      responses:
+        '302':
+          description: Redirect to provider redirect_uri with authorization code.
+  /oauth/token:
+    post:
+      operationId: oauthToken
+      summary: Exchange authorization code for access token
+      description: >-
+        Fly.io platform OAuth token endpoint. Exchanges an authorization code
+        obtained from the authorize endpoint for an access token that can be
+        used to retrieve user and organization information via the token info
+        endpoint.
+      tags:
+        - OAuth
+      servers:
+        - url: https://api.fly.io
+          description: Fly.io platform OAuth server.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - grant_type
+                - code
+                - redirect_uri
+                - client_id
+                - client_secret
+              properties:
+                grant_type:
+                  type: string
+                  enum: [authorization_code]
+                  description: OAuth grant type. Must be authorization_code.
+                code:
+                  type: string
+                  description: The authorization code received from the authorize endpoint.
+                redirect_uri:
+                  type: string
+                  description: The same redirect URI used in the authorization request.
+                client_id:
+                  type: string
+                  description: OAuth client ID issued to the provider.
+                client_secret:
+                  type: string
+                  description: OAuth client secret issued to the provider.
+      responses:
+        '200':
+          description: Access token response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthTokenResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /oauth/token/info:
+    get:
+      operationId: getTokenInfo
+      summary: Get OAuth token information
+      description: >-
+        Fly.io platform token introspection endpoint. Returns the user and
+        organization details associated with a valid Fly.io OAuth access token.
+        Providers use this endpoint to identify which Fly.io user and
+        organization initiated an SSO session.
+      tags:
+        - OAuth
+      servers:
+        - url: https://api.fly.io
+          description: Fly.io platform OAuth server.
+      security:
+        - oauthBearerAuth: []
+      responses:
+        '200':
+          description: Token information including user and organization details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenInfo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/hooks/extensions/{provider_name}:
+    post:
+      operationId: sendExtensionWebhook
+      summary: Send a webhook to Fly.io
+      description: >-
+        Called by extension providers to notify Fly.io of resource lifecycle
+        changes. Use this endpoint to report when asynchronously provisioned
+        resources become ready, when resources are updated, or when they are
+        deleted. Requests must be signed with the HMAC-SHA256 webhook signing
+        secret provided by Fly.io.
+      tags:
+        - Webhooks
+      servers:
+        - url: https://api.fly.io
+          description: Fly.io platform webhook receiver.
+      security:
+        - webhookHmac: []
+      parameters:
+        - name: provider_name
+          in: path
+          description: The slug identifier of the extension provider registered with Fly.io.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExtensionWebhookPayload'
+      responses:
+        '200':
+          description: Webhook received and processed.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /extensions/events:
+    post:
+      operationId: receiveExtensionEvent
+      summary: Receive a machine event webhook from Fly.io
+      description: >-
+        Fly.io sends CloudEvents-format webhook payloads to this provider
+        endpoint when Machine or account events occur that are relevant to
+        an extension. Providers should verify the HMAC-SHA256 signature using
+        the webhook signing secret provided by Fly.io and process the event
+        accordingly.
+      tags:
+        - Webhooks
+      security:
+        - webhookHmac: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloudEventPayload'
+      responses:
+        '200':
+          description: Event received and processed.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  securitySchemes:
+    flySharedSecret:
+      type: http
+      scheme: bearer
+      description: >-
+        Shared secret provided by Fly.io to the extension provider. Fly.io
+        includes this secret in an Authorization Bearer header on all requests
+        to the provider's API for verification.
+    oauthBearerAuth:
+      type: http
+      scheme: bearer
+      description: Fly.io OAuth access token obtained from the token exchange endpoint.
+    webhookHmac:
+      type: apiKey
+      in: header
+      name: X-Fly-Signature
+      description: >-
+        HMAC-SHA256 signature of the raw request body, computed using the
+        webhook signing secret. Recipients must verify this signature before
+        processing the payload.
+  parameters:
+    extensionId:
+      name: extension_id
+      in: path
+      description: The unique identifier of the extension resource, as returned by the provider.
+      required: true
+      schema:
+        type: string
+  responses:
+    BadRequest:
+      description: Invalid request parameters or body.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Missing or invalid authentication credentials.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: The requested extension resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    ErrorResponse:
+      type: object
+      description: A standard error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        status:
+          type: integer
+          description: HTTP status code.
+    ProvisionRequest:
+      type: object
+      description: >-
+        Request body sent by Fly.io to the provider when provisioning or
+        updating an extension resource.
+      required:
+        - name
+        - id
+        - organization_id
+        - organization_name
+        - user_email
+        - user_id
+        - user_role
+      properties:
+        name:
+          type: string
+          description: The name the user specified for this extension resource.
+        id:
+          type: string
+          description: Fly.io-generated unique identifier for this extension instance.
+        organization_id:
+          type: string
+          description: The Fly.io organization ID of the user provisioning the extension.
+        organization_name:
+          type: string
+          description: The display name of the Fly.io organization.
+        user_email:
+          type: string
+          format: email
+          description: >-
+            An obfuscated email alias for the provisioning user. This is a
+            routing address that Fly.io manages, not the user's real email.
+        user_id:
+          type: string
+          description: The Fly.io user ID of the provisioning user.
+        user_role:
+          type: string
+          description: The user's role within the organization (e.g., admin, member).
+        primary_region:
+          type: string
+          description: The preferred deployment region for latency-sensitive resources.
+          example: iad
+        read_regions:
+          type: array
+          description: Additional regions where read replicas should be provisioned.
+          items:
+            type: string
+        ip_address:
+          type: string
+          description: >-
+            A Fly.io private IP address allocated for Flycast routing, enabling
+            the extension to receive traffic over the Fly.io private network.
+    ProvisionResponse:
+      type: object
+      description: >-
+        Response body returned by the provider after successfully provisioning
+        or updating an extension resource.
+      required:
+        - id
+        - config
+      properties:
+        id:
+          type: string
+          description: The provider's unique identifier for this extension resource.
+        name:
+          type: string
+          description: Human-readable name for the provisioned resource.
+        config:
+          type: object
+          description: >-
+            Environment variables to inject into the user's Fly App. Keys are
+            variable names and values are the corresponding secrets or
+            connection strings.
+          additionalProperties:
+            type: string
+        fly_app_name:
+          type: string
+          description: >-
+            If the provider runs a Fly App to serve this extension, specify its
+            name here to enable Flycast routing from the customer's private
+            network.
+    ExtensionResource:
+      type: object
+      description: Full details about a provisioned extension resource.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this extension resource.
+        name:
+          type: string
+          description: Human-readable name for the resource.
+        status:
+          type: string
+          description: Current status of the resource (e.g., pending, ready, error).
+          enum: [pending, ready, error]
+        config:
+          type: object
+          description: Current environment variable configuration for the resource.
+          additionalProperties:
+            type: string
+    OAuthTokenResponse:
+      type: object
+      description: OAuth access token response from the Fly.io token endpoint.
+      properties:
+        access_token:
+          type: string
+          description: The OAuth access token to use for authenticated API calls.
+        token_type:
+          type: string
+          description: Token type, always Bearer.
+        expires_in:
+          type: integer
+          description: Token validity duration in seconds.
+        scope:
+          type: string
+          description: Space-separated list of granted OAuth scopes.
+    TokenInfo:
+      type: object
+      description: User and organization information for a Fly.io OAuth token.
+      properties:
+        user_id:
+          type: string
+          description: The Fly.io user ID associated with this token.
+        email:
+          type: string
+          description: The obfuscated email alias of the authenticated user.
+        organization_id:
+          type: string
+          description: The Fly.io organization ID the user is acting within.
+        organization_name:
+          type: string
+          description: The display name of the organization.
+        role:
+          type: string
+          description: The user's role within the organization.
+    ExtensionWebhookPayload:
+      type: object
+      description: >-
+        Payload sent by extension providers to notify Fly.io of resource
+        lifecycle changes.
+      required:
+        - action
+        - resource_id
+      properties:
+        action:
+          type: string
+          description: The lifecycle action that occurred.
+          enum: [resource.created, resource.updated, resource.deleted]
+        resource_id:
+          type: string
+          description: The provider's ID of the resource this event relates to.
+        config:
+          type: object
+          description: >-
+            Updated environment variable configuration, if applicable. Include
+            when responding to async provisioning completion.
+          additionalProperties:
+            type: string
+    CloudEventPayload:
+      type: object
+      description: >-
+        A CloudEvents-format payload sent by Fly.io to the extension provider
+        for machine and account lifecycle events.
+      required:
+        - specversion
+        - type
+        - source
+        - id
+      properties:
+        specversion:
+          type: string
+          description: CloudEvents specification version.
+          example: '1.0'
+        type:
+          type: string
+          description: Event type identifier (e.g., io.fly.machine.started).
+        source:
+          type: string
+          description: URI identifying the Fly.io system that generated the event.
+        id:
+          type: string
+          description: Unique identifier for this event instance.
+        time:
+          type: string
+          format: date-time
+          description: Timestamp when the event occurred.
+        datacontenttype:
+          type: string
+          description: Content type of the event data.
+          example: application/json
+        data:
+          type: object
+          description: Event-specific payload data.
+          additionalProperties: true

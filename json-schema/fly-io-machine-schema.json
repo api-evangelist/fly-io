@@ -1,0 +1,386 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fly.io/schemas/machine.json",
+  "title": "Fly.io Machine",
+  "description": "A Fly Machine is a fast-booting virtual machine deployed on Fly.io's global edge infrastructure. Machines are the core compute unit of the Fly.io platform, supporting full configuration of compute resources, networking, health checks, persistent storage, and lifecycle policies.",
+  "type": "object",
+  "required": ["id", "state", "config"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable unique identifier for this Machine. Does not change across updates."
+    },
+    "name": {
+      "type": "string",
+      "description": "Optional human-readable name for this Machine."
+    },
+    "state": {
+      "type": "string",
+      "description": "Current lifecycle state of the Machine.",
+      "enum": ["started", "stopped", "suspended", "destroyed", "replacing"]
+    },
+    "region": {
+      "type": "string",
+      "description": "The three-letter region code where this Machine is deployed.",
+      "pattern": "^[a-z]{3}$",
+      "example": "iad"
+    },
+    "instance_id": {
+      "type": "string",
+      "description": "Version identifier for the current Machine configuration. Changes each time the Machine is updated via a POST request."
+    },
+    "private_ip": {
+      "type": "string",
+      "description": "The Machine's 6PN private IPv6 address on the Fly.io WireGuard mesh network. Format: machine-id.vm.app-name.internal"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when the Machine was created."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when the Machine was last updated."
+    },
+    "config": {
+      "$ref": "#/$defs/MachineConfig"
+    }
+  },
+  "$defs": {
+    "MachineConfig": {
+      "type": "object",
+      "description": "Full configuration for a Fly Machine, including compute resources, image, networking, storage, and runtime behavior.",
+      "required": ["image"],
+      "properties": {
+        "image": {
+          "type": "string",
+          "description": "Container registry path for the image that defines this Machine. Must reference a valid Docker image.",
+          "example": "registry-1.docker.io/library/ubuntu:latest"
+        },
+        "guest": {
+          "$ref": "#/$defs/MachineGuest"
+        },
+        "env": {
+          "type": "object",
+          "description": "Environment variables injected into the Machine at startup as key-value string pairs.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "services": {
+          "type": "array",
+          "description": "Network service definitions for exposing this Machine to external traffic. Each entry defines a protocol, internal port, and external port mappings.",
+          "items": {
+            "$ref": "#/$defs/MachineService"
+          }
+        },
+        "checks": {
+          "type": "object",
+          "description": "Named health check definitions. Keys are check names; values are check configuration objects.",
+          "additionalProperties": {
+            "$ref": "#/$defs/MachineCheck"
+          }
+        },
+        "mounts": {
+          "type": "array",
+          "description": "Persistent volume mount definitions. Each entry attaches a Fly Volume to a filesystem path inside the Machine.",
+          "items": {
+            "$ref": "#/$defs/MachineMount"
+          }
+        },
+        "init": {
+          "$ref": "#/$defs/MachineInit"
+        },
+        "restart": {
+          "$ref": "#/$defs/MachineRestart"
+        },
+        "schedule": {
+          "type": "string",
+          "description": "Run this Machine on a recurring schedule using a cron-like interval.",
+          "enum": ["hourly", "daily", "weekly", "monthly"]
+        },
+        "auto_destroy": {
+          "type": "boolean",
+          "description": "When true, the Machine is automatically destroyed after its process exits."
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Arbitrary key-value metadata for internal routing, cluster membership, and application-level configuration.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "files": {
+          "type": "array",
+          "description": "Files to write into the Machine filesystem at startup, specified as base64-encoded content or secret references.",
+          "items": {
+            "$ref": "#/$defs/MachineFile"
+          }
+        },
+        "processes": {
+          "type": "array",
+          "description": "Multiple concurrent processes to run within a single Machine instance.",
+          "items": {
+            "$ref": "#/$defs/MachineProcess"
+          }
+        }
+      }
+    },
+    "MachineGuest": {
+      "type": "object",
+      "description": "Compute resource specification for a Fly Machine.",
+      "properties": {
+        "cpus": {
+          "type": "integer",
+          "description": "Number of vCPU cores to allocate to this Machine. Defaults to 1.",
+          "default": 1,
+          "minimum": 1
+        },
+        "memory_mb": {
+          "type": "integer",
+          "description": "Memory in megabytes allocated to this Machine. Must be a multiple of 256. Defaults to 256.",
+          "default": 256,
+          "minimum": 256,
+          "multipleOf": 256
+        },
+        "cpu_kind": {
+          "type": "string",
+          "description": "Type of vCPU to allocate. shared provides burstable performance at lower cost; performance provides dedicated CPU cores.",
+          "enum": ["shared", "performance"]
+        }
+      }
+    },
+    "MachineService": {
+      "type": "object",
+      "description": "A network service definition for routing external traffic to this Machine.",
+      "required": ["protocol", "internal_port"],
+      "properties": {
+        "protocol": {
+          "type": "string",
+          "description": "Transport protocol for this service.",
+          "enum": ["tcp", "udp"]
+        },
+        "internal_port": {
+          "type": "integer",
+          "description": "The port the application listens on inside the Machine.",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "ports": {
+          "type": "array",
+          "description": "External port mappings for this service.",
+          "items": {
+            "$ref": "#/$defs/MachinePort"
+          }
+        },
+        "concurrency": {
+          "$ref": "#/$defs/MachineServiceConcurrency"
+        }
+      }
+    },
+    "MachinePort": {
+      "type": "object",
+      "description": "An external port mapping with optional protocol handlers.",
+      "properties": {
+        "port": {
+          "type": "integer",
+          "description": "The external port number exposed to internet traffic.",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "handlers": {
+          "type": "array",
+          "description": "Protocol handlers applied to traffic on this port.",
+          "items": {
+            "type": "string",
+            "enum": ["http", "tls", "tcp", "proxy_proto"]
+          }
+        },
+        "force_https": {
+          "type": "boolean",
+          "description": "When true, HTTP traffic on this port is redirected to HTTPS."
+        }
+      }
+    },
+    "MachineServiceConcurrency": {
+      "type": "object",
+      "description": "Load balancing configuration based on connection or request concurrency.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The concurrency metric used for load balancing decisions.",
+          "enum": ["connections", "requests"]
+        },
+        "soft_limit": {
+          "type": "integer",
+          "description": "Soft limit threshold. The load balancer deprioritizes this Machine when this limit is exceeded.",
+          "minimum": 0
+        },
+        "hard_limit": {
+          "type": "integer",
+          "description": "Hard limit threshold. No new traffic is routed to this Machine when this limit is exceeded.",
+          "minimum": 0
+        }
+      }
+    },
+    "MachineCheck": {
+      "type": "object",
+      "description": "A health check configuration for monitoring Machine health.",
+      "required": ["type", "port"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Protocol type for the health check.",
+          "enum": ["tcp", "http"]
+        },
+        "port": {
+          "type": "integer",
+          "description": "Port to run the health check against.",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "interval": {
+          "type": "string",
+          "description": "How frequently to run the check, as a Go duration string (e.g., 10s, 1m).",
+          "example": "30s"
+        },
+        "timeout": {
+          "type": "string",
+          "description": "Maximum time to wait for a check response before marking it failed.",
+          "example": "5s"
+        },
+        "grace_period": {
+          "type": "string",
+          "description": "Time to wait after Machine startup before beginning health checks.",
+          "example": "10s"
+        },
+        "path": {
+          "type": "string",
+          "description": "HTTP path to request for http-type checks.",
+          "example": "/health"
+        },
+        "method": {
+          "type": "string",
+          "description": "HTTP method for http-type checks. Defaults to GET.",
+          "enum": ["GET", "HEAD", "POST"]
+        }
+      }
+    },
+    "MachineMount": {
+      "type": "object",
+      "description": "A persistent volume mount definition for a Fly Machine.",
+      "required": ["volume", "path"],
+      "properties": {
+        "volume": {
+          "type": "string",
+          "description": "The unique ID of the Fly Volume to mount."
+        },
+        "path": {
+          "type": "string",
+          "description": "Filesystem path inside the Machine where the volume is mounted.",
+          "example": "/data"
+        },
+        "size_gb": {
+          "type": "integer",
+          "description": "Size of the mounted volume in gigabytes.",
+          "minimum": 1
+        }
+      }
+    },
+    "MachineInit": {
+      "type": "object",
+      "description": "Startup process configuration, overriding the container image's default entrypoint and command.",
+      "properties": {
+        "exec": {
+          "type": "array",
+          "description": "Command to execute as the Machine's init process, bypassing the image entrypoint.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "entrypoint": {
+          "type": "array",
+          "description": "Override the container image's entrypoint.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cmd": {
+          "type": "array",
+          "description": "Override the container image's default command arguments.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tty": {
+          "type": "boolean",
+          "description": "When true, allocates a pseudo-TTY for the Machine's init process."
+        }
+      }
+    },
+    "MachineRestart": {
+      "type": "object",
+      "description": "Restart policy controlling whether and when the Machine restarts after process exit.",
+      "properties": {
+        "policy": {
+          "type": "string",
+          "description": "Restart policy. no disables restarts; on-failure restarts on non-zero exit codes; always restarts unconditionally.",
+          "enum": ["no", "on-failure", "always"]
+        }
+      }
+    },
+    "MachineFile": {
+      "type": "object",
+      "description": "A file to write into the Machine filesystem at startup.",
+      "required": ["guest_path"],
+      "properties": {
+        "guest_path": {
+          "type": "string",
+          "description": "Absolute path inside the Machine where the file should be written.",
+          "example": "/etc/config.toml"
+        },
+        "raw_value": {
+          "type": "string",
+          "description": "Base64-encoded content of the file."
+        },
+        "secret_name": {
+          "type": "string",
+          "description": "Name of a Fly secret whose value should be written to this file path."
+        }
+      }
+    },
+    "MachineProcess": {
+      "type": "object",
+      "description": "A named process to run concurrently within a single Fly Machine instance.",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Unique name identifying this process within the Machine."
+        },
+        "entrypoint": {
+          "type": "array",
+          "description": "Entrypoint command for this process.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cmd": {
+          "type": "array",
+          "description": "Command arguments for this process.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "env": {
+          "type": "object",
+          "description": "Additional environment variables for this specific process.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

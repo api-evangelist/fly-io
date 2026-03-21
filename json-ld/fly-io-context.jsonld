@@ -1,0 +1,272 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "flyio": "https://fly.io/vocab/",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+
+    "Machine": {
+      "@id": "flyio:Machine",
+      "@context": {
+        "id": "@id",
+        "name": {
+          "@id": "schema:name"
+        },
+        "state": {
+          "@id": "flyio:machineState"
+        },
+        "region": {
+          "@id": "flyio:region"
+        },
+        "instance_id": {
+          "@id": "flyio:instanceId"
+        },
+        "private_ip": {
+          "@id": "flyio:privateIpAddress"
+        },
+        "created_at": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        },
+        "updated_at": {
+          "@id": "dcterms:modified",
+          "@type": "xsd:dateTime"
+        },
+        "config": {
+          "@id": "flyio:machineConfig"
+        }
+      }
+    },
+
+    "MachineConfig": {
+      "@id": "flyio:MachineConfig",
+      "@context": {
+        "image": {
+          "@id": "flyio:containerImage"
+        },
+        "guest": {
+          "@id": "flyio:guestSpec"
+        },
+        "env": {
+          "@id": "flyio:environmentVariables"
+        },
+        "services": {
+          "@id": "flyio:networkServices",
+          "@container": "@set"
+        },
+        "mounts": {
+          "@id": "flyio:volumeMounts",
+          "@container": "@set"
+        },
+        "schedule": {
+          "@id": "schema:schedule"
+        },
+        "auto_destroy": {
+          "@id": "flyio:autoDestroy",
+          "@type": "xsd:boolean"
+        },
+        "metadata": {
+          "@id": "flyio:machineMetadata"
+        }
+      }
+    },
+
+    "MachineGuest": {
+      "@id": "flyio:MachineGuest",
+      "@context": {
+        "cpus": {
+          "@id": "flyio:cpuCount",
+          "@type": "xsd:integer"
+        },
+        "memory_mb": {
+          "@id": "flyio:memoryMb",
+          "@type": "xsd:integer"
+        },
+        "cpu_kind": {
+          "@id": "flyio:cpuKind"
+        }
+      }
+    },
+
+    "MachineService": {
+      "@id": "flyio:MachineService",
+      "@context": {
+        "protocol": {
+          "@id": "flyio:networkProtocol"
+        },
+        "internal_port": {
+          "@id": "schema:portNumber",
+          "@type": "xsd:integer"
+        },
+        "ports": {
+          "@id": "flyio:externalPorts",
+          "@container": "@set"
+        }
+      }
+    },
+
+    "MachinePort": {
+      "@id": "flyio:MachinePort",
+      "@context": {
+        "port": {
+          "@id": "schema:portNumber",
+          "@type": "xsd:integer"
+        },
+        "handlers": {
+          "@id": "flyio:protocolHandlers",
+          "@container": "@set"
+        },
+        "force_https": {
+          "@id": "flyio:forceHttps",
+          "@type": "xsd:boolean"
+        }
+      }
+    },
+
+    "Volume": {
+      "@id": "flyio:Volume",
+      "@context": {
+        "id": "@id",
+        "name": {
+          "@id": "schema:name"
+        },
+        "state": {
+          "@id": "flyio:volumeState"
+        },
+        "size_gb": {
+          "@id": "flyio:sizeGb",
+          "@type": "xsd:integer"
+        },
+        "region": {
+          "@id": "flyio:region"
+        },
+        "zone": {
+          "@id": "flyio:availabilityZone"
+        },
+        "encrypted": {
+          "@id": "flyio:isEncrypted",
+          "@type": "xsd:boolean"
+        },
+        "attached_machine_id": {
+          "@id": "flyio:attachedMachineId"
+        },
+        "filesystem_type": {
+          "@id": "flyio:filesystemType"
+        },
+        "snapshot_retention": {
+          "@id": "flyio:snapshotRetentionDays",
+          "@type": "xsd:integer"
+        },
+        "created_at": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        }
+      }
+    },
+
+    "VolumeSnapshot": {
+      "@id": "flyio:VolumeSnapshot",
+      "@context": {
+        "id": "@id",
+        "size": {
+          "@id": "schema:fileSize",
+          "@type": "xsd:integer"
+        },
+        "digest": {
+          "@id": "flyio:contentDigest"
+        },
+        "status": {
+          "@id": "flyio:snapshotStatus"
+        },
+        "created_at": {
+          "@id": "dcterms:created",
+          "@type": "xsd:dateTime"
+        }
+      }
+    },
+
+    "App": {
+      "@id": "flyio:App",
+      "@context": {
+        "id": "@id",
+        "name": {
+          "@id": "schema:name"
+        },
+        "status": {
+          "@id": "flyio:appStatus"
+        },
+        "machine_count": {
+          "@id": "flyio:machineCount",
+          "@type": "xsd:integer"
+        },
+        "volume_count": {
+          "@id": "flyio:volumeCount",
+          "@type": "xsd:integer"
+        },
+        "network": {
+          "@id": "flyio:privateNetwork"
+        },
+        "organization": {
+          "@id": "flyio:organization"
+        }
+      }
+    },
+
+    "Organization": {
+      "@id": "flyio:Organization",
+      "@context": {
+        "name": {
+          "@id": "schema:name"
+        },
+        "slug": {
+          "@id": "flyio:organizationSlug"
+        }
+      }
+    },
+
+    "ExtensionResource": {
+      "@id": "flyio:ExtensionResource",
+      "@context": {
+        "id": "@id",
+        "name": {
+          "@id": "schema:name"
+        },
+        "status": {
+          "@id": "flyio:extensionStatus"
+        },
+        "config": {
+          "@id": "flyio:extensionConfig"
+        },
+        "organization_id": {
+          "@id": "flyio:organizationId"
+        },
+        "fly_app_name": {
+          "@id": "flyio:flyAppName"
+        }
+      }
+    },
+
+    "MachineCheck": {
+      "@id": "flyio:MachineCheck",
+      "@context": {
+        "type": {
+          "@id": "flyio:checkType"
+        },
+        "port": {
+          "@id": "schema:portNumber",
+          "@type": "xsd:integer"
+        },
+        "interval": {
+          "@id": "schema:repeatFrequency"
+        },
+        "timeout": {
+          "@id": "flyio:checkTimeout"
+        },
+        "path": {
+          "@id": "schema:path"
+        }
+      }
+    }
+  }
+}
