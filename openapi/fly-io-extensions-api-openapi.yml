@@ -38,14 +38,14 @@ tags:
       Operations for provisioning, retrieving, and updating extension resource
       instances. Fly.io calls these endpoints on the provider's server when
       users interact with extensions via the flyctl CLI.
-  - name: SSO
-    description: >-
-      Single sign-on operations allowing Fly.io users to access provider
-      dashboards using their Fly.io credentials via OAuth.
   - name: OAuth
     description: >-
       Fly.io platform OAuth endpoints used during the single sign-on flow to
       authorize users and exchange tokens.
+  - name: SSO
+    description: >-
+      Single sign-on operations allowing Fly.io users to access provider
+      dashboards using their Fly.io credentials via OAuth.
   - name: Webhooks
     description: >-
       Webhook endpoints for bidirectional event delivery between Fly.io and

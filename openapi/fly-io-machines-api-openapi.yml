@@ -34,16 +34,16 @@ tags:
       Core operations for creating, reading, updating, starting, stopping,
       suspending, and deleting Fly Machines. Machines are fast-booting virtual
       machines deployed on Fly.io's global edge infrastructure.
-  - name: Volumes
-    description: >-
-      Operations for managing persistent storage volumes that can be attached to
-      Fly Machines. Volumes provide durable block storage that persists across
-      Machine restarts.
   - name: Tokens
     description: >-
       Operations for requesting OpenID Connect (OIDC) tokens from third-party
       services, enabling Fly Machines to authenticate to external systems using
       workload identity.
+  - name: Volumes
+    description: >-
+      Operations for managing persistent storage volumes that can be attached to
+      Fly Machines. Volumes provide durable block storage that persists across
+      Machine restarts.
 security:
   - bearerAuth: []
 paths:
