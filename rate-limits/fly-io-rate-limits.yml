@@ -1,0 +1,32 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Fly.io
+providerId: fly-io
+created: '2026-05-04'
+modified: '2026-05-04'
+reconciled: true
+tags:
+  - Rate Limiting
+  - Hosting
+description: Fly.io Machines API and CLI rate limits per organization.
+sources:
+  - https://fly.io/docs/about/pricing/
+  - https://fly.io/docs/machines/api/working-with-machines-api/
+headers:
+  retryAfter: Retry-After
+responseCodes:
+  throttled: 429
+limits:
+  - name: Machines API
+    scope: org
+    metric: requests_per_minute
+    limit: default; raise via support
+  - name: Machines per app
+    scope: app
+    metric: machines
+    limit: varies by org limits
+  - name: Concurrent machine starts
+    scope: org
+    metric: concurrent
+    limit: varies

@@ -1,0 +1,161 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Fly.io
+providerId: fly-io
+created: '2026-05-04'
+modified: '2026-05-04'
+reconciled: true
+tags:
+  - Hosting
+  - Edge Compute
+  - VMs
+description: Fly.io pay-as-you-go for Machines (per-second), Volumes, IPs, transfer.
+sources:
+  - https://fly.io/docs/about/pricing/
+plans:
+  - id: fly-shared-cpu
+    name: Shared CPU Machines
+    type: usage-based
+    description: shared-cpu-1x to 8x with 256MB-16GB RAM. Per-second billing while running.
+    entries:
+      - label: Per machine-second (varies)
+        name: machine_sec
+        type: metered
+        metric: second
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1
+        price: varies
+        userMultiplied: false
+    elements:
+      - name: Per-second granularity
+      - name: Multiple sizes
+      - name: 256 MB - 16 GB RAM
+  - id: fly-performance-cpu
+    name: Performance CPU Machines
+    type: usage-based
+    description: performance-1x to 16x with 2GB-128GB RAM.
+    entries:
+      - label: Per machine-second (varies)
+        name: machine_sec
+        type: metered
+        metric: second
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1
+        price: varies
+        userMultiplied: false
+    elements:
+      - name: Higher compute than shared
+      - name: 2-128 GB RAM
+  - id: fly-stopped-machines
+    name: Stopped Machines (rootfs)
+    type: metered
+    description: $0.15/GB rootfs per 30 days when stopped.
+    entries:
+      - label: Per GB-30days
+        name: rootfs
+        type: metered
+        metric: GB-30days
+        limit: -1
+        timeFrame: month
+        geo: global
+        unit: 1
+        price: '0.15'
+        userMultiplied: false
+    elements:
+      - name: Storage-only billing while stopped
+  - id: fly-volumes
+    name: Fly Volumes
+    type: metered
+    description: $0.15/GB/month persistent local storage.
+    entries:
+      - label: Per GB-month
+        name: volume
+        type: metered
+        metric: GB-month
+        limit: -1
+        timeFrame: month
+        geo: global
+        unit: 1
+        price: '0.15'
+        userMultiplied: false
+    elements:
+      - name: Local persistent storage
+      - name: Billed regardless of machine state
+  - id: fly-snapshots
+    name: Volume Snapshots
+    type: metered
+    description: $0.08/GB/month, first 10 GB free.
+    entries:
+      - label: Per GB-month
+        name: snapshot
+        type: metered
+        metric: GB-month
+        limit: -1
+        timeFrame: month
+        geo: global
+        unit: 1
+        price: '0.08'
+        userMultiplied: false
+    elements:
+      - name: Incremental daily snapshots
+      - name: 5-day default retention
+      - name: First 10 GB free
+  - id: fly-data-transfer
+    name: Data Transfer
+    type: metered
+    description: $0.02-$0.12/GB egress (region-dependent). Inbound free.
+    entries:
+      - label: Egress per GB
+        name: egress
+        type: metered
+        metric: GB
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1
+        price: 0.02-0.12
+        userMultiplied: false
+    elements:
+      - name: Inbound free
+      - name: Region-grouped pricing
+  - id: fly-reservation-blocks
+    name: Machine Reservation Blocks
+    type: subscription
+    description: $36-$3,600/yr (Shared) or $144-$14,400/yr (Performance). 40% discount on compute.
+    entries:
+      - label: Annual block (varies)
+        name: block
+        type: subscription
+        metric: year
+        limit: -1
+        timeFrame: year
+        geo: global
+        unit: 1
+        price: varies
+        userMultiplied: false
+    elements:
+      - name: 40% discount on compute
+      - name: Monthly credits non-rollover
+  - id: fly-fks
+    name: Fly Kubernetes (FKS)
+    type: subscription
+    description: $75/month per cluster + compute and storage.
+    entries:
+      - label: Per cluster
+        name: cluster
+        type: subscription
+        metric: month
+        limit: -1
+        timeFrame: month
+        geo: global
+        unit: 1
+        price: '75.00'
+        userMultiplied: false
+    elements:
+      - name: Managed Kubernetes
+      - name: Plus underlying compute/storage cost
