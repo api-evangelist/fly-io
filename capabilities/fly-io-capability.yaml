@@ -1,0 +1,401 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Fly.io Extensions API
+  description: The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate
+    with the Fly.io platform as extension providers. When a Fly.io user provisions an extension via the flyctl CLI, Fly.io
+    forwards the provisioning request to the provider's API with details about the requesting organization and user, and the
+    provider responds with environment variable configuration that is attached to the target application. Providers must also
+    support single sign-on login flows using OAuth, daily billing detail endpoints, and webhook delivery for resource lifecycle
+    event
+  tags:
+  - Fly
+  - Io
+  - API
+  created: '2026-05-06'
+  modified: '2026-05-06'
+capability:
+  consumes:
+  - type: http
+    namespace: fly-io
+    baseUri: https://api.example.com
+    description: Fly.io Extensions API HTTP API.
+    authentication:
+      type: bearer
+      token: '{{FLY_IO_TOKEN}}'
+    resources:
+    - name: extensions
+      path: /extensions
+      operations:
+      - name: provisionextension
+        method: POST
+        description: Provision an extension resource
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: extensions-extension-id
+      path: /extensions/{extension_id}
+      operations:
+      - name: getextension
+        method: GET
+        description: Get extension resource details
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: updateextension
+        method: PATCH
+        description: Update an extension resource
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: deleteextension
+        method: DELETE
+        description: Delete an extension resource
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: extensions-extension-id-sso
+      path: /extensions/{extension_id}/sso
+      operations:
+      - name: initiatesso
+        method: GET
+        description: Initiate SSO for an extension
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: oauth-authorize
+      path: /oauth/authorize
+      operations:
+      - name: oauthauthorize
+        method: GET
+        description: OAuth authorization endpoint
+        inputParameters:
+        - name: client_id
+          in: query
+          type: string
+          required: true
+          description: OAuth client ID issued to the extension provider by Fly.io.
+        - name: response_type
+          in: query
+          type: string
+          required: true
+          description: OAuth response type. Must be code for the authorization code flow.
+        - name: redirect_uri
+          in: query
+          type: string
+          required: true
+          description: Provider callback URL to redirect the user to after authorization.
+        - name: scope
+          in: query
+          type: string
+          description: Space-separated list of requested OAuth scopes.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: oauth-token
+      path: /oauth/token
+      operations:
+      - name: oauthtoken
+        method: POST
+        description: Exchange authorization code for access token
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: oauth-token-info
+      path: /oauth/token/info
+      operations:
+      - name: gettokeninfo
+        method: GET
+        description: Get OAuth token information
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-hooks-extensions-provider-name
+      path: /api/hooks/extensions/{provider_name}
+      operations:
+      - name: sendextensionwebhook
+        method: POST
+        description: Send a webhook to Fly.io
+        inputParameters:
+        - name: provider_name
+          in: path
+          type: string
+          required: true
+          description: The slug identifier of the extension provider registered with Fly.io.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: extensions-events
+      path: /extensions/events
+      operations:
+      - name: receiveextensionevent
+        method: POST
+        description: Receive a machine event webhook from Fly.io
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+  exposes:
+  - type: rest
+    port: 8080
+    namespace: fly-io-rest
+    description: REST adapter for Fly.io Extensions API.
+    resources:
+    - path: /extensions
+      name: provisionextension
+      operations:
+      - method: POST
+        name: provisionextension
+        description: Provision an extension resource
+        call: fly-io.provisionextension
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /extensions/{extension_id}
+      name: getextension
+      operations:
+      - method: GET
+        name: getextension
+        description: Get extension resource details
+        call: fly-io.getextension
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /extensions/{extension_id}
+      name: updateextension
+      operations:
+      - method: PATCH
+        name: updateextension
+        description: Update an extension resource
+        call: fly-io.updateextension
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /extensions/{extension_id}
+      name: deleteextension
+      operations:
+      - method: DELETE
+        name: deleteextension
+        description: Delete an extension resource
+        call: fly-io.deleteextension
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /extensions/{extension_id}/sso
+      name: initiatesso
+      operations:
+      - method: GET
+        name: initiatesso
+        description: Initiate SSO for an extension
+        call: fly-io.initiatesso
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /oauth/authorize
+      name: oauthauthorize
+      operations:
+      - method: GET
+        name: oauthauthorize
+        description: OAuth authorization endpoint
+        call: fly-io.oauthauthorize
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /oauth/token
+      name: oauthtoken
+      operations:
+      - method: POST
+        name: oauthtoken
+        description: Exchange authorization code for access token
+        call: fly-io.oauthtoken
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /oauth/token/info
+      name: gettokeninfo
+      operations:
+      - method: GET
+        name: gettokeninfo
+        description: Get OAuth token information
+        call: fly-io.gettokeninfo
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/hooks/extensions/{provider_name}
+      name: sendextensionwebhook
+      operations:
+      - method: POST
+        name: sendextensionwebhook
+        description: Send a webhook to Fly.io
+        call: fly-io.sendextensionwebhook
+        with:
+          provider_name: rest.provider_name
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /extensions/events
+      name: receiveextensionevent
+      operations:
+      - method: POST
+        name: receiveextensionevent
+        description: Receive a machine event webhook from Fly.io
+        call: fly-io.receiveextensionevent
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    port: 9090
+    namespace: fly-io-mcp
+    transport: http
+    description: MCP adapter for Fly.io Extensions API for AI agent use.
+    tools:
+    - name: provisionextension
+      description: Provision an extension resource
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: fly-io.provisionextension
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getextension
+      description: Get extension resource details
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: fly-io.getextension
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: updateextension
+      description: Update an extension resource
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: fly-io.updateextension
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deleteextension
+      description: Delete an extension resource
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: fly-io.deleteextension
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: initiatesso
+      description: Initiate SSO for an extension
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: fly-io.initiatesso
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: oauthauthorize
+      description: OAuth authorization endpoint
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: fly-io.oauthauthorize
+      with:
+        client_id: tools.client_id
+        response_type: tools.response_type
+        redirect_uri: tools.redirect_uri
+        scope: tools.scope
+      inputParameters:
+      - name: client_id
+        type: string
+        description: OAuth client ID issued to the extension provider by Fly.io.
+        required: true
+      - name: response_type
+        type: string
+        description: OAuth response type. Must be code for the authorization code flow.
+        required: true
+      - name: redirect_uri
+        type: string
+        description: Provider callback URL to redirect the user to after authorization.
+        required: true
+      - name: scope
+        type: string
+        description: Space-separated list of requested OAuth scopes.
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: oauthtoken
+      description: Exchange authorization code for access token
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: fly-io.oauthtoken
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: gettokeninfo
+      description: Get OAuth token information
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: fly-io.gettokeninfo
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: sendextensionwebhook
+      description: Send a webhook to Fly.io
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: fly-io.sendextensionwebhook
+      with:
+        provider_name: tools.provider_name
+      inputParameters:
+      - name: provider_name
+        type: string
+        description: The slug identifier of the extension provider registered with Fly.io.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: receiveextensionevent
+      description: Receive a machine event webhook from Fly.io
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: fly-io.receiveextensionevent
+      outputParameters:
+      - type: object
+        mapping: $.
+binds:
+- namespace: env
+  keys:
+    FLY_IO_TOKEN: FLY_IO_TOKEN
