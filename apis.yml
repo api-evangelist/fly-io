@@ -73,7 +73,7 @@ common:
     url: json-schema/fly-io-machine-schema.json
   - type: JSONSchema
     url: json-schema/fly-io-volume-schema.json
-  - type: JSON-LD
+  - type: JSONLD
     url: json-ld/fly-io-context.jsonld
   - type: Features
     data:
