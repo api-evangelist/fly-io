@@ -1,0 +1,172 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Fly.io Extensions API — Extensions
+  description: 'Fly.io Extensions API — Extensions. 4 operations. Lead operation: Provision an extension resource. Self-contained
+    Naftiko capability covering one Fly Io business surface.'
+  tags:
+  - Fly Io
+  - Extensions
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    FLY_IO_API_KEY: FLY_IO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: extensions-extensions
+    baseUri: https://{provider_base_url}
+    description: Fly.io Extensions API — Extensions business capability. Self-contained, no shared references.
+    resources:
+    - name: extensions
+      path: /extensions
+      operations:
+      - name: provisionextension
+        method: POST
+        description: Provision an extension resource
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: extensions-extension_id
+      path: /extensions/{extension_id}
+      operations:
+      - name: getextension
+        method: GET
+        description: Get extension resource details
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: updateextension
+        method: PATCH
+        description: Update an extension resource
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: deleteextension
+        method: DELETE
+        description: Delete an extension resource
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.FLY_IO_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: extensions-extensions-rest
+    port: 8080
+    description: REST adapter for Fly.io Extensions API — Extensions. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/extensions
+      name: extensions
+      description: REST surface for extensions.
+      operations:
+      - method: POST
+        name: provisionextension
+        description: Provision an extension resource
+        call: extensions-extensions.provisionextension
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/extensions/{extension-id}
+      name: extensions-extension-id
+      description: REST surface for extensions-extension_id.
+      operations:
+      - method: GET
+        name: getextension
+        description: Get extension resource details
+        call: extensions-extensions.getextension
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: updateextension
+        description: Update an extension resource
+        call: extensions-extensions.updateextension
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deleteextension
+        description: Delete an extension resource
+        call: extensions-extensions.deleteextension
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: extensions-extensions-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Fly.io Extensions API — Extensions. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: provision-extension-resource
+      description: Provision an extension resource
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: extensions-extensions.provisionextension
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-extension-resource-details
+      description: Get extension resource details
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: extensions-extensions.getextension
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-extension-resource
+      description: Update an extension resource
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: extensions-extensions.updateextension
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-extension-resource
+      description: Delete an extension resource
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: extensions-extensions.deleteextension
+      outputParameters:
+      - type: object
+        mapping: $.

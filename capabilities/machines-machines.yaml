@@ -1,0 +1,513 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Fly.io Machines API — Machines
+  description: 'Fly.io Machines API — Machines. 14 operations. Lead operation: List machines in an app. Self-contained Naftiko
+    capability covering one Fly Io business surface.'
+  tags:
+  - Fly Io
+  - Machines
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    FLY_IO_API_KEY: FLY_IO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: machines-machines
+    baseUri: https://api.machines.dev
+    description: Fly.io Machines API — Machines business capability. Self-contained, no shared references.
+    resources:
+    - name: v1-apps-app_name-machines
+      path: /v1/apps/{app_name}/machines
+      operations:
+      - name: listmachines
+        method: GET
+        description: List machines in an app
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createmachine
+        method: POST
+        description: Create a Fly Machine
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: v1-apps-app_name-machines-machine_id
+      path: /v1/apps/{app_name}/machines/{machine_id}
+      operations:
+      - name: getmachine
+        method: GET
+        description: Get a Fly Machine
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: updatemachine
+        method: POST
+        description: Update a Fly Machine
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: deletemachine
+        method: DELETE
+        description: Delete a Fly Machine
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-apps-app_name-machines-machine_id-cordon
+      path: /v1/apps/{app_name}/machines/{machine_id}/cordon
+      operations:
+      - name: cordonmachine
+        method: POST
+        description: Cordon a Fly Machine
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-apps-app_name-machines-machine_id-metadata-key
+      path: /v1/apps/{app_name}/machines/{machine_id}/metadata/{key}
+      operations:
+      - name: getmachinemetadata
+        method: GET
+        description: Get a Machine metadata value
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: setmachinemetadata
+        method: POST
+        description: Set a Machine metadata value
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: deletemachinemetadata
+        method: DELETE
+        description: Delete a Machine metadata value
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-apps-app_name-machines-machine_id-start
+      path: /v1/apps/{app_name}/machines/{machine_id}/start
+      operations:
+      - name: startmachine
+        method: POST
+        description: Start a Fly Machine
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-apps-app_name-machines-machine_id-stop
+      path: /v1/apps/{app_name}/machines/{machine_id}/stop
+      operations:
+      - name: stopmachine
+        method: POST
+        description: Stop a Fly Machine
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: v1-apps-app_name-machines-machine_id-suspend
+      path: /v1/apps/{app_name}/machines/{machine_id}/suspend
+      operations:
+      - name: suspendmachine
+        method: POST
+        description: Suspend a Fly Machine
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-apps-app_name-machines-machine_id-uncordon
+      path: /v1/apps/{app_name}/machines/{machine_id}/uncordon
+      operations:
+      - name: uncordonmachine
+        method: POST
+        description: Uncordon a Fly Machine
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: v1-apps-app_name-machines-machine_id-wait
+      path: /v1/apps/{app_name}/machines/{machine_id}/wait
+      operations:
+      - name: waitformachinestate
+        method: GET
+        description: Wait for a Machine to reach a state
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: state
+          in: query
+          type: string
+          description: The target Machine state to wait for. Valid values are started, stopped, suspended, and destroyed.
+        - name: timeout
+          in: query
+          type: integer
+          description: Maximum number of seconds to wait for the state transition. Defaults to 60 seconds.
+        - name: instance_id
+          in: query
+          type: string
+          description: Wait for a specific Machine instance version to reach the target state. Use the instance_id from a
+            Machine update response to confirm that particular deployment
+    authentication:
+      type: bearer
+      token: '{{env.FLY_IO_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: machines-machines-rest
+    port: 8080
+    description: REST adapter for Fly.io Machines API — Machines. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/v1/apps/{app-name}/machines
+      name: v1-apps-app-name-machines
+      description: REST surface for v1-apps-app_name-machines.
+      operations:
+      - method: GET
+        name: listmachines
+        description: List machines in an app
+        call: machines-machines.listmachines
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createmachine
+        description: Create a Fly Machine
+        call: machines-machines.createmachine
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/apps/{app-name}/machines/{machine-id}
+      name: v1-apps-app-name-machines-machine-id
+      description: REST surface for v1-apps-app_name-machines-machine_id.
+      operations:
+      - method: GET
+        name: getmachine
+        description: Get a Fly Machine
+        call: machines-machines.getmachine
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: updatemachine
+        description: Update a Fly Machine
+        call: machines-machines.updatemachine
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletemachine
+        description: Delete a Fly Machine
+        call: machines-machines.deletemachine
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/apps/{app-name}/machines/{machine-id}/cordon
+      name: v1-apps-app-name-machines-machine-id-cordon
+      description: REST surface for v1-apps-app_name-machines-machine_id-cordon.
+      operations:
+      - method: POST
+        name: cordonmachine
+        description: Cordon a Fly Machine
+        call: machines-machines.cordonmachine
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/apps/{app-name}/machines/{machine-id}/metadata/{key}
+      name: v1-apps-app-name-machines-machine-id-metadata-key
+      description: REST surface for v1-apps-app_name-machines-machine_id-metadata-key.
+      operations:
+      - method: GET
+        name: getmachinemetadata
+        description: Get a Machine metadata value
+        call: machines-machines.getmachinemetadata
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: setmachinemetadata
+        description: Set a Machine metadata value
+        call: machines-machines.setmachinemetadata
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletemachinemetadata
+        description: Delete a Machine metadata value
+        call: machines-machines.deletemachinemetadata
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/apps/{app-name}/machines/{machine-id}/start
+      name: v1-apps-app-name-machines-machine-id-start
+      description: REST surface for v1-apps-app_name-machines-machine_id-start.
+      operations:
+      - method: POST
+        name: startmachine
+        description: Start a Fly Machine
+        call: machines-machines.startmachine
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/apps/{app-name}/machines/{machine-id}/stop
+      name: v1-apps-app-name-machines-machine-id-stop
+      description: REST surface for v1-apps-app_name-machines-machine_id-stop.
+      operations:
+      - method: POST
+        name: stopmachine
+        description: Stop a Fly Machine
+        call: machines-machines.stopmachine
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/apps/{app-name}/machines/{machine-id}/suspend
+      name: v1-apps-app-name-machines-machine-id-suspend
+      description: REST surface for v1-apps-app_name-machines-machine_id-suspend.
+      operations:
+      - method: POST
+        name: suspendmachine
+        description: Suspend a Fly Machine
+        call: machines-machines.suspendmachine
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/apps/{app-name}/machines/{machine-id}/uncordon
+      name: v1-apps-app-name-machines-machine-id-uncordon
+      description: REST surface for v1-apps-app_name-machines-machine_id-uncordon.
+      operations:
+      - method: POST
+        name: uncordonmachine
+        description: Uncordon a Fly Machine
+        call: machines-machines.uncordonmachine
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v1/apps/{app-name}/machines/{machine-id}/wait
+      name: v1-apps-app-name-machines-machine-id-wait
+      description: REST surface for v1-apps-app_name-machines-machine_id-wait.
+      operations:
+      - method: GET
+        name: waitformachinestate
+        description: Wait for a Machine to reach a state
+        call: machines-machines.waitformachinestate
+        with:
+          state: rest.state
+          timeout: rest.timeout
+          instance_id: rest.instance_id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: machines-machines-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Fly.io Machines API — Machines. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: list-machines-app
+      description: List machines in an app
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: machines-machines.listmachines
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-fly-machine
+      description: Create a Fly Machine
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: machines-machines.createmachine
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-fly-machine
+      description: Get a Fly Machine
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: machines-machines.getmachine
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-fly-machine
+      description: Update a Fly Machine
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: machines-machines.updatemachine
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-fly-machine
+      description: Delete a Fly Machine
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: machines-machines.deletemachine
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cordon-fly-machine
+      description: Cordon a Fly Machine
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: machines-machines.cordonmachine
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-machine-metadata-value
+      description: Get a Machine metadata value
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: machines-machines.getmachinemetadata
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: set-machine-metadata-value
+      description: Set a Machine metadata value
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: machines-machines.setmachinemetadata
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-machine-metadata-value
+      description: Delete a Machine metadata value
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: machines-machines.deletemachinemetadata
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: start-fly-machine
+      description: Start a Fly Machine
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: machines-machines.startmachine
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: stop-fly-machine
+      description: Stop a Fly Machine
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: machines-machines.stopmachine
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: suspend-fly-machine
+      description: Suspend a Fly Machine
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: machines-machines.suspendmachine
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: uncordon-fly-machine
+      description: Uncordon a Fly Machine
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: machines-machines.uncordonmachine
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: wait-machine-reach-state
+      description: Wait for a Machine to reach a state
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: machines-machines.waitformachinestate
+      with:
+        state: tools.state
+        timeout: tools.timeout
+        instance_id: tools.instance_id
+      outputParameters:
+      - type: object
+        mapping: $.
