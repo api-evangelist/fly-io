@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/VolumeSnapshot",
+  "title": "VolumeSnapshot",
+  "type": "object",
+  "description": "A point-in-time snapshot of a Fly Volume.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this snapshot."
+    },
+    "size": {
+      "type": "integer",
+      "description": "Snapshot size in bytes."
+    },
+    "digest": {
+      "type": "string",
+      "description": "Content digest of the snapshot for integrity verification."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the snapshot was created."
+    },
+    "status": {
+      "type": "string",
+      "description": "Status of the snapshot (e.g., created)."
+    }
+  }
+}

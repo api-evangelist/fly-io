@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/CloudEventPayload",
+  "title": "CloudEventPayload",
+  "type": "object",
+  "description": "A CloudEvents-format payload sent by Fly.io to the extension provider for machine and account lifecycle events.",
+  "required": [
+    "specversion",
+    "type",
+    "source",
+    "id"
+  ],
+  "properties": {
+    "specversion": {
+      "type": "string",
+      "description": "CloudEvents specification version.",
+      "example": "1.0"
+    },
+    "type": {
+      "type": "string",
+      "description": "Event type identifier (e.g., io.fly.machine.started)."
+    },
+    "source": {
+      "type": "string",
+      "description": "URI identifying the Fly.io system that generated the event."
+    },
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this event instance."
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the event occurred."
+    },
+    "datacontenttype": {
+      "type": "string",
+      "description": "Content type of the event data.",
+      "example": "application/json"
+    },
+    "data": {
+      "type": "object",
+      "description": "Event-specific payload data.",
+      "additionalProperties": true
+    }
+  }
+}

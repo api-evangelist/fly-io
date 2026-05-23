@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/TokenInfo",
+  "title": "TokenInfo",
+  "type": "object",
+  "description": "User and organization information for a Fly.io OAuth token.",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "The Fly.io user ID associated with this token."
+    },
+    "email": {
+      "type": "string",
+      "description": "The obfuscated email alias of the authenticated user."
+    },
+    "organization_id": {
+      "type": "string",
+      "description": "The Fly.io organization ID the user is acting within."
+    },
+    "organization_name": {
+      "type": "string",
+      "description": "The display name of the organization."
+    },
+    "role": {
+      "type": "string",
+      "description": "The user's role within the organization."
+    }
+  }
+}

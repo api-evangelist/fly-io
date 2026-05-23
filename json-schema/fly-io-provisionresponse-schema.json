@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ProvisionResponse",
+  "title": "ProvisionResponse",
+  "type": "object",
+  "description": "Response body returned by the provider after successfully provisioning or updating an extension resource.",
+  "required": [
+    "id",
+    "config"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The provider's unique identifier for this extension resource."
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable name for the provisioned resource."
+    },
+    "config": {
+      "type": "object",
+      "description": "Environment variables to inject into the user's Fly App. Keys are variable names and values are the corresponding secrets or connection strings.",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "fly_app_name": {
+      "type": "string",
+      "description": "If the provider runs a Fly App to serve this extension, specify its name here to enable Flycast routing from the customer's private network."
+    }
+  }
+}

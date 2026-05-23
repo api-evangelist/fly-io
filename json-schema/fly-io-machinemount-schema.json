@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/MachineMount",
+  "title": "MachineMount",
+  "type": "object",
+  "description": "A volume mount definition for a Fly Machine.",
+  "properties": {
+    "volume": {
+      "type": "string",
+      "description": "The ID of the Fly Volume to mount."
+    },
+    "path": {
+      "type": "string",
+      "description": "Filesystem path inside the Machine where the volume is mounted."
+    },
+    "size_gb": {
+      "type": "integer",
+      "description": "Size of the volume in gigabytes."
+    }
+  }
+}

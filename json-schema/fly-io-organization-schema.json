@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/Organization",
+  "title": "Organization",
+  "type": "object",
+  "description": "A Fly.io organization that owns apps and resources.",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The organization name."
+    },
+    "slug": {
+      "type": "string",
+      "description": "The organization's URL-safe identifier slug."
+    }
+  }
+}

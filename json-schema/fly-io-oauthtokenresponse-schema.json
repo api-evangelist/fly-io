@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/OAuthTokenResponse",
+  "title": "OAuthTokenResponse",
+  "type": "object",
+  "description": "OAuth access token response from the Fly.io token endpoint.",
+  "properties": {
+    "access_token": {
+      "type": "string",
+      "description": "The OAuth access token to use for authenticated API calls."
+    },
+    "token_type": {
+      "type": "string",
+      "description": "Token type, always Bearer."
+    },
+    "expires_in": {
+      "type": "integer",
+      "description": "Token validity duration in seconds."
+    },
+    "scope": {
+      "type": "string",
+      "description": "Space-separated list of granted OAuth scopes."
+    }
+  }
+}

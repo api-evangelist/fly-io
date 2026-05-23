@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/MachineServiceConcurrency",
+  "title": "MachineServiceConcurrency",
+  "type": "object",
+  "description": "Concurrency-based load balancing configuration for a service.",
+  "properties": {
+    "type": {
+      "type": "string",
+      "description": "Concurrency metric type.",
+      "enum": [
+        "connections",
+        "requests"
+      ]
+    },
+    "soft_limit": {
+      "type": "integer",
+      "description": "Soft connection/request limit. The load balancer deprioritizes this Machine above this threshold."
+    },
+    "hard_limit": {
+      "type": "integer",
+      "description": "Hard connection/request limit. No new traffic is routed to this Machine above this threshold."
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/App",
+  "title": "App",
+  "type": "object",
+  "description": "A Fly App, which is a logical grouping of related Fly Machines.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the app."
+    },
+    "name": {
+      "type": "string",
+      "description": "The app name, used in routing and DNS."
+    },
+    "status": {
+      "type": "string",
+      "description": "Current status of the app (e.g., running, suspended)."
+    },
+    "machine_count": {
+      "type": "integer",
+      "description": "Number of Machines currently in the app."
+    },
+    "volume_count": {
+      "type": "integer",
+      "description": "Number of Volumes currently in the app."
+    },
+    "network": {
+      "type": "string",
+      "description": "The private network name this app is attached to."
+    },
+    "organization": {
+      "$ref": "#/components/schemas/Organization"
+    }
+  }
+}

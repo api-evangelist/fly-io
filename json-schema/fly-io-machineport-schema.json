@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/MachinePort",
+  "title": "MachinePort",
+  "type": "object",
+  "description": "An external port mapping for a Machine service.",
+  "properties": {
+    "port": {
+      "type": "integer",
+      "description": "The external port number."
+    },
+    "handlers": {
+      "type": "array",
+      "description": "Protocol handlers to apply to traffic on this port (e.g., http, tls).",
+      "items": {
+        "type": "string",
+        "enum": [
+          "http",
+          "tls",
+          "tcp",
+          "proxy_proto"
+        ]
+      }
+    },
+    "force_https": {
+      "type": "boolean",
+      "description": "When true, HTTP traffic is redirected to HTTPS."
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/MachineGuest",
+  "title": "MachineGuest",
+  "type": "object",
+  "description": "Compute resource specification for a Fly Machine.",
+  "properties": {
+    "cpus": {
+      "type": "integer",
+      "description": "Number of vCPU cores to allocate. Defaults to 1.",
+      "default": 1
+    },
+    "memory_mb": {
+      "type": "integer",
+      "description": "Memory in megabytes, must be a multiple of 256. Defaults to 256.",
+      "default": 256,
+      "multipleOf": 256
+    },
+    "cpu_kind": {
+      "type": "string",
+      "description": "Type of vCPU to use. shared provides burstable performance; performance provides dedicated cores.",
+      "enum": [
+        "shared",
+        "performance"
+      ]
+    }
+  }
+}

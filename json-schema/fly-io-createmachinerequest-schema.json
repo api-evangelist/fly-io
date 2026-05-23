@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/CreateMachineRequest",
+  "title": "CreateMachineRequest",
+  "type": "object",
+  "description": "Request body for creating or updating a Fly Machine.",
+  "required": [
+    "config"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Optional human-readable name for the Machine."
+    },
+    "region": {
+      "type": "string",
+      "description": "The three-letter region code where the Machine should be deployed. If omitted, Fly.io chooses the nearest available region.",
+      "example": "iad"
+    },
+    "config": {
+      "$ref": "#/components/schemas/MachineConfig"
+    },
+    "skip_service_registration": {
+      "type": "boolean",
+      "description": "When true, the Machine is created without being added to the load balancer. Useful for blue-green deployments."
+    }
+  }
+}

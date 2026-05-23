@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ExtensionWebhookPayload",
+  "title": "ExtensionWebhookPayload",
+  "type": "object",
+  "description": "Payload sent by extension providers to notify Fly.io of resource lifecycle changes.",
+  "required": [
+    "action",
+    "resource_id"
+  ],
+  "properties": {
+    "action": {
+      "type": "string",
+      "description": "The lifecycle action that occurred.",
+      "enum": [
+        "resource.created",
+        "resource.updated",
+        "resource.deleted"
+      ]
+    },
+    "resource_id": {
+      "type": "string",
+      "description": "The provider's ID of the resource this event relates to."
+    },
+    "config": {
+      "type": "object",
+      "description": "Updated environment variable configuration, if applicable. Include when responding to async provisioning completion.",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  }
+}

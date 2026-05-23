@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/MachineService",
+  "title": "MachineService",
+  "type": "object",
+  "description": "A network service definition for exposing a Machine to external traffic.",
+  "properties": {
+    "protocol": {
+      "type": "string",
+      "description": "Transport protocol for this service.",
+      "enum": [
+        "tcp",
+        "udp"
+      ]
+    },
+    "internal_port": {
+      "type": "integer",
+      "description": "The port the application listens on inside the Machine."
+    },
+    "ports": {
+      "type": "array",
+      "description": "List of external port mappings for this service.",
+      "items": {
+        "$ref": "#/components/schemas/MachinePort"
+      }
+    },
+    "concurrency": {
+      "$ref": "#/components/schemas/MachineServiceConcurrency"
+    }
+  }
+}

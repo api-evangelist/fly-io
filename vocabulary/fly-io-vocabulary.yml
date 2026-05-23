@@ -1,0 +1,17 @@
+name: Fly-Io Domain Vocabulary
+provider: Fly-Io
+providerId: fly-io
+description: Tag-derived vocabulary for the Fly-Io API surface; sourced from openapi/ tags.
+terms:
+- term: Apps
+  description: Operations for creating, listing, and deleting Fly Apps. Every Fly Machine belongs to a Fly App, which groups
+    related Machines together.
+- term: Machines
+  description: Core operations for creating, reading, updating, starting, stopping, suspending, and deleting Fly Machines.
+    Machines are fast-booting virtual machines deployed on Fly.io's global edge infrastructure.
+- term: Tokens
+  description: Operations for requesting OpenID Connect (OIDC) tokens from third-party services, enabling Fly Machines to
+    authenticate to external systems using workload identity.
+- term: Volumes
+  description: Operations for managing persistent storage volumes that can be attached to Fly Machines. Volumes provide durable
+    block storage that persists across Machine restarts.

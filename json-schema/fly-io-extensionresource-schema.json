@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/ExtensionResource",
+  "title": "ExtensionResource",
+  "type": "object",
+  "description": "Full details about a provisioned extension resource.",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this extension resource."
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable name for the resource."
+    },
+    "status": {
+      "type": "string",
+      "description": "Current status of the resource (e.g., pending, ready, error).",
+      "enum": [
+        "pending",
+        "ready",
+        "error"
+      ]
+    },
+    "config": {
+      "type": "object",
+      "description": "Current environment variable configuration for the resource.",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  }
+}

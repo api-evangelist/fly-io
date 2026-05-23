@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/MachineConfig",
+  "title": "MachineConfig",
+  "type": "object",
+  "description": "Configuration for a Fly Machine.",
+  "required": [
+    "image"
+  ],
+  "properties": {
+    "image": {
+      "type": "string",
+      "description": "The container registry path for the image that defines this Machine.",
+      "example": "registry-1.docker.io/library/ubuntu:latest"
+    },
+    "guest": {
+      "$ref": "#/components/schemas/MachineGuest"
+    },
+    "env": {
+      "type": "object",
+      "description": "Environment variables to inject into the Machine at runtime.",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "services": {
+      "type": "array",
+      "description": "Network service definitions for exposing this Machine externally.",
+      "items": {
+        "$ref": "#/components/schemas/MachineService"
+      }
+    },
+    "checks": {
+      "type": "object",
+      "description": "Named health check definitions. Keys are check names; values are check configuration objects.",
+      "additionalProperties": {
+        "$ref": "#/components/schemas/MachineCheck"
+      }
+    },
+    "mounts": {
+      "type": "array",
+      "description": "Persistent volume mount definitions.",
+      "items": {
+        "$ref": "#/components/schemas/MachineMount"
+      }
+    },
+    "init": {
+      "$ref": "#/components/schemas/MachineInit"
+    },
+    "restart": {
+      "$ref": "#/components/schemas/MachineRestart"
+    },
+    "schedule": {
+      "type": "string",
+      "description": "Run this Machine on a recurring schedule. Valid values are hourly, daily, weekly, and monthly.",
+      "enum": [
+        "hourly",
+        "daily",
+        "weekly",
+        "monthly"
+      ]
+    },
+    "auto_destroy": {
+      "type": "boolean",
+      "description": "When true, the Machine is automatically destroyed after it exits."
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Arbitrary key-value metadata for internal routing and configuration.",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  }
+}

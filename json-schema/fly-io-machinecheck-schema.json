@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "#/components/schemas/MachineCheck",
+  "title": "MachineCheck",
+  "type": "object",
+  "description": "A health check definition for a Fly Machine.",
+  "properties": {
+    "type": {
+      "type": "string",
+      "description": "Check protocol type.",
+      "enum": [
+        "tcp",
+        "http"
+      ]
+    },
+    "port": {
+      "type": "integer",
+      "description": "Port to run the health check against."
+    },
+    "interval": {
+      "type": "string",
+      "description": "How often to run the check (e.g., 10s, 1m)."
+    },
+    "timeout": {
+      "type": "string",
+      "description": "Maximum time to wait for the check to respond."
+    },
+    "grace_period": {
+      "type": "string",
+      "description": "Time to wait after Machine start before running checks."
+    },
+    "path": {
+      "type": "string",
+      "description": "HTTP path for http-type checks."
+    },
+    "method": {
+      "type": "string",
+      "description": "HTTP method for http-type checks. Defaults to GET."
+    }
+  }
+}

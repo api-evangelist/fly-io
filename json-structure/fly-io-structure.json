@@ -1,0 +1,374 @@
+{
+  "provider": "Fly-Io",
+  "providerId": "fly-io",
+  "kind": "json-structure",
+  "description": "Structural overview of the Fly-Io API surface; extracted from openapi/.",
+  "schemaCount": 18,
+  "operationCount": 27,
+  "schemas": [
+    {
+      "name": "ErrorResponse",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "App",
+      "type": "object",
+      "propertyCount": 7,
+      "required": []
+    },
+    {
+      "name": "Organization",
+      "type": "object",
+      "propertyCount": 2,
+      "required": []
+    },
+    {
+      "name": "CreateAppRequest",
+      "type": "object",
+      "propertyCount": 4,
+      "required": [
+        "app_name",
+        "org_slug"
+      ]
+    },
+    {
+      "name": "Machine",
+      "type": "object",
+      "propertyCount": 9,
+      "required": []
+    },
+    {
+      "name": "MachineConfig",
+      "type": "object",
+      "propertyCount": 11,
+      "required": [
+        "image"
+      ]
+    },
+    {
+      "name": "MachineGuest",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "MachineService",
+      "type": "object",
+      "propertyCount": 4,
+      "required": []
+    },
+    {
+      "name": "MachinePort",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "MachineServiceConcurrency",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "MachineCheck",
+      "type": "object",
+      "propertyCount": 7,
+      "required": []
+    },
+    {
+      "name": "MachineMount",
+      "type": "object",
+      "propertyCount": 3,
+      "required": []
+    },
+    {
+      "name": "MachineInit",
+      "type": "object",
+      "propertyCount": 4,
+      "required": []
+    },
+    {
+      "name": "MachineRestart",
+      "type": "object",
+      "propertyCount": 1,
+      "required": []
+    },
+    {
+      "name": "CreateMachineRequest",
+      "type": "object",
+      "propertyCount": 4,
+      "required": [
+        "config"
+      ]
+    },
+    {
+      "name": "Volume",
+      "type": "object",
+      "propertyCount": 12,
+      "required": []
+    },
+    {
+      "name": "CreateVolumeRequest",
+      "type": "object",
+      "propertyCount": 7,
+      "required": [
+        "name",
+        "size_gb",
+        "region"
+      ]
+    },
+    {
+      "name": "VolumeSnapshot",
+      "type": "object",
+      "propertyCount": 5,
+      "required": []
+    }
+  ],
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/v1/apps",
+      "operationId": "listApps",
+      "summary": "List apps in an organization",
+      "tags": [
+        "Apps"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/apps",
+      "operationId": "createApp",
+      "summary": "Create a Fly App",
+      "tags": [
+        "Apps"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/v1/apps/{app_name}",
+      "operationId": "getApp",
+      "summary": "Get a Fly App",
+      "tags": [
+        "Apps"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/apps/{app_name}",
+      "operationId": "deleteApp",
+      "summary": "Delete a Fly App",
+      "tags": [
+        "Apps"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/v1/apps/{app_name}/machines",
+      "operationId": "listMachines",
+      "summary": "List machines in an app",
+      "tags": [
+        "Machines"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/apps/{app_name}/machines",
+      "operationId": "createMachine",
+      "summary": "Create a Fly Machine",
+      "tags": [
+        "Machines"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/v1/apps/{app_name}/machines/{machine_id}",
+      "operationId": "getMachine",
+      "summary": "Get a Fly Machine",
+      "tags": [
+        "Machines"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/apps/{app_name}/machines/{machine_id}",
+      "operationId": "updateMachine",
+      "summary": "Update a Fly Machine",
+      "tags": [
+        "Machines"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/apps/{app_name}/machines/{machine_id}",
+      "operationId": "deleteMachine",
+      "summary": "Delete a Fly Machine",
+      "tags": [
+        "Machines"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/apps/{app_name}/machines/{machine_id}/start",
+      "operationId": "startMachine",
+      "summary": "Start a Fly Machine",
+      "tags": [
+        "Machines"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/apps/{app_name}/machines/{machine_id}/stop",
+      "operationId": "stopMachine",
+      "summary": "Stop a Fly Machine",
+      "tags": [
+        "Machines"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/apps/{app_name}/machines/{machine_id}/suspend",
+      "operationId": "suspendMachine",
+      "summary": "Suspend a Fly Machine",
+      "tags": [
+        "Machines"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/v1/apps/{app_name}/machines/{machine_id}/wait",
+      "operationId": "waitForMachineState",
+      "summary": "Wait for a Machine to reach a state",
+      "tags": [
+        "Machines"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/apps/{app_name}/machines/{machine_id}/cordon",
+      "operationId": "cordonMachine",
+      "summary": "Cordon a Fly Machine",
+      "tags": [
+        "Machines"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/apps/{app_name}/machines/{machine_id}/uncordon",
+      "operationId": "uncordonMachine",
+      "summary": "Uncordon a Fly Machine",
+      "tags": [
+        "Machines"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/v1/apps/{app_name}/machines/{machine_id}/metadata/{key}",
+      "operationId": "getMachineMetadata",
+      "summary": "Get a Machine metadata value",
+      "tags": [
+        "Machines"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/apps/{app_name}/machines/{machine_id}/metadata/{key}",
+      "operationId": "setMachineMetadata",
+      "summary": "Set a Machine metadata value",
+      "tags": [
+        "Machines"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/apps/{app_name}/machines/{machine_id}/metadata/{key}",
+      "operationId": "deleteMachineMetadata",
+      "summary": "Delete a Machine metadata value",
+      "tags": [
+        "Machines"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/v1/apps/{app_name}/volumes",
+      "operationId": "listVolumes",
+      "summary": "List volumes in an app",
+      "tags": [
+        "Volumes"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/apps/{app_name}/volumes",
+      "operationId": "createVolume",
+      "summary": "Create a volume",
+      "tags": [
+        "Volumes"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/v1/apps/{app_name}/volumes/{volume_id}",
+      "operationId": "getVolume",
+      "summary": "Get a volume",
+      "tags": [
+        "Volumes"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/apps/{app_name}/volumes/{volume_id}",
+      "operationId": "updateVolume",
+      "summary": "Update a volume",
+      "tags": [
+        "Volumes"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/apps/{app_name}/volumes/{volume_id}",
+      "operationId": "deleteVolume",
+      "summary": "Delete a volume",
+      "tags": [
+        "Volumes"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/v1/apps/{app_name}/volumes/{volume_id}/extend",
+      "operationId": "extendVolume",
+      "summary": "Extend a volume",
+      "tags": [
+        "Volumes"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/v1/apps/{app_name}/volumes/{volume_id}/snapshots",
+      "operationId": "listVolumeSnapshots",
+      "summary": "List volume snapshots",
+      "tags": [
+        "Volumes"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/apps/{app_name}/volumes/{volume_id}/snapshots",
+      "operationId": "createVolumeSnapshot",
+      "summary": "Create a volume snapshot",
+      "tags": [
+        "Volumes"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/v1/tokens/oidc",
+      "operationId": "getOidcToken",
+      "summary": "Get an OIDC token",
+      "tags": [
+        "Tokens"
+      ]
+    }
+  ]
+}
