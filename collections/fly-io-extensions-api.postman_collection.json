@@ -1,0 +1,2235 @@
+{
+  "item": [
+    {
+      "id": "ff7938ff-9c59-4aa2-b641-372abf1c9cb9",
+      "name": "Extensions",
+      "description": {
+        "content": "Operations for provisioning, retrieving, and updating extension resource instances. Fly.io calls these endpoints on the provider's server when users interact with extensions via the flyctl CLI.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "44456dd2-75ef-438c-bb1e-856c4309d3f5",
+          "name": "Provision an extension resource",
+          "request": {
+            "name": "Provision an extension resource",
+            "description": {
+              "content": "Called by Fly.io when a user provisions an extension via the flyctl CLI. The provider must create the requested resource and respond with its unique ID and a config object containing the environment variables to inject into the user's Fly App. Provisioning must complete within 5 seconds; if the resource takes longer to create, the provider should respond immediately and use the webhook endpoint to notify Fly.io when the resource becomes available.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "extensions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "The base URL registered by the extension provider with Fly.io.",
+                  "type": "any",
+                  "value": "{{provider_base_url}}",
+                  "key": "provider_base_url"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"id\": \"<string>\",\n  \"organization_id\": \"<string>\",\n  \"organization_name\": \"<string>\",\n  \"user_email\": \"<email>\",\n  \"user_id\": \"<string>\",\n  \"user_role\": \"<string>\",\n  \"primary_region\": \"<string>\",\n  \"read_regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"ip_address\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3db4159e-a773-4677-a5f9-5185b9d559ab",
+              "name": "Extension provisioned successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "extensions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"id\": \"<string>\",\n  \"organization_id\": \"<string>\",\n  \"organization_name\": \"<string>\",\n  \"user_email\": \"<email>\",\n  \"user_id\": \"<string>\",\n  \"user_role\": \"<string>\",\n  \"primary_region\": \"iad\",\n  \"read_regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"ip_address\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"config\": {\n    \"key_0\": \"string\"\n  },\n  \"name\": \"string\",\n  \"fly_app_name\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1f9621c0-04b0-4dd3-b541-d6d2f099bf00",
+              "name": "Invalid request parameters or body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "extensions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"id\": \"<string>\",\n  \"organization_id\": \"<string>\",\n  \"organization_name\": \"<string>\",\n  \"user_email\": \"<email>\",\n  \"user_id\": \"<string>\",\n  \"user_role\": \"<string>\",\n  \"primary_region\": \"iad\",\n  \"read_regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"ip_address\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 2374\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "42dbba53-a909-4d2c-9a90-1b27cce25c53",
+              "name": "Missing or invalid authentication credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "extensions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"id\": \"<string>\",\n  \"organization_id\": \"<string>\",\n  \"organization_name\": \"<string>\",\n  \"user_email\": \"<email>\",\n  \"user_id\": \"<string>\",\n  \"user_role\": \"<string>\",\n  \"primary_region\": \"iad\",\n  \"read_regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"ip_address\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 2374\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a24139c0-f1b3-45f0-847c-21bd487ed68c",
+          "name": "Get extension resource details",
+          "request": {
+            "name": "Get extension resource details",
+            "description": {
+              "content": "Called by Fly.io to fetch the current status and usage information for a specific extension resource. This endpoint is used for polling when an extension is provisioned asynchronously and takes longer than 5 seconds to become ready.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "extensions",
+                ":extension_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "extension_id",
+                  "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                },
+                {
+                  "description": "The base URL registered by the extension provider with Fly.io.",
+                  "type": "any",
+                  "value": "{{provider_base_url}}",
+                  "key": "provider_base_url"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c4a5bc71-b0b2-4b15-a7f8-1b673b67d234",
+              "name": "Extension resource details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "extensions",
+                    ":extension_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "extension_id",
+                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"status\": \"error\",\n  \"config\": {\n    \"key_0\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "50ce376f-a763-44ae-9208-5962c2346a50",
+              "name": "Missing or invalid authentication credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "extensions",
+                    ":extension_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "extension_id",
+                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 2374\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "55b39b49-17df-44b4-b207-5187a8f003fa",
+              "name": "The requested extension resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "extensions",
+                    ":extension_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "extension_id",
+                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 2374\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2db00fe4-de1b-467d-9179-3db15617dc67",
+          "name": "Update an extension resource",
+          "request": {
+            "name": "Update an extension resource",
+            "description": {
+              "content": "Called by Fly.io when a user updates the configuration of an extension resource, such as changing the region or plan. The provider applies the updated configuration and returns the updated resource details.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "extensions",
+                ":extension_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "extension_id",
+                  "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                },
+                {
+                  "description": "The base URL registered by the extension provider with Fly.io.",
+                  "type": "any",
+                  "value": "{{provider_base_url}}",
+                  "key": "provider_base_url"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"id\": \"<string>\",\n  \"organization_id\": \"<string>\",\n  \"organization_name\": \"<string>\",\n  \"user_email\": \"<email>\",\n  \"user_id\": \"<string>\",\n  \"user_role\": \"<string>\",\n  \"primary_region\": \"<string>\",\n  \"read_regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"ip_address\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2b4ca2d9-9358-4c51-b86b-4ce5f0f2fb6d",
+              "name": "Extension updated successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "extensions",
+                    ":extension_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "extension_id",
+                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"id\": \"<string>\",\n  \"organization_id\": \"<string>\",\n  \"organization_name\": \"<string>\",\n  \"user_email\": \"<email>\",\n  \"user_id\": \"<string>\",\n  \"user_role\": \"<string>\",\n  \"primary_region\": \"iad\",\n  \"read_regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"ip_address\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"config\": {\n    \"key_0\": \"string\"\n  },\n  \"name\": \"string\",\n  \"fly_app_name\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "59ad71b9-f46e-41df-9cd9-4b471d07761e",
+              "name": "Invalid request parameters or body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "extensions",
+                    ":extension_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "extension_id",
+                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"id\": \"<string>\",\n  \"organization_id\": \"<string>\",\n  \"organization_name\": \"<string>\",\n  \"user_email\": \"<email>\",\n  \"user_id\": \"<string>\",\n  \"user_role\": \"<string>\",\n  \"primary_region\": \"iad\",\n  \"read_regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"ip_address\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 2374\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2f1ab8ed-c802-4fa5-a84c-365ff4cd7ffb",
+              "name": "Missing or invalid authentication credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "extensions",
+                    ":extension_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "extension_id",
+                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"id\": \"<string>\",\n  \"organization_id\": \"<string>\",\n  \"organization_name\": \"<string>\",\n  \"user_email\": \"<email>\",\n  \"user_id\": \"<string>\",\n  \"user_role\": \"<string>\",\n  \"primary_region\": \"iad\",\n  \"read_regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"ip_address\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 2374\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6ad65652-8726-4e9f-ae4d-72c69f530a5e",
+              "name": "The requested extension resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "extensions",
+                    ":extension_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "extension_id",
+                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"id\": \"<string>\",\n  \"organization_id\": \"<string>\",\n  \"organization_name\": \"<string>\",\n  \"user_email\": \"<email>\",\n  \"user_id\": \"<string>\",\n  \"user_role\": \"<string>\",\n  \"primary_region\": \"iad\",\n  \"read_regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"ip_address\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 2374\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4e74d486-4bd5-4403-845b-dc6298818d36",
+          "name": "Delete an extension resource",
+          "request": {
+            "name": "Delete an extension resource",
+            "description": {
+              "content": "Called by Fly.io when a user removes an extension from their app. The provider should clean up all resources associated with this extension instance and remove the user's environment variables.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "extensions",
+                ":extension_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "extension_id",
+                  "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                },
+                {
+                  "description": "The base URL registered by the extension provider with Fly.io.",
+                  "type": "any",
+                  "value": "{{provider_base_url}}",
+                  "key": "provider_base_url"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f78a6129-98b6-4016-9e84-1909ef0466d1",
+              "name": "Extension deleted successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "extensions",
+                    ":extension_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "extension_id",
+                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a539ed3d-6bb4-4430-82d3-33282cc12da8",
+              "name": "Missing or invalid authentication credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "extensions",
+                    ":extension_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "extension_id",
+                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 2374\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7ddf9229-df73-4a89-8949-5e91fcfbd357",
+              "name": "The requested extension resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "extensions",
+                    ":extension_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "extension_id",
+                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 2374\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "848dee5b-f9a6-43d5-9810-08bebc54cb52",
+      "name": "OAuth",
+      "description": {
+        "content": "Fly.io platform OAuth endpoints used during the single sign-on flow to authorize users and exchange tokens.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "bfd7c96e-d912-43c6-902b-573d2ddf7c25",
+          "name": "OAuth authorization endpoint",
+          "request": {
+            "name": "OAuth authorization endpoint",
+            "description": {
+              "content": "Fly.io platform OAuth authorization endpoint. Redirects the user to approve the OAuth application and returns an authorization code to the specified redirect URI. Used by extension providers during the SSO flow to verify Fly.io user identity.",
+              "type": "text/plain"
+            },
+            "url": {
+              "protocol": "https",
+              "path": [
+                "oauth",
+                "authorize"
+              ],
+              "host": [
+                "api",
+                "fly",
+                "io"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "client_id",
+                  "value": "<string>",
+                  "description": "(Required) OAuth client ID issued to the extension provider by Fly.io."
+                },
+                {
+                  "disabled": false,
+                  "key": "response_type",
+                  "value": "<string>",
+                  "description": "(Required) OAuth response type. Must be code for the authorization code flow."
+                },
+                {
+                  "disabled": false,
+                  "key": "redirect_uri",
+                  "value": "<uri>",
+                  "description": "(Required) Provider callback URL to redirect the user to after authorization."
+                },
+                {
+                  "disabled": false,
+                  "key": "scope",
+                  "value": "<string>",
+                  "description": "Space-separated list of requested OAuth scopes."
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f05f1797-0e18-4d56-8cf9-a5a83070987a",
+              "name": "Redirect to provider redirect_uri with authorization code.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "oauth",
+                    "authorize"
+                  ],
+                  "host": [
+                    "api",
+                    "fly",
+                    "io"
+                  ],
+                  "query": [
+                    {
+                      "key": "client_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "response_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "redirect_uri",
+                      "value": "<uri>"
+                    },
+                    {
+                      "key": "scope",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Found",
+              "code": 302,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1efd9393-6530-49f1-bd41-b77e62111ae0",
+          "name": "Exchange authorization code for access token",
+          "request": {
+            "name": "Exchange authorization code for access token",
+            "description": {
+              "content": "Fly.io platform OAuth token endpoint. Exchanges an authorization code obtained from the authorize endpoint for an access token that can be used to retrieve user and organization information via the token info endpoint.",
+              "type": "text/plain"
+            },
+            "url": {
+              "protocol": "https",
+              "path": [
+                "oauth",
+                "token"
+              ],
+              "host": [
+                "api",
+                "fly",
+                "io"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "disabled": false,
+                  "key": "grant_type",
+                  "value": "<string>",
+                  "description": "(Required) OAuth grant type. Must be authorization_code."
+                },
+                {
+                  "disabled": false,
+                  "key": "code",
+                  "value": "<string>",
+                  "description": "(Required) The authorization code received from the authorize endpoint."
+                },
+                {
+                  "disabled": false,
+                  "key": "redirect_uri",
+                  "value": "<string>",
+                  "description": "(Required) The same redirect URI used in the authorization request."
+                },
+                {
+                  "disabled": false,
+                  "key": "client_id",
+                  "value": "<string>",
+                  "description": "(Required) OAuth client ID issued to the provider."
+                },
+                {
+                  "disabled": false,
+                  "key": "client_secret",
+                  "value": "<string>",
+                  "description": "(Required) OAuth client secret issued to the provider."
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "560bdd43-e1b0-46d8-bc32-4c68fe42b38b",
+              "name": "Access token response.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "oauth",
+                    "token"
+                  ],
+                  "host": [
+                    "api",
+                    "fly",
+                    "io"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) OAuth grant type. Must be authorization_code.",
+                        "type": "text/plain"
+                      },
+                      "key": "grant_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) The authorization code received from the authorize endpoint.",
+                        "type": "text/plain"
+                      },
+                      "key": "code",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) The same redirect URI used in the authorization request.",
+                        "type": "text/plain"
+                      },
+                      "key": "redirect_uri",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) OAuth client ID issued to the provider.",
+                        "type": "text/plain"
+                      },
+                      "key": "client_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) OAuth client secret issued to the provider.",
+                        "type": "text/plain"
+                      },
+                      "key": "client_secret",
+                      "value": "<string>"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"access_token\": \"string\",\n  \"token_type\": \"string\",\n  \"expires_in\": 9361,\n  \"scope\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2a541dfe-c2da-40ec-84fa-40eb3291e075",
+              "name": "Invalid request parameters or body.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "oauth",
+                    "token"
+                  ],
+                  "host": [
+                    "api",
+                    "fly",
+                    "io"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) OAuth grant type. Must be authorization_code.",
+                        "type": "text/plain"
+                      },
+                      "key": "grant_type",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) The authorization code received from the authorize endpoint.",
+                        "type": "text/plain"
+                      },
+                      "key": "code",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) The same redirect URI used in the authorization request.",
+                        "type": "text/plain"
+                      },
+                      "key": "redirect_uri",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) OAuth client ID issued to the provider.",
+                        "type": "text/plain"
+                      },
+                      "key": "client_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) OAuth client secret issued to the provider.",
+                        "type": "text/plain"
+                      },
+                      "key": "client_secret",
+                      "value": "<string>"
+                    }
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 2374\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5340d43a-624e-4bba-9a64-acbeddbf128e",
+          "name": "Get OAuth token information",
+          "request": {
+            "name": "Get OAuth token information",
+            "description": {
+              "content": "Fly.io platform token introspection endpoint. Returns the user and organization details associated with a valid Fly.io OAuth access token. Providers use this endpoint to identify which Fly.io user and organization initiated an SSO session.",
+              "type": "text/plain"
+            },
+            "url": {
+              "protocol": "https",
+              "path": [
+                "oauth",
+                "token",
+                "info"
+              ],
+              "host": [
+                "api",
+                "fly",
+                "io"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "6307d76d-9bce-4a7b-ac58-eab6d51053bb",
+              "name": "Token information including user and organization details.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "oauth",
+                    "token",
+                    "info"
+                  ],
+                  "host": [
+                    "api",
+                    "fly",
+                    "io"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"user_id\": \"string\",\n  \"email\": \"string\",\n  \"organization_id\": \"string\",\n  \"organization_name\": \"string\",\n  \"role\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5fdb7350-1ac1-490a-9efe-c2f67c0c03fb",
+              "name": "Missing or invalid authentication credentials.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "oauth",
+                    "token",
+                    "info"
+                  ],
+                  "host": [
+                    "api",
+                    "fly",
+                    "io"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 2374\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "8ef5490c-a20a-4819-85e4-ec2d71d362ff",
+      "name": "SSO",
+      "description": {
+        "content": "Single sign-on operations allowing Fly.io users to access provider dashboards using their Fly.io credentials via OAuth.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "66ec3431-46dc-4d3c-89a4-98d4f34cbf90",
+          "name": "Initiate SSO for an extension",
+          "request": {
+            "name": "Initiate SSO for an extension",
+            "description": {
+              "content": "Called by Fly.io when a user runs a flyctl command to access the provider's dashboard (e.g., flyctl ext redis dashboard). The provider should verify the request signature and redirect the user to the appropriate dashboard page, using information from the Fly.io OAuth token to identify the user.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "extensions",
+                ":extension_id",
+                "sso"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "extension_id",
+                  "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                },
+                {
+                  "description": "The base URL registered by the extension provider with Fly.io.",
+                  "type": "any",
+                  "value": "{{provider_base_url}}",
+                  "key": "provider_base_url"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f69e56a6-ed04-4c34-826e-eef7a2e854f3",
+              "name": "Redirect to the provider's dashboard.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "extensions",
+                    ":extension_id",
+                    "sso"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "extension_id",
+                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Found",
+              "code": 302,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "URL of the provider dashboard for this extension resource.",
+                  "key": "Location",
+                  "value": "http://DZ.ejoIvKYAu66QxGcFHeVrPbsudBZ-zeKQnse8"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5880de3a-f47e-43e4-b2e9-dfefff1febb1",
+              "name": "Missing or invalid authentication credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "extensions",
+                    ":extension_id",
+                    "sso"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "extension_id",
+                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 2374\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bd2a7e09-f965-4ba5-833d-6b173b40e176",
+              "name": "The requested extension resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "extensions",
+                    ":extension_id",
+                    "sso"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "extension_id",
+                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 2374\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "db92e8fe-3ade-43d5-b3d6-3484fd95839e",
+      "name": "Webhooks",
+      "description": {
+        "content": "Webhook endpoints for bidirectional event delivery between Fly.io and extension providers. Both sides sign their webhook payloads using HMAC-SHA256 for verification.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "4c045277-3b7b-4241-a3cc-c22bdda322c6",
+          "name": "Send a webhook to Fly.io",
+          "request": {
+            "name": "Send a webhook to Fly.io",
+            "description": {
+              "content": "Called by extension providers to notify Fly.io of resource lifecycle changes. Use this endpoint to report when asynchronously provisioned resources become ready, when resources are updated, or when they are deleted. Requests must be signed with the HMAC-SHA256 webhook signing secret provided by Fly.io.",
+              "type": "text/plain"
+            },
+            "url": {
+              "protocol": "https",
+              "path": [
+                "api",
+                "hooks",
+                "extensions",
+                ":provider_name"
+              ],
+              "host": [
+                "api",
+                "fly",
+                "io"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "provider_name",
+                  "description": "(Required) The slug identifier of the extension provider registered with Fly.io."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-Fly-Signature"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"<string>\",\n  \"resource_id\": \"<string>\",\n  \"config\": {\n    \"key_0\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "26e66bee-7a94-456b-ba22-d30edad7a757",
+              "name": "Webhook received and processed.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "api",
+                    "hooks",
+                    "extensions",
+                    ":provider_name"
+                  ],
+                  "host": [
+                    "api",
+                    "fly",
+                    "io"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "provider_name",
+                      "description": "(Required) The slug identifier of the extension provider registered with Fly.io."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Fly-Signature",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"action\": \"<string>\",\n  \"resource_id\": \"<string>\",\n  \"config\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "9e66b73b-11f5-4ade-9eee-4f5bb6e7e5ca",
+              "name": "Missing or invalid authentication credentials.",
+              "originalRequest": {
+                "url": {
+                  "protocol": "https",
+                  "path": [
+                    "api",
+                    "hooks",
+                    "extensions",
+                    ":provider_name"
+                  ],
+                  "host": [
+                    "api",
+                    "fly",
+                    "io"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "provider_name",
+                      "description": "(Required) The slug identifier of the extension provider registered with Fly.io."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Fly-Signature",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"action\": \"<string>\",\n  \"resource_id\": \"<string>\",\n  \"config\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 2374\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4a94bf87-2b21-4781-8e6a-6a083cb940d9",
+          "name": "Receive a machine event webhook from Fly.io",
+          "request": {
+            "name": "Receive a machine event webhook from Fly.io",
+            "description": {
+              "content": "Fly.io sends CloudEvents-format webhook payloads to this provider endpoint when Machine or account events occur that are relevant to an extension. Providers should verify the HMAC-SHA256 signature using the webhook signing secret provided by Fly.io and process the event accordingly.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "extensions",
+                "events"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "The base URL registered by the extension provider with Fly.io.",
+                  "type": "any",
+                  "value": "{{provider_base_url}}",
+                  "key": "provider_base_url"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-Fly-Signature"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"specversion\": \"<string>\",\n  \"type\": \"<string>\",\n  \"source\": \"<string>\",\n  \"id\": \"<string>\",\n  \"time\": \"<dateTime>\",\n  \"datacontenttype\": \"<string>\",\n  \"data\": {\n    \"key_0\": true,\n    \"key_1\": 4534.602476323701\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7e24408c-4dd7-4291-81f6-59d8ae1c49eb",
+              "name": "Event received and processed.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "extensions",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Fly-Signature",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"specversion\": \"1.0\",\n  \"type\": \"<string>\",\n  \"source\": \"<string>\",\n  \"id\": \"<string>\",\n  \"time\": \"<dateTime>\",\n  \"datacontenttype\": \"application/json\",\n  \"data\": {\n    \"key_0\": 4080,\n    \"key_1\": false,\n    \"key_2\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "0b9393b1-392f-4327-9ead-748b985bef26",
+              "name": "Missing or invalid authentication credentials.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "extensions",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Fly-Signature",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"specversion\": \"1.0\",\n  \"type\": \"<string>\",\n  \"source\": \"<string>\",\n  \"id\": \"<string>\",\n  \"time\": \"<dateTime>\",\n  \"datacontenttype\": \"application/json\",\n  \"data\": {\n    \"key_0\": 4080,\n    \"key_1\": false,\n    \"key_2\": true\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 2374\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "description": {
+        "content": "The base URL registered by the extension provider with Fly.io.",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "api.example.com",
+      "key": "provider_base_url"
+    },
+    {
+      "type": "string",
+      "value": "https://{{provider_base_url}}",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "f5ad6b0b-1f51-4673-ac40-2132982263ae",
+    "name": "Fly.io Extensions API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with the Fly.io platform as extension providers. When a Fly.io user provisions an extension via the flyctl CLI, Fly.io forwards the provisioning request to the provider's API with details about the requesting organization and user, and the provider responds with environment variable configuration that is attached to the target application. Providers must also support single sign-on login flows using OAuth, daily billing detail endpoints, and webhook delivery for resource lifecycle events. Extensions currently available through this program include Sentry, Supabase, Tigris object storage, Upstash Redis and Vector, and others.\n\nContact Support:\n Name: Fly.io Extensions Program",
+      "type": "text/plain"
+    }
+  }
+}

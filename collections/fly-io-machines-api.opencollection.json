@@ -1,0 +1,731 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Fly.io Machines API",
+    "version": "v1"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Apps",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List apps in an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.machines.dev/v1/apps",
+            "params": [
+              {
+                "name": "org_slug",
+                "value": "",
+                "type": "query",
+                "description": "The organization slug to filter apps by."
+              }
+            ]
+          },
+          "docs": "Returns a list of all Fly Apps belonging to the specified organization. Results include the app name, machine count, volume count, and network configuration for each app."
+        },
+        {
+          "info": {
+            "name": "Create a Fly App",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.machines.dev/v1/apps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new Fly App under the specified organization. An app is a logical grouping of Fly Machines that share a name, network, and routing configuration. Machines must belong to an app before they can be created."
+        },
+        {
+          "info": {
+            "name": "Get a Fly App",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.machines.dev/v1/apps/:app_name",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              }
+            ]
+          },
+          "docs": "Retrieves details about a specific Fly App by its name, including the app status, organization, and associated network configuration."
+        },
+        {
+          "info": {
+            "name": "Delete a Fly App",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.machines.dev/v1/apps/:app_name",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query",
+                "description": "When true, all running Machines in the app are stopped before deletion proceeds. Without this flag, deletion fails if any Machines are running."
+              }
+            ]
+          },
+          "docs": "Permanently deletes a Fly App and all of its associated Machines, volumes, and IP addresses. This operation is irreversible. Use the force query parameter to stop all running Machines before deletion."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Machines",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List machines in an app",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.machines.dev/v1/apps/:app_name/machines",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              }
+            ]
+          },
+          "docs": "Returns a list of all Fly Machines belonging to the specified app, including their current state, region, configuration, and private IP addresses."
+        },
+        {
+          "info": {
+            "name": "Create a Fly Machine",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.machines.dev/v1/apps/:app_name/machines",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates and optionally starts a new Fly Machine within the specified app. The only required configuration field is the container image path. Additional configuration controls compute resources, networking, environment variables, health checks, mounts, and restart policies. Machines are private by default; expose them publicly by allocating an IP address and configuring services with port handlers."
+        },
+        {
+          "info": {
+            "name": "Get a Fly Machine",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.machines.dev/v1/apps/:app_name/machines/:machine_id",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "machine_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Machine."
+              }
+            ]
+          },
+          "docs": "Retrieves the current state and full configuration of a specific Fly Machine by its ID, including its instance ID, private IP, region, and applied configuration object."
+        },
+        {
+          "info": {
+            "name": "Update a Fly Machine",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.machines.dev/v1/apps/:app_name/machines/:machine_id",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "machine_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Machine."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the configuration of an existing Fly Machine. The Machine is updated in place and a new instance_id is assigned upon successful update. The same configuration schema used for creation applies here."
+        },
+        {
+          "info": {
+            "name": "Delete a Fly Machine",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.machines.dev/v1/apps/:app_name/machines/:machine_id",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "machine_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Machine."
+              }
+            ]
+          },
+          "docs": "Permanently destroys a Fly Machine. The Machine must be in a stopped or suspended state before it can be deleted. Once deleted, the Machine and its ephemeral disk are gone; only attached volumes persist."
+        },
+        {
+          "info": {
+            "name": "Start a Fly Machine",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.machines.dev/v1/apps/:app_name/machines/:machine_id/start",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "machine_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Machine."
+              }
+            ]
+          },
+          "docs": "Starts a stopped or suspended Fly Machine. The Machine boots from its current configuration and transitions to the started state. This endpoint returns immediately; use the wait endpoint to block until the Machine reaches the started state."
+        },
+        {
+          "info": {
+            "name": "Stop a Fly Machine",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.machines.dev/v1/apps/:app_name/machines/:machine_id/stop",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "machine_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Machine."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Stops a running Fly Machine by sending a signal to its init process. The Machine transitions to the stopped state. By default, SIGINT is sent; use the signal and timeout fields to customize graceful shutdown behavior."
+        },
+        {
+          "info": {
+            "name": "Suspend a Fly Machine",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.machines.dev/v1/apps/:app_name/machines/:machine_id/suspend",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "machine_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Machine."
+              }
+            ]
+          },
+          "docs": "Suspends a running Fly Machine by taking a memory snapshot and halting execution. Suspended Machines can be resumed quickly because they restore from the snapshot rather than booting from scratch. This enables very fast wake times for workloads that are idle."
+        },
+        {
+          "info": {
+            "name": "Wait for a Machine to reach a state",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.machines.dev/v1/apps/:app_name/machines/:machine_id/wait",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "machine_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Machine."
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "The target Machine state to wait for. Valid values are started, stopped, suspended, and destroyed."
+              },
+              {
+                "name": "timeout",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of seconds to wait for the state transition. Defaults to 60 seconds."
+              },
+              {
+                "name": "instance_id",
+                "value": "",
+                "type": "query",
+                "description": "Wait for a specific Machine instance version to reach the target state. Use the instance_id from a Machine update response to confirm that particular deployment is live."
+              }
+            ]
+          },
+          "docs": "Blocks until the specified Fly Machine reaches the desired state, or until the timeout elapses. Use this endpoint after starting, stopping, or suspending a Machine to confirm the state transition has completed before proceeding."
+        },
+        {
+          "info": {
+            "name": "Cordon a Fly Machine",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.machines.dev/v1/apps/:app_name/machines/:machine_id/cordon",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "machine_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Machine."
+              }
+            ]
+          },
+          "docs": "Marks a Fly Machine as cordoned, which removes it from load balancer rotation so it stops receiving new traffic. Existing connections are not interrupted. Use this endpoint for blue-green deployments or when draining a Machine before maintenance."
+        },
+        {
+          "info": {
+            "name": "Uncordon a Fly Machine",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.machines.dev/v1/apps/:app_name/machines/:machine_id/uncordon",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "machine_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Machine."
+              }
+            ]
+          },
+          "docs": "Restores a cordoned Fly Machine to the load balancer rotation, allowing it to receive new traffic again. Use this endpoint after maintenance or to complete a blue-green deployment cutover."
+        },
+        {
+          "info": {
+            "name": "Get a Machine metadata value",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.machines.dev/v1/apps/:app_name/machines/:machine_id/metadata/:key",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "machine_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Machine."
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "The metadata key to get, set, or delete."
+              }
+            ]
+          },
+          "docs": "Retrieves the value of a specific metadata key from a Fly Machine. Machine metadata consists of arbitrary key-value string pairs that can be used for internal routing, cluster membership, or application configuration."
+        },
+        {
+          "info": {
+            "name": "Set a Machine metadata value",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.machines.dev/v1/apps/:app_name/machines/:machine_id/metadata/:key",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "machine_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Machine."
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "The metadata key to get, set, or delete."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates or updates a metadata key-value pair on a Fly Machine. Metadata can be used for service discovery, internal routing with fly-prefer-region headers, and cluster configuration."
+        },
+        {
+          "info": {
+            "name": "Delete a Machine metadata value",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.machines.dev/v1/apps/:app_name/machines/:machine_id/metadata/:key",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "machine_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Machine."
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "The metadata key to get, set, or delete."
+              }
+            ]
+          },
+          "docs": "Removes a specific metadata key-value pair from a Fly Machine. Once deleted, the key no longer appears in the Machine's metadata and cannot be used for routing or configuration until it is re-added."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Volumes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List volumes in an app",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.machines.dev/v1/apps/:app_name/volumes",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              }
+            ]
+          },
+          "docs": "Returns a list of all Fly Volumes belonging to the specified app, including their size, region, encryption status, attachment state, and snapshot retention settings."
+        },
+        {
+          "info": {
+            "name": "Create a volume",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.machines.dev/v1/apps/:app_name/volumes",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new Fly Volume in the specified app for use as persistent storage attached to a Fly Machine. Volumes are region-specific and are encrypted by default. Specify unique_zones_only to distribute redundant volumes across separate physical hardware for higher availability."
+        },
+        {
+          "info": {
+            "name": "Get a volume",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.machines.dev/v1/apps/:app_name/volumes/:volume_id",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "volume_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Volume."
+              }
+            ]
+          },
+          "docs": "Retrieves the current state and configuration of a specific Fly Volume by its ID, including size, region, filesystem type, encryption status, and attachment information."
+        },
+        {
+          "info": {
+            "name": "Update a volume",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.machines.dev/v1/apps/:app_name/volumes/:volume_id",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "volume_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Volume."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the configuration of an existing Fly Volume, such as adjusting the snapshot retention period. Volume size can only be increased via the extend endpoint; it cannot be reduced."
+        },
+        {
+          "info": {
+            "name": "Delete a volume",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.machines.dev/v1/apps/:app_name/volumes/:volume_id",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "volume_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Volume."
+              }
+            ]
+          },
+          "docs": "Permanently deletes a Fly Volume. The volume must not be currently attached to a running Machine. Deleting a volume also removes all snapshots associated with it. This operation is irreversible."
+        },
+        {
+          "info": {
+            "name": "Extend a volume",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.machines.dev/v1/apps/:app_name/volumes/:volume_id/extend",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "volume_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Volume."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Increases the size of a Fly Volume without downtime or data loss. Volume size can only be increased; shrinking a volume is not supported. The Machine attached to the volume may need to be restarted for the operating system to recognize the additional space."
+        },
+        {
+          "info": {
+            "name": "List volume snapshots",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.machines.dev/v1/apps/:app_name/volumes/:volume_id/snapshots",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "volume_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Volume."
+              }
+            ]
+          },
+          "docs": "Returns a list of all snapshots for a specific Fly Volume. Snapshots are created automatically on a daily schedule and can also be created on-demand. They are retained according to the volume's snapshot retention setting."
+        },
+        {
+          "info": {
+            "name": "Create a volume snapshot",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.machines.dev/v1/apps/:app_name/volumes/:volume_id/snapshots",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "volume_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Volume."
+              }
+            ]
+          },
+          "docs": "Creates an on-demand snapshot of a Fly Volume. Snapshots capture the current state of the volume and can be used to restore data or create new volumes from a known-good state."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Tokens",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get an OIDC token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.machines.dev/v1/tokens/oidc",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Requests an OpenID Connect (OIDC) token for the calling Fly Machine. The token can be used to authenticate to third-party services that support OIDC workload identity, such as AWS, GCP, or Vault. The optional aud field controls the audience claim embedded in the JWT."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
