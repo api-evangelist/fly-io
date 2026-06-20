@@ -9,7 +9,7 @@ apis:
   - Infrastructure
   - Platform
   - Virtual Machines
-  image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
   baseURL: https://api.machines.dev
   humanURL: https://fly.io/docs/machines/api/
   properties:
@@ -33,7 +33,7 @@ apis:
   - Infrastructure
   - Networking
   - Platform
-  image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
   baseURL: https://api.fly.io/graphql
   humanURL: https://api.fly.io/graphql
   properties:
@@ -55,7 +55,7 @@ apis:
   - Partner
   - Platform
   - Provisioning
-  image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
   baseURL: https://api.example.com
   humanURL: https://fly.io/docs/reference/extensions_api/
   properties:
