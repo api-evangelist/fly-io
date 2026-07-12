@@ -73,6 +73,14 @@ apis:
     forwards the provisioning request to the provider's API with details about the requesting organization, and the
     provider responds with environment variable configuration that is attached to the target application.
 common:
+- type: TrustCenter
+  url: security/fly-io-trust-center.yml
+- type: VulnerabilityDisclosure
+  url: security/fly-io-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/fly-io-domain-security.yml
+- type: Authentication
+  url: authentication/fly-io-authentication.yml
 - type: GitHubOrganization
   url: https://github.com/superfly
 - type: LinkedIn
@@ -83,6 +91,8 @@ common:
   url: json-schema/fly-io-volume-schema.json
 - type: JSONLD
   url: json-ld/fly-io-context.jsonld
+- url: https://fly.io/blog/feed.xml
+  type: Blog
 - type: Features
   data:
   - 'Shared CPU machines: shared-cpu-1x to 8x with 256MB-16GB RAM'

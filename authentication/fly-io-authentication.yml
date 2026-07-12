@@ -1,0 +1,26 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/fly-io-extensions-api-openapi.yml, openapi/fly-io-machines-api-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: flySharedSecret
+  type: http
+  scheme: bearer
+  description: Shared secret provided by Fly.io to the extension provider. Fly.io includes this
+    secret in an Authorization Bearer header on all requests to the provider's API for verification.
+  sources:
+  - openapi/fly-io-extensions-api-openapi.yml
+  - openapi/fly-io-machines-api-openapi.yml
+- name: webhookHmac
+  type: apiKey
+  in: header
+  parameter: X-Fly-Signature
+  description: HMAC-SHA256 signature of the raw request body, computed using the webhook signing
+    secret. Recipients must verify this signature before processing the payload.
+  sources:
+  - openapi/fly-io-extensions-api-openapi.yml

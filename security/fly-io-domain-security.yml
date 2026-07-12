@@ -1,0 +1,31 @@
+generated: '2026-07-11'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: fly.io
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct  2 11:21:26 2026 GMT
+  hsts: false
+- host: api.machines.dev
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Aug 25 23:27:35 2026 GMT
+  hsts: null
+- host: api.fly.io
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Aug 11 11:20:50 2026 GMT
+  hsts: null
+domains:
+- domain: fly.io
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: quarantine
+- domain: machines.dev
+  dnssec: false
+  caa: []
+  spf: false
+  dmarc: false
