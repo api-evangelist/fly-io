@@ -1,0 +1,214 @@
+openapi: 3.1.0
+info:
+  title: Fly.io Extensions Apps OAuth API
+  description: The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with the Fly.io platform as extension providers. When a Fly.io user provisions an extension via the flyctl CLI, Fly.io forwards the provisioning request to the provider's API with details about the requesting organization and user, and the provider responds with environment variable configuration that is attached to the target application. Providers must also support single sign-on login flows using OAuth, daily billing detail endpoints, and webhook delivery for resource lifecycle events. Extensions currently available through this program include Sentry, Supabase, Tigris object storage, Upstash Redis and Vector, and others.
+  version: '1.0'
+  contact:
+    name: Fly.io Extensions Program
+    url: https://fly.io/docs/reference/extensions_api/
+  termsOfService: https://fly.io/legal/terms-of-service/
+servers:
+- url: https://{provider_base_url}
+  description: Provider-hosted API server. Each extension provider hosts their own implementation of this API at a URL they register with Fly.io.
+  variables:
+    provider_base_url:
+      default: api.example.com
+      description: The base URL registered by the extension provider with Fly.io.
+- url: https://api.fly.io
+  description: Fly.io platform server for OAuth and webhook endpoints.
+security:
+- flySharedSecret: []
+tags:
+- name: OAuth
+  description: Fly.io platform OAuth endpoints used during the single sign-on flow to authorize users and exchange tokens.
+paths:
+  /oauth/authorize:
+    get:
+      operationId: oauthAuthorize
+      summary: OAuth authorization endpoint
+      description: Fly.io platform OAuth authorization endpoint. Redirects the user to approve the OAuth application and returns an authorization code to the specified redirect URI. Used by extension providers during the SSO flow to verify Fly.io user identity.
+      tags:
+      - OAuth
+      servers:
+      - url: https://api.fly.io
+        description: Fly.io platform OAuth server.
+      security: []
+      parameters:
+      - name: client_id
+        in: query
+        description: OAuth client ID issued to the extension provider by Fly.io.
+        required: true
+        schema:
+          type: string
+      - name: response_type
+        in: query
+        description: OAuth response type. Must be code for the authorization code flow.
+        required: true
+        schema:
+          type: string
+          enum:
+          - code
+      - name: redirect_uri
+        in: query
+        description: Provider callback URL to redirect the user to after authorization.
+        required: true
+        schema:
+          type: string
+          format: uri
+      - name: scope
+        in: query
+        description: Space-separated list of requested OAuth scopes.
+        required: false
+        schema:
+          type: string
+      responses:
+        '302':
+          description: Redirect to provider redirect_uri with authorization code.
+  /oauth/token:
+    post:
+      operationId: oauthToken
+      summary: Exchange authorization code for access token
+      description: Fly.io platform OAuth token endpoint. Exchanges an authorization code obtained from the authorize endpoint for an access token that can be used to retrieve user and organization information via the token info endpoint.
+      tags:
+      - OAuth
+      servers:
+      - url: https://api.fly.io
+        description: Fly.io platform OAuth server.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - grant_type
+              - code
+              - redirect_uri
+              - client_id
+              - client_secret
+              properties:
+                grant_type:
+                  type: string
+                  enum:
+                  - authorization_code
+                  description: OAuth grant type. Must be authorization_code.
+                code:
+                  type: string
+                  description: The authorization code received from the authorize endpoint.
+                redirect_uri:
+                  type: string
+                  description: The same redirect URI used in the authorization request.
+                client_id:
+                  type: string
+                  description: OAuth client ID issued to the provider.
+                client_secret:
+                  type: string
+                  description: OAuth client secret issued to the provider.
+      responses:
+        '200':
+          description: Access token response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthTokenResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /oauth/token/info:
+    get:
+      operationId: getTokenInfo
+      summary: Get OAuth token information
+      description: Fly.io platform token introspection endpoint. Returns the user and organization details associated with a valid Fly.io OAuth access token. Providers use this endpoint to identify which Fly.io user and organization initiated an SSO session.
+      tags:
+      - OAuth
+      servers:
+      - url: https://api.fly.io
+        description: Fly.io platform OAuth server.
+      security:
+      - oauthBearerAuth: []
+      responses:
+        '200':
+          description: Token information including user and organization details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenInfo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    OAuthTokenResponse:
+      type: object
+      description: OAuth access token response from the Fly.io token endpoint.
+      properties:
+        access_token:
+          type: string
+          description: The OAuth access token to use for authenticated API calls.
+        token_type:
+          type: string
+          description: Token type, always Bearer.
+        expires_in:
+          type: integer
+          description: Token validity duration in seconds.
+        scope:
+          type: string
+          description: Space-separated list of granted OAuth scopes.
+    TokenInfo:
+      type: object
+      description: User and organization information for a Fly.io OAuth token.
+      properties:
+        user_id:
+          type: string
+          description: The Fly.io user ID associated with this token.
+        email:
+          type: string
+          description: The obfuscated email alias of the authenticated user.
+        organization_id:
+          type: string
+          description: The Fly.io organization ID the user is acting within.
+        organization_name:
+          type: string
+          description: The display name of the organization.
+        role:
+          type: string
+          description: The user's role within the organization.
+    ErrorResponse:
+      type: object
+      description: A standard error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        status:
+          type: integer
+          description: HTTP status code.
+  responses:
+    Unauthorized:
+      description: Missing or invalid authentication credentials.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadRequest:
+      description: Invalid request parameters or body.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  securitySchemes:
+    flySharedSecret:
+      type: http
+      scheme: bearer
+      description: Shared secret provided by Fly.io to the extension provider. Fly.io includes this secret in an Authorization Bearer header on all requests to the provider's API for verification.
+    oauthBearerAuth:
+      type: http
+      scheme: bearer
+      description: Fly.io OAuth access token obtained from the token exchange endpoint.
+    webhookHmac:
+      type: apiKey
+      in: header
+      name: X-Fly-Signature
+      description: HMAC-SHA256 signature of the raw request body, computed using the webhook signing secret. Recipients must verify this signature before processing the payload.
+externalDocs:
+  description: Fly.io Extensions API Documentation
+  url: https://fly.io/docs/reference/extensions_api/

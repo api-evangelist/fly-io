@@ -1,0 +1,96 @@
+openapi: 3.1.0
+info:
+  title: Fly.io Extensions Apps SSO API
+  description: The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with the Fly.io platform as extension providers. When a Fly.io user provisions an extension via the flyctl CLI, Fly.io forwards the provisioning request to the provider's API with details about the requesting organization and user, and the provider responds with environment variable configuration that is attached to the target application. Providers must also support single sign-on login flows using OAuth, daily billing detail endpoints, and webhook delivery for resource lifecycle events. Extensions currently available through this program include Sentry, Supabase, Tigris object storage, Upstash Redis and Vector, and others.
+  version: '1.0'
+  contact:
+    name: Fly.io Extensions Program
+    url: https://fly.io/docs/reference/extensions_api/
+  termsOfService: https://fly.io/legal/terms-of-service/
+servers:
+- url: https://{provider_base_url}
+  description: Provider-hosted API server. Each extension provider hosts their own implementation of this API at a URL they register with Fly.io.
+  variables:
+    provider_base_url:
+      default: api.example.com
+      description: The base URL registered by the extension provider with Fly.io.
+- url: https://api.fly.io
+  description: Fly.io platform server for OAuth and webhook endpoints.
+security:
+- flySharedSecret: []
+tags:
+- name: SSO
+  description: Single sign-on operations allowing Fly.io users to access provider dashboards using their Fly.io credentials via OAuth.
+paths:
+  /extensions/{extension_id}/sso:
+    get:
+      operationId: initiateSso
+      summary: Initiate SSO for an extension
+      description: Called by Fly.io when a user runs a flyctl command to access the provider's dashboard (e.g., flyctl ext redis dashboard). The provider should verify the request signature and redirect the user to the appropriate dashboard page, using information from the Fly.io OAuth token to identify the user.
+      tags:
+      - SSO
+      parameters:
+      - $ref: '#/components/parameters/extensionId'
+      responses:
+        '302':
+          description: Redirect to the provider's dashboard.
+          headers:
+            Location:
+              description: URL of the provider dashboard for this extension resource.
+              schema:
+                type: string
+                format: uri
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  parameters:
+    extensionId:
+      name: extension_id
+      in: path
+      description: The unique identifier of the extension resource, as returned by the provider.
+      required: true
+      schema:
+        type: string
+  responses:
+    NotFound:
+      description: The requested extension resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Missing or invalid authentication credentials.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    ErrorResponse:
+      type: object
+      description: A standard error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        status:
+          type: integer
+          description: HTTP status code.
+  securitySchemes:
+    flySharedSecret:
+      type: http
+      scheme: bearer
+      description: Shared secret provided by Fly.io to the extension provider. Fly.io includes this secret in an Authorization Bearer header on all requests to the provider's API for verification.
+    oauthBearerAuth:
+      type: http
+      scheme: bearer
+      description: Fly.io OAuth access token obtained from the token exchange endpoint.
+    webhookHmac:
+      type: apiKey
+      in: header
+      name: X-Fly-Signature
+      description: HMAC-SHA256 signature of the raw request body, computed using the webhook signing secret. Recipients must verify this signature before processing the payload.
+externalDocs:
+  description: Fly.io Extensions API Documentation
+  url: https://fly.io/docs/reference/extensions_api/

@@ -1,0 +1,231 @@
+openapi: 3.1.0
+info:
+  title: Fly.io Extensions Apps API
+  description: The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with the Fly.io platform as extension providers. When a Fly.io user provisions an extension via the flyctl CLI, Fly.io forwards the provisioning request to the provider's API with details about the requesting organization and user, and the provider responds with environment variable configuration that is attached to the target application. Providers must also support single sign-on login flows using OAuth, daily billing detail endpoints, and webhook delivery for resource lifecycle events. Extensions currently available through this program include Sentry, Supabase, Tigris object storage, Upstash Redis and Vector, and others.
+  version: '1.0'
+  contact:
+    name: Fly.io Extensions Program
+    url: https://fly.io/docs/reference/extensions_api/
+  termsOfService: https://fly.io/legal/terms-of-service/
+servers:
+- url: https://{provider_base_url}
+  description: Provider-hosted API server. Each extension provider hosts their own implementation of this API at a URL they register with Fly.io.
+  variables:
+    provider_base_url:
+      default: api.example.com
+      description: The base URL registered by the extension provider with Fly.io.
+- url: https://api.fly.io
+  description: Fly.io platform server for OAuth and webhook endpoints.
+security:
+- flySharedSecret: []
+tags:
+- name: Apps
+  description: Operations for creating, listing, and deleting Fly Apps. Every Fly Machine belongs to a Fly App, which groups related Machines together.
+paths:
+  /v1/apps:
+    get:
+      operationId: listApps
+      summary: List apps in an organization
+      description: Returns a list of all Fly Apps belonging to the specified organization. Results include the app name, machine count, volume count, and network configuration for each app.
+      tags:
+      - Apps
+      parameters:
+      - $ref: '#/components/parameters/orgSlug'
+      responses:
+        '200':
+          description: A list of apps in the organization.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_apps:
+                    type: integer
+                    description: Total number of apps in the organization.
+                  apps:
+                    type: array
+                    description: Array of app objects.
+                    items:
+                      $ref: '#/components/schemas/App'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createApp
+      summary: Create a Fly App
+      description: Creates a new Fly App under the specified organization. An app is a logical grouping of Fly Machines that share a name, network, and routing configuration. Machines must belong to an app before they can be created.
+      tags:
+      - Apps
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAppRequest'
+      responses:
+        '201':
+          description: App created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /v1/apps/{app_name}:
+    get:
+      operationId: getApp
+      summary: Get a Fly App
+      description: Retrieves details about a specific Fly App by its name, including the app status, organization, and associated network configuration.
+      tags:
+      - Apps
+      parameters:
+      - $ref: '#/components/parameters/appName'
+      responses:
+        '200':
+          description: App details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteApp
+      summary: Delete a Fly App
+      description: Permanently deletes a Fly App and all of its associated Machines, volumes, and IP addresses. This operation is irreversible. Use the force query parameter to stop all running Machines before deletion.
+      tags:
+      - Apps
+      parameters:
+      - $ref: '#/components/parameters/appName'
+      - name: force
+        in: query
+        description: When true, all running Machines in the app are stopped before deletion proceeds. Without this flag, deletion fails if any Machines are running.
+        required: false
+        schema:
+          type: boolean
+      responses:
+        '202':
+          description: App deletion accepted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  parameters:
+    appName:
+      name: app_name
+      in: path
+      description: The name of the Fly App.
+      required: true
+      schema:
+        type: string
+    orgSlug:
+      name: org_slug
+      in: query
+      description: The organization slug to filter apps by.
+      required: true
+      schema:
+        type: string
+  schemas:
+    Organization:
+      type: object
+      description: A Fly.io organization that owns apps and resources.
+      properties:
+        name:
+          type: string
+          description: The organization name.
+        slug:
+          type: string
+          description: The organization's URL-safe identifier slug.
+    ErrorResponse:
+      type: object
+      description: A standard error response returned by the API on failure.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message describing what went wrong.
+        status:
+          type: integer
+          description: HTTP status code.
+    CreateAppRequest:
+      type: object
+      description: Request body for creating a new Fly App.
+      required:
+      - app_name
+      - org_slug
+      properties:
+        app_name:
+          type: string
+          description: The unique name for the new app.
+        org_slug:
+          type: string
+          description: The slug of the organization that will own this app.
+        enable_subdomains:
+          type: boolean
+          description: When true, enables wildcard subdomain routing for this app.
+        network:
+          type: string
+          description: Name of the private WireGuard network to attach this app to. If omitted, the organization's default network is used.
+    App:
+      type: object
+      description: A Fly App, which is a logical grouping of related Fly Machines.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the app.
+        name:
+          type: string
+          description: The app name, used in routing and DNS.
+        status:
+          type: string
+          description: Current status of the app (e.g., running, suspended).
+        machine_count:
+          type: integer
+          description: Number of Machines currently in the app.
+        volume_count:
+          type: integer
+          description: Number of Volumes currently in the app.
+        network:
+          type: string
+          description: The private network name this app is attached to.
+        organization:
+          $ref: '#/components/schemas/Organization'
+  responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Missing or invalid API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadRequest:
+      description: Bad request due to invalid parameters or request body.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  securitySchemes:
+    flySharedSecret:
+      type: http
+      scheme: bearer
+      description: Shared secret provided by Fly.io to the extension provider. Fly.io includes this secret in an Authorization Bearer header on all requests to the provider's API for verification.
+    oauthBearerAuth:
+      type: http
+      scheme: bearer
+      description: Fly.io OAuth access token obtained from the token exchange endpoint.
+    webhookHmac:
+      type: apiKey
+      in: header
+      name: X-Fly-Signature
+      description: HMAC-SHA256 signature of the raw request body, computed using the webhook signing secret. Recipients must verify this signature before processing the payload.
+externalDocs:
+  description: Fly.io Extensions API Documentation
+  url: https://fly.io/docs/reference/extensions_api/

@@ -1,0 +1,88 @@
+openapi: 3.1.0
+info:
+  title: Fly.io Extensions Apps Tokens API
+  description: The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with the Fly.io platform as extension providers. When a Fly.io user provisions an extension via the flyctl CLI, Fly.io forwards the provisioning request to the provider's API with details about the requesting organization and user, and the provider responds with environment variable configuration that is attached to the target application. Providers must also support single sign-on login flows using OAuth, daily billing detail endpoints, and webhook delivery for resource lifecycle events. Extensions currently available through this program include Sentry, Supabase, Tigris object storage, Upstash Redis and Vector, and others.
+  version: '1.0'
+  contact:
+    name: Fly.io Extensions Program
+    url: https://fly.io/docs/reference/extensions_api/
+  termsOfService: https://fly.io/legal/terms-of-service/
+servers:
+- url: https://{provider_base_url}
+  description: Provider-hosted API server. Each extension provider hosts their own implementation of this API at a URL they register with Fly.io.
+  variables:
+    provider_base_url:
+      default: api.example.com
+      description: The base URL registered by the extension provider with Fly.io.
+- url: https://api.fly.io
+  description: Fly.io platform server for OAuth and webhook endpoints.
+security:
+- flySharedSecret: []
+tags:
+- name: Tokens
+  description: Operations for requesting OpenID Connect (OIDC) tokens from third-party services, enabling Fly Machines to authenticate to external systems using workload identity.
+paths:
+  /v1/tokens/oidc:
+    post:
+      operationId: getOidcToken
+      summary: Get an OIDC token
+      description: Requests an OpenID Connect (OIDC) token for the calling Fly Machine. The token can be used to authenticate to third-party services that support OIDC workload identity, such as AWS, GCP, or Vault. The optional aud field controls the audience claim embedded in the JWT.
+      tags:
+      - Tokens
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                aud:
+                  type: string
+                  description: The audience claim for the OIDC token. Specifies the recipient service that will accept this token, such as https://fly.io/my-org-slug.
+                  example: https://fly.io/my-org-slug
+      responses:
+        '200':
+          description: OIDC token as a raw JWT string.
+          content:
+            application/json:
+              schema:
+                type: string
+                description: A signed JWT OIDC token.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  responses:
+    Unauthorized:
+      description: Missing or invalid API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    ErrorResponse:
+      type: object
+      description: A standard error response returned by the API on failure.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message describing what went wrong.
+        status:
+          type: integer
+          description: HTTP status code.
+  securitySchemes:
+    flySharedSecret:
+      type: http
+      scheme: bearer
+      description: Shared secret provided by Fly.io to the extension provider. Fly.io includes this secret in an Authorization Bearer header on all requests to the provider's API for verification.
+    oauthBearerAuth:
+      type: http
+      scheme: bearer
+      description: Fly.io OAuth access token obtained from the token exchange endpoint.
+    webhookHmac:
+      type: apiKey
+      in: header
+      name: X-Fly-Signature
+      description: HMAC-SHA256 signature of the raw request body, computed using the webhook signing secret. Recipients must verify this signature before processing the payload.
+externalDocs:
+  description: Fly.io Extensions API Documentation
+  url: https://fly.io/docs/reference/extensions_api/

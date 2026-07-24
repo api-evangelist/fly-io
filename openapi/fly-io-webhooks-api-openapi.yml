@@ -1,0 +1,166 @@
+openapi: 3.1.0
+info:
+  title: Fly.io Extensions Apps Webhooks API
+  description: The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with the Fly.io platform as extension providers. When a Fly.io user provisions an extension via the flyctl CLI, Fly.io forwards the provisioning request to the provider's API with details about the requesting organization and user, and the provider responds with environment variable configuration that is attached to the target application. Providers must also support single sign-on login flows using OAuth, daily billing detail endpoints, and webhook delivery for resource lifecycle events. Extensions currently available through this program include Sentry, Supabase, Tigris object storage, Upstash Redis and Vector, and others.
+  version: '1.0'
+  contact:
+    name: Fly.io Extensions Program
+    url: https://fly.io/docs/reference/extensions_api/
+  termsOfService: https://fly.io/legal/terms-of-service/
+servers:
+- url: https://{provider_base_url}
+  description: Provider-hosted API server. Each extension provider hosts their own implementation of this API at a URL they register with Fly.io.
+  variables:
+    provider_base_url:
+      default: api.example.com
+      description: The base URL registered by the extension provider with Fly.io.
+- url: https://api.fly.io
+  description: Fly.io platform server for OAuth and webhook endpoints.
+security:
+- flySharedSecret: []
+tags:
+- name: Webhooks
+  description: Webhook endpoints for bidirectional event delivery between Fly.io and extension providers. Both sides sign their webhook payloads using HMAC-SHA256 for verification.
+paths:
+  /api/hooks/extensions/{provider_name}:
+    post:
+      operationId: sendExtensionWebhook
+      summary: Send a webhook to Fly.io
+      description: Called by extension providers to notify Fly.io of resource lifecycle changes. Use this endpoint to report when asynchronously provisioned resources become ready, when resources are updated, or when they are deleted. Requests must be signed with the HMAC-SHA256 webhook signing secret provided by Fly.io.
+      tags:
+      - Webhooks
+      servers:
+      - url: https://api.fly.io
+        description: Fly.io platform webhook receiver.
+      security:
+      - webhookHmac: []
+      parameters:
+      - name: provider_name
+        in: path
+        description: The slug identifier of the extension provider registered with Fly.io.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExtensionWebhookPayload'
+      responses:
+        '200':
+          description: Webhook received and processed.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /extensions/events:
+    post:
+      operationId: receiveExtensionEvent
+      summary: Receive a machine event webhook from Fly.io
+      description: Fly.io sends CloudEvents-format webhook payloads to this provider endpoint when Machine or account events occur that are relevant to an extension. Providers should verify the HMAC-SHA256 signature using the webhook signing secret provided by Fly.io and process the event accordingly.
+      tags:
+      - Webhooks
+      security:
+      - webhookHmac: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloudEventPayload'
+      responses:
+        '200':
+          description: Event received and processed.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    CloudEventPayload:
+      type: object
+      description: A CloudEvents-format payload sent by Fly.io to the extension provider for machine and account lifecycle events.
+      required:
+      - specversion
+      - type
+      - source
+      - id
+      properties:
+        specversion:
+          type: string
+          description: CloudEvents specification version.
+          example: '1.0'
+        type:
+          type: string
+          description: Event type identifier (e.g., io.fly.machine.started).
+        source:
+          type: string
+          description: URI identifying the Fly.io system that generated the event.
+        id:
+          type: string
+          description: Unique identifier for this event instance.
+        time:
+          type: string
+          format: date-time
+          description: Timestamp when the event occurred.
+        datacontenttype:
+          type: string
+          description: Content type of the event data.
+          example: application/json
+        data:
+          type: object
+          description: Event-specific payload data.
+          additionalProperties: true
+    ExtensionWebhookPayload:
+      type: object
+      description: Payload sent by extension providers to notify Fly.io of resource lifecycle changes.
+      required:
+      - action
+      - resource_id
+      properties:
+        action:
+          type: string
+          description: The lifecycle action that occurred.
+          enum:
+          - resource.created
+          - resource.updated
+          - resource.deleted
+        resource_id:
+          type: string
+          description: The provider's ID of the resource this event relates to.
+        config:
+          type: object
+          description: Updated environment variable configuration, if applicable. Include when responding to async provisioning completion.
+          additionalProperties:
+            type: string
+    ErrorResponse:
+      type: object
+      description: A standard error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        status:
+          type: integer
+          description: HTTP status code.
+  responses:
+    Unauthorized:
+      description: Missing or invalid authentication credentials.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  securitySchemes:
+    flySharedSecret:
+      type: http
+      scheme: bearer
+      description: Shared secret provided by Fly.io to the extension provider. Fly.io includes this secret in an Authorization Bearer header on all requests to the provider's API for verification.
+    oauthBearerAuth:
+      type: http
+      scheme: bearer
+      description: Fly.io OAuth access token obtained from the token exchange endpoint.
+    webhookHmac:
+      type: apiKey
+      in: header
+      name: X-Fly-Signature
+      description: HMAC-SHA256 signature of the raw request body, computed using the webhook signing secret. Recipients must verify this signature before processing the payload.
+externalDocs:
+  description: Fly.io Extensions API Documentation
+  url: https://fly.io/docs/reference/extensions_api/
