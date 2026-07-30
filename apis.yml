@@ -1,4 +1,18 @@
 aid: fly-io
+accessModel:
+  pricing: paid
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Paid · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/fly-io.png
 url: https://raw.githubusercontent.com/api-evangelist/fly-io/refs/heads/main/apis.yml
 apis:
 - aid: fly-io:machines-api
@@ -20,11 +34,11 @@ apis:
   - url: openapi/fly-io-machines-api-openapi.yml
     type: OpenAPI
   description: >-
-    The Fly.io Machines API is a low-level REST interface for provisioning and managing Fly Machines, which are
-    fast-booting virtual machines that run on Fly.io's global edge infrastructure. It provides endpoints for creating,
-    starting, stopping, and destroying Machines, as well as managing Fly Apps, Fly Volumes, and TLS certificates. The
-    API is accessible publicly at https://api.machines.dev or internally within the Fly.io private WireGuard network
-    at http://_api.internal:4280.
+    The Fly.io Machines API is a low-level REST interface for provisioning and managing Fly Machines,
+    which are fast-booting virtual machines that run on Fly.io's global edge infrastructure. It provides
+    endpoints for creating, starting, stopping, and destroying Machines, as well as managing Fly Apps,
+    Fly Volumes, and TLS certificates. The API is accessible publicly at https://api.machines.dev or internally
+    within the Fly.io private WireGuard network at http://_api.internal:4280.
 - aid: fly-io:graphql-api
   name: Fly.io GraphQL API
   tags:
@@ -43,10 +57,10 @@ apis:
     type: GraphQL
   description: >-
     The Fly.io GraphQL API provides a programmatic interface for managing Fly.io platform resources including
-    applications, IP address allocations, organizations, and networking configuration. The endpoint is available at
-    https://api.fly.io/graphql and includes an interactive GraphiQL explorer with schema introspection and
-    documentation tabs accessible directly in the browser. Authentication requires an Authorization Bearer token,
-    which can be obtained by running `flyctl auth token`.
+    applications, IP address allocations, organizations, and networking configuration. The endpoint is
+    available at https://api.fly.io/graphql and includes an interactive GraphiQL explorer with schema
+    introspection and documentation tabs accessible directly in the browser. Authentication requires an
+    Authorization Bearer token, which can be obtained by running `flyctl auth token`.
 - aid: fly-io:extensions-api
   name: Fly.io Extensions API
   tags:
@@ -68,10 +82,83 @@ apis:
   - url: asyncapi/fly-io-extensions-webhooks-asyncapi.yml
     type: AsyncAPI
   description: >-
-    The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with
-    the Fly.io platform as extension providers. When a Fly.io user provisions an extension via the flyctl CLI, Fly.io
-    forwards the provisioning request to the provider's API with details about the requesting organization, and the
-    provider responds with environment variable configuration that is attached to the target application.
+    The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to
+    integrate with the Fly.io platform as extension providers. When a Fly.io user provisions an extension
+    via the flyctl CLI, Fly.io forwards the provisioning request to the provider's API with details about
+    the requesting organization, and the provider responds with environment variable configuration that
+    is attached to the target application.
+- aid: fly-io:fly-io-apps-api
+  name: fly-io Apps API
+  description: >-
+    Operations for creating, listing, and deleting Fly Apps. Every Fly Machine belongs to a Fly App, which
+    groups related Machines together.
+  humanURL: https://fly.io/docs/machines/api/
+  baseURL: https://api.machines.dev
+  tags:
+  - Apps
+  properties:
+  - type: OpenAPI
+    url: openapi/fly-io-apps-api-openapi.yml
+- aid: fly-io:fly-io-oauth-api
+  name: fly-io OAuth API
+  description: >-
+    Fly.io platform OAuth endpoints used during the single sign-on flow to authorize users and exchange
+    tokens.
+  humanURL: https://fly.io/docs/machines/api/
+  baseURL: https://api.machines.dev
+  tags:
+  - OAuth
+  properties:
+  - type: OpenAPI
+    url: openapi/fly-io-oauth-api-openapi.yml
+- aid: fly-io:fly-io-sso-api
+  name: fly-io SSO API
+  description: >-
+    Single sign-on operations allowing Fly.io users to access provider dashboards using their Fly.io credentials
+    via OAuth.
+  humanURL: https://fly.io/docs/machines/api/
+  baseURL: https://api.machines.dev
+  tags:
+  - SSO
+  properties:
+  - type: OpenAPI
+    url: openapi/fly-io-sso-api-openapi.yml
+- aid: fly-io:fly-io-tokens-api
+  name: fly-io Tokens API
+  description: >-
+    Operations for requesting OpenID Connect (OIDC) tokens from third-party services, enabling Fly Machines
+    to authenticate to external systems using workload identity.
+  humanURL: https://fly.io/docs/machines/api/
+  baseURL: https://api.machines.dev
+  tags:
+  - Tokens
+  properties:
+  - type: OpenAPI
+    url: openapi/fly-io-tokens-api-openapi.yml
+- aid: fly-io:fly-io-volumes-api
+  name: fly-io Volumes API
+  description: >-
+    Operations for managing persistent storage volumes that can be attached to Fly Machines. Volumes provide
+    durable block storage that persists across Machine restarts.
+  humanURL: https://fly.io/docs/machines/api/
+  baseURL: https://api.machines.dev
+  tags:
+  - Volumes
+  properties:
+  - type: OpenAPI
+    url: openapi/fly-io-volumes-api-openapi.yml
+- aid: fly-io:fly-io-webhooks-api
+  name: fly-io Webhooks API
+  description: >-
+    Webhook endpoints for bidirectional event delivery between Fly.io and extension providers. Both sides
+    sign their webhook payloads using HMAC-SHA256 for verification.
+  humanURL: https://fly.io/docs/machines/api/
+  baseURL: https://api.machines.dev
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/fly-io-webhooks-api-openapi.yml
 common:
 - type: AgenticAccess
   url: agentic-access/fly-io-agentic-access.yml
