@@ -1,0 +1,28 @@
+{
+  "provider": "fly-io",
+  "sources": [
+    "fly-io-apps-api-openapi.yml",
+    "fly-io-extensions-api-openapi.yml",
+    "fly-io-machines-api-openapi.yml",
+    "fly-io-oauth-api-openapi.yml",
+    "fly-io-sso-api-openapi.yml",
+    "fly-io-tokens-api-openapi.yml",
+    "fly-io-volumes-api-openapi.yml",
+    "fly-io-webhooks-api-openapi.yml"
+  ],
+  "outputs": [
+    "fly-io-apps-api-openapi.yml",
+    "fly-io-extensions-api-openapi.yml",
+    "fly-io-machines-api-openapi.yml",
+    "fly-io-oauth-api-openapi.yml",
+    "fly-io-sso-api-openapi.yml",
+    "fly-io-tokens-api-openapi.yml",
+    "fly-io-volumes-api-openapi.yml",
+    "fly-io-webhooks-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
