@@ -1,0 +1,2294 @@
+{
+  "item": [
+    {
+      "id": "b9aa79a7-c806-4a69-9f8c-52a782a60ea1",
+      "name": "Volumes",
+      "description": {
+        "content": "Operations for managing persistent storage volumes that can be attached to Fly Machines. Volumes provide durable block storage that persists across Machine restarts.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "53429b56-d81c-484c-b608-7a811a2cff23",
+          "name": "List volumes in an app",
+          "request": {
+            "name": "List volumes in an app",
+            "description": {
+              "content": "Returns a list of all Fly Volumes belonging to the specified app, including their size, region, encryption status, attachment state, and snapshot retention settings.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "apps",
+                ":app_name",
+                "volumes"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "app_name",
+                  "description": "(Required) The name of the Fly App."
+                },
+                {
+                  "description": "The base URL registered by the extension provider with Fly.io.",
+                  "type": "any",
+                  "value": "{{provider_base_url}}",
+                  "key": "provider_base_url"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9dc9d11f-a8ec-46c5-96cc-d7e8dd2310e8",
+              "name": "A list of volumes.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"state\": \"string\",\n    \"size_gb\": 177,\n    \"region\": \"string\",\n    \"zone\": \"string\",\n    \"encrypted\": false,\n    \"attached_machine_id\": \"string\",\n    \"attached_alloc_id\": \"string\",\n    \"filesystem_type\": \"string\",\n    \"snapshot_retention\": 38,\n    \"created_at\": \"1966-11-17T19:30:12.078Z\"\n  },\n  {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"state\": \"string\",\n    \"size_gb\": 6688,\n    \"region\": \"string\",\n    \"zone\": \"string\",\n    \"encrypted\": false,\n    \"attached_machine_id\": \"string\",\n    \"attached_alloc_id\": \"string\",\n    \"filesystem_type\": \"string\",\n    \"snapshot_retention\": 32,\n    \"created_at\": \"1996-06-06T05:31:14.341Z\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "85c39d44-9f20-442b-a680-8beec6c0c21c",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 1159\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ad8fc75f-6700-4f40-a577-61b4fd09f192",
+              "name": "The requested resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 1159\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d7954af5-2b60-4e2a-9d0f-46820a5a45f7",
+          "name": "Create a volume",
+          "request": {
+            "name": "Create a volume",
+            "description": {
+              "content": "Creates a new Fly Volume in the specified app for use as persistent storage attached to a Fly Machine. Volumes are region-specific and are encrypted by default. Specify unique_zones_only to distribute redundant volumes across separate physical hardware for higher availability.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "apps",
+                ":app_name",
+                "volumes"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "app_name",
+                  "description": "(Required) The name of the Fly App."
+                },
+                {
+                  "description": "The base URL registered by the extension provider with Fly.io.",
+                  "type": "any",
+                  "value": "{{provider_base_url}}",
+                  "key": "provider_base_url"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"size_gb\": \"<integer>\",\n  \"region\": \"<string>\",\n  \"encrypted\": true,\n  \"unique_zones_only\": \"<boolean>\",\n  \"snapshot_id\": \"<string>\",\n  \"snapshot_retention\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5b80e76b-9c15-41a8-9d36-3b96f0598f65",
+              "name": "Volume created successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"size_gb\": \"<integer>\",\n  \"region\": \"iad\",\n  \"encrypted\": true,\n  \"unique_zones_only\": \"<boolean>\",\n  \"snapshot_id\": \"<string>\",\n  \"snapshot_retention\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"state\": \"string\",\n  \"size_gb\": 2371,\n  \"region\": \"string\",\n  \"zone\": \"string\",\n  \"encrypted\": true,\n  \"attached_machine_id\": \"string\",\n  \"attached_alloc_id\": \"string\",\n  \"filesystem_type\": \"string\",\n  \"snapshot_retention\": 25,\n  \"created_at\": \"1966-09-13T09:22:57.749Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f3da4215-6cc7-459d-a249-17eba2408f81",
+              "name": "Bad request due to invalid parameters or request body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"size_gb\": \"<integer>\",\n  \"region\": \"iad\",\n  \"encrypted\": true,\n  \"unique_zones_only\": \"<boolean>\",\n  \"snapshot_id\": \"<string>\",\n  \"snapshot_retention\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 1159\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7de2b2b6-ba49-47ba-9c8f-430d7b54d2c5",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"size_gb\": \"<integer>\",\n  \"region\": \"iad\",\n  \"encrypted\": true,\n  \"unique_zones_only\": \"<boolean>\",\n  \"snapshot_id\": \"<string>\",\n  \"snapshot_retention\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 1159\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ab005c97-2625-4be9-9214-3b7361e4bd1f",
+          "name": "Get a volume",
+          "request": {
+            "name": "Get a volume",
+            "description": {
+              "content": "Retrieves the current state and configuration of a specific Fly Volume by its ID, including size, region, filesystem type, encryption status, and attachment information.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "apps",
+                ":app_name",
+                "volumes",
+                ":volume_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "app_name",
+                  "description": "(Required) The name of the Fly App."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "volume_id",
+                  "description": "(Required) The unique identifier of the Fly Volume."
+                },
+                {
+                  "description": "The base URL registered by the extension provider with Fly.io.",
+                  "type": "any",
+                  "value": "{{provider_base_url}}",
+                  "key": "provider_base_url"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5a5fefd8-da9b-4911-bf51-0964c385583d",
+              "name": "Volume details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"state\": \"string\",\n  \"size_gb\": 2371,\n  \"region\": \"string\",\n  \"zone\": \"string\",\n  \"encrypted\": true,\n  \"attached_machine_id\": \"string\",\n  \"attached_alloc_id\": \"string\",\n  \"filesystem_type\": \"string\",\n  \"snapshot_retention\": 25,\n  \"created_at\": \"1966-09-13T09:22:57.749Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "38e8f43f-a014-4f34-a856-3c17c3e4fa5f",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 1159\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "46f9136d-563d-4b9c-adf8-c0e3a211dd0c",
+              "name": "The requested resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 1159\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "47a398c4-1fd1-4c07-87ce-add372ee3cd6",
+          "name": "Update a volume",
+          "request": {
+            "name": "Update a volume",
+            "description": {
+              "content": "Updates the configuration of an existing Fly Volume, such as adjusting the snapshot retention period. Volume size can only be increased via the extend endpoint; it cannot be reduced.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "apps",
+                ":app_name",
+                "volumes",
+                ":volume_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "app_name",
+                  "description": "(Required) The name of the Fly App."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "volume_id",
+                  "description": "(Required) The unique identifier of the Fly Volume."
+                },
+                {
+                  "description": "The base URL registered by the extension provider with Fly.io.",
+                  "type": "any",
+                  "value": "{{provider_base_url}}",
+                  "key": "provider_base_url"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"snapshot_retention\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b5b962ee-a195-4bbf-b38f-d8c8a63c7b55",
+              "name": "Volume updated successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"snapshot_retention\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"state\": \"string\",\n  \"size_gb\": 2371,\n  \"region\": \"string\",\n  \"zone\": \"string\",\n  \"encrypted\": true,\n  \"attached_machine_id\": \"string\",\n  \"attached_alloc_id\": \"string\",\n  \"filesystem_type\": \"string\",\n  \"snapshot_retention\": 25,\n  \"created_at\": \"1966-09-13T09:22:57.749Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e8a6404d-66c0-48f2-a814-6e5016ab9e7f",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"snapshot_retention\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 1159\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1868b534-4d3e-4e52-98ee-d16a5f34fbe6",
+              "name": "The requested resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"snapshot_retention\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 1159\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4eee4491-1a80-415d-a84b-1913e4eac9c4",
+          "name": "Delete a volume",
+          "request": {
+            "name": "Delete a volume",
+            "description": {
+              "content": "Permanently deletes a Fly Volume. The volume must not be currently attached to a running Machine. Deleting a volume also removes all snapshots associated with it. This operation is irreversible.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "apps",
+                ":app_name",
+                "volumes",
+                ":volume_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "app_name",
+                  "description": "(Required) The name of the Fly App."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "volume_id",
+                  "description": "(Required) The unique identifier of the Fly Volume."
+                },
+                {
+                  "description": "The base URL registered by the extension provider with Fly.io.",
+                  "type": "any",
+                  "value": "{{provider_base_url}}",
+                  "key": "provider_base_url"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d7a6c190-94de-4b8a-bdd9-d49a5d42f1f7",
+              "name": "Volume deleted successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"state\": \"string\",\n  \"size_gb\": 2371,\n  \"region\": \"string\",\n  \"zone\": \"string\",\n  \"encrypted\": true,\n  \"attached_machine_id\": \"string\",\n  \"attached_alloc_id\": \"string\",\n  \"filesystem_type\": \"string\",\n  \"snapshot_retention\": 25,\n  \"created_at\": \"1966-09-13T09:22:57.749Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4e0f4274-2a02-4dfe-bc9f-f94a4dd76902",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 1159\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2acb8a16-f25d-4a67-9215-31308b424034",
+              "name": "The requested resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 1159\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4eafcb19-b514-4bcd-967b-a2d3e6fee3bf",
+          "name": "Extend a volume",
+          "request": {
+            "name": "Extend a volume",
+            "description": {
+              "content": "Increases the size of a Fly Volume without downtime or data loss. Volume size can only be increased; shrinking a volume is not supported. The Machine attached to the volume may need to be restarted for the operating system to recognize the additional space.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "apps",
+                ":app_name",
+                "volumes",
+                ":volume_id",
+                "extend"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "app_name",
+                  "description": "(Required) The name of the Fly App."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "volume_id",
+                  "description": "(Required) The unique identifier of the Fly Volume."
+                },
+                {
+                  "description": "The base URL registered by the extension provider with Fly.io.",
+                  "type": "any",
+                  "value": "{{provider_base_url}}",
+                  "key": "provider_base_url"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"size_gb\": \"<integer>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7c31bce9-927d-46e0-8f84-93c6d8b15568",
+              "name": "Volume extended successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id",
+                    "extend"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"size_gb\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"state\": \"string\",\n  \"size_gb\": 2371,\n  \"region\": \"string\",\n  \"zone\": \"string\",\n  \"encrypted\": true,\n  \"attached_machine_id\": \"string\",\n  \"attached_alloc_id\": \"string\",\n  \"filesystem_type\": \"string\",\n  \"snapshot_retention\": 25,\n  \"created_at\": \"1966-09-13T09:22:57.749Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2b4e7e07-5856-43e8-930d-cf320fd20f24",
+              "name": "Bad request due to invalid parameters or request body.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id",
+                    "extend"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"size_gb\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 1159\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8222c414-4665-4e4a-9b58-4f98b7330f1b",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id",
+                    "extend"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"size_gb\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 1159\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "566a5e54-b304-4ea1-8bb6-6c60e310cae5",
+              "name": "The requested resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id",
+                    "extend"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"size_gb\": \"<integer>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 1159\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d7144a23-ea4f-41c9-9a4a-a7e57171afae",
+          "name": "List volume snapshots",
+          "request": {
+            "name": "List volume snapshots",
+            "description": {
+              "content": "Returns a list of all snapshots for a specific Fly Volume. Snapshots are created automatically on a daily schedule and can also be created on-demand. They are retained according to the volume's snapshot retention setting.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "apps",
+                ":app_name",
+                "volumes",
+                ":volume_id",
+                "snapshots"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "app_name",
+                  "description": "(Required) The name of the Fly App."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "volume_id",
+                  "description": "(Required) The unique identifier of the Fly Volume."
+                },
+                {
+                  "description": "The base URL registered by the extension provider with Fly.io.",
+                  "type": "any",
+                  "value": "{{provider_base_url}}",
+                  "key": "provider_base_url"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d9b6a23a-ced3-4062-8bc3-c6b80033e2ff",
+              "name": "A list of volume snapshots.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id",
+                    "snapshots"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"string\",\n    \"size\": 6505,\n    \"digest\": \"string\",\n    \"created_at\": \"1996-06-01T20:08:39.382Z\",\n    \"status\": \"string\"\n  },\n  {\n    \"id\": \"string\",\n    \"size\": 3410,\n    \"digest\": \"string\",\n    \"created_at\": \"1993-05-09T02:47:57.148Z\",\n    \"status\": \"string\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ed4755f8-f5d2-44e6-9f01-cab3b0deb218",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id",
+                    "snapshots"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 1159\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e24d1991-acc4-48b7-bd60-adc55f2aa56c",
+              "name": "The requested resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id",
+                    "snapshots"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 1159\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "23dbca41-88c8-487a-be2f-94ce0d7c1313",
+          "name": "Create a volume snapshot",
+          "request": {
+            "name": "Create a volume snapshot",
+            "description": {
+              "content": "Creates an on-demand snapshot of a Fly Volume. Snapshots capture the current state of the volume and can be used to restore data or create new volumes from a known-good state.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "apps",
+                ":app_name",
+                "volumes",
+                ":volume_id",
+                "snapshots"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "app_name",
+                  "description": "(Required) The name of the Fly App."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "volume_id",
+                  "description": "(Required) The unique identifier of the Fly Volume."
+                },
+                {
+                  "description": "The base URL registered by the extension provider with Fly.io.",
+                  "type": "any",
+                  "value": "{{provider_base_url}}",
+                  "key": "provider_base_url"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "26bad483-0657-4d36-865b-430ab7cfdd66",
+              "name": "Snapshot creation initiated.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id",
+                    "snapshots"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a8f1cdad-f298-4541-ab28-4deb00d242c7",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id",
+                    "snapshots"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 1159\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e683587f-b1ba-49b9-bbf2-60891ab06448",
+              "name": "The requested resource was not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps",
+                    ":app_name",
+                    "volumes",
+                    ":volume_id",
+                    "snapshots"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "volume_id",
+                      "description": "(Required) The unique identifier of the Fly Volume."
+                    },
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 1159\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "description": {
+        "content": "The base URL registered by the extension provider with Fly.io.",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "api.example.com",
+      "key": "provider_base_url"
+    },
+    {
+      "type": "string",
+      "value": "https://{{provider_base_url}}",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "3217bc93-b050-4e88-9421-def68b5b981c",
+    "name": "Fly.io Extensions Apps Volumes API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with the Fly.io platform as extension providers. When a Fly.io user provisions an extension via the flyctl CLI, Fly.io forwards the provisioning request to the provider's API with details about the requesting organization and user, and the provider responds with environment variable configuration that is attached to the target application. Providers must also support single sign-on login flows using OAuth, daily billing detail endpoints, and webhook delivery for resource lifecycle events. Extensions currently available through this program include Sentry, Supabase, Tigris object storage, Upstash Redis and Vector, and others.\n\nContact Support:\n Name: Fly.io Extensions Program",
+      "type": "text/plain"
+    }
+  }
+}

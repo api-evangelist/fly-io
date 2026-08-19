@@ -1,0 +1,112 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Fly.io Extensions Apps OAuth API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "OAuth",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "OAuth authorization endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{provider_base_url}/oauth/authorize",
+            "params": [
+              {
+                "name": "client_id",
+                "value": "",
+                "type": "query",
+                "description": "OAuth client ID issued to the extension provider by Fly.io."
+              },
+              {
+                "name": "response_type",
+                "value": "",
+                "type": "query",
+                "description": "OAuth response type. Must be code for the authorization code flow."
+              },
+              {
+                "name": "redirect_uri",
+                "value": "",
+                "type": "query",
+                "description": "Provider callback URL to redirect the user to after authorization."
+              },
+              {
+                "name": "scope",
+                "value": "",
+                "type": "query",
+                "description": "Space-separated list of requested OAuth scopes."
+              }
+            ]
+          },
+          "docs": "Fly.io platform OAuth authorization endpoint. Redirects the user to approve the OAuth application and returns an authorization code to the specified redirect URI. Used by extension providers during the SSO flow to verify Fly.io user identity."
+        },
+        {
+          "info": {
+            "name": "Exchange authorization code for access token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{provider_base_url}/oauth/token",
+            "body": {
+              "type": "form-urlencoded",
+              "data": [
+                {
+                  "name": "grant_type",
+                  "value": ""
+                },
+                {
+                  "name": "code",
+                  "value": ""
+                },
+                {
+                  "name": "redirect_uri",
+                  "value": ""
+                },
+                {
+                  "name": "client_id",
+                  "value": ""
+                },
+                {
+                  "name": "client_secret",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Fly.io platform OAuth token endpoint. Exchanges an authorization code obtained from the authorize endpoint for an access token that can be used to retrieve user and organization information via the token info endpoint."
+        },
+        {
+          "info": {
+            "name": "Get OAuth token information",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{provider_base_url}/oauth/token/info",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Fly.io platform token introspection endpoint. Returns the user and organization details associated with a valid Fly.io OAuth access token. Providers use this endpoint to identify which Fly.io user and organization initiated an SSO session."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

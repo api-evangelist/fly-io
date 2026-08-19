@@ -1,25 +1,188 @@
 {
   "item": [
     {
-      "id": "edc54035-0a6a-4fcb-9358-53fc4d24dd8a",
-      "name": "Extensions",
+      "id": "cef0a528-ae66-45ab-8071-e94249fab6ae",
+      "name": "Apps",
       "description": {
-        "content": "Operations for provisioning, retrieving, and updating extension resource instances. Fly.io calls these endpoints on the provider's server when users interact with extensions via the flyctl CLI.",
+        "content": "Operations for creating, listing, and deleting Fly Apps. Every Fly Machine belongs to a Fly App, which groups related Machines together.",
         "type": "text/plain"
       },
       "item": [
         {
-          "id": "9fd64e49-8305-4f36-aca3-bf0aceda3fb8",
-          "name": "Provision an extension resource",
+          "id": "c2030598-cd20-4873-9011-496e0270d206",
+          "name": "List apps in an organization",
           "request": {
-            "name": "Provision an extension resource",
+            "name": "List apps in an organization",
             "description": {
-              "content": "Called by Fly.io when a user provisions an extension via the flyctl CLI. The provider must create the requested resource and respond with its unique ID and a config object containing the environment variables to inject into the user's Fly App. Provisioning must complete within 5 seconds; if the resource takes longer to create, the provider should respond immediately and use the webhook endpoint to notify Fly.io when the resource becomes available.",
+              "content": "Returns a list of all Fly Apps belonging to the specified organization. Results include the app name, machine count, volume count, and network configuration for each app.",
               "type": "text/plain"
             },
             "url": {
               "path": [
-                "extensions"
+                "v1",
+                "apps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "org_slug",
+                  "value": "<string>",
+                  "description": "(Required) The organization slug to filter apps by."
+                }
+              ],
+              "variable": [
+                {
+                  "description": "The base URL registered by the extension provider with Fly.io.",
+                  "type": "any",
+                  "value": "{{provider_base_url}}",
+                  "key": "provider_base_url"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "cfc7e8af-f2ef-4a1e-9285-984e56c9cf49",
+              "name": "A list of apps in the organization.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "org_slug",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"total_apps\": 9051,\n  \"apps\": [\n    {\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"status\": \"string\",\n      \"machine_count\": 1552,\n      \"volume_count\": 6759,\n      \"network\": \"string\",\n      \"organization\": {\n        \"name\": \"string\",\n        \"slug\": \"string\"\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"status\": \"string\",\n      \"machine_count\": 9645,\n      \"volume_count\": 2372,\n      \"network\": \"string\",\n      \"organization\": {\n        \"name\": \"string\",\n        \"slug\": \"string\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dce5d1ec-74ad-4528-a1e4-c8cfbd88a8c8",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "apps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "org_slug",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 7266\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "712c22db-9eba-47f3-ae25-82f49ccfd006",
+          "name": "Create a Fly App",
+          "request": {
+            "name": "Create a Fly App",
+            "description": {
+              "content": "Creates a new Fly App under the specified organization. An app is a logical grouping of Fly Machines that share a name, network, and routing configuration. Machines must belong to an app before they can be created.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "apps"
               ],
               "host": [
                 "{{baseUrl}}"
@@ -48,7 +211,7 @@
             "auth": null,
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"<string>\",\n  \"id\": \"<string>\",\n  \"organization_id\": \"<string>\",\n  \"organization_name\": \"<string>\",\n  \"user_email\": \"<email>\",\n  \"user_id\": \"<string>\",\n  \"user_role\": \"<string>\",\n  \"primary_region\": \"<string>\",\n  \"read_regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"ip_address\": \"<string>\"\n}",
+              "raw": "{\n  \"app_name\": \"<string>\",\n  \"org_slug\": \"<string>\",\n  \"enable_subdomains\": \"<boolean>\",\n  \"network\": \"<string>\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -58,12 +221,13 @@
           },
           "response": [
             {
-              "id": "52b664df-cfb5-4e42-be97-a593e88df6d0",
-              "name": "Extension provisioned successfully.",
+              "id": "f1ade408-f0f1-4109-be21-626a08a53358",
+              "name": "App created successfully.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "extensions"
+                    "v1",
+                    "apps"
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -95,7 +259,7 @@
                 "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"<string>\",\n  \"id\": \"<string>\",\n  \"organization_id\": \"<string>\",\n  \"organization_name\": \"<string>\",\n  \"user_email\": \"<email>\",\n  \"user_id\": \"<string>\",\n  \"user_role\": \"<string>\",\n  \"primary_region\": \"iad\",\n  \"read_regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"ip_address\": \"<string>\"\n}",
+                  "raw": "{\n  \"app_name\": \"<string>\",\n  \"org_slug\": \"<string>\",\n  \"enable_subdomains\": \"<boolean>\",\n  \"network\": \"<string>\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -103,25 +267,26 @@
                   }
                 }
               },
-              "status": "OK",
-              "code": 200,
+              "status": "Created",
+              "code": 201,
               "header": [
                 {
                   "key": "Content-Type",
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"id\": \"string\",\n  \"config\": {\n    \"key_0\": \"string\"\n  },\n  \"name\": \"string\",\n  \"fly_app_name\": \"string\"\n}",
+              "body": "{\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"status\": \"string\",\n  \"machine_count\": 904,\n  \"volume_count\": 4663,\n  \"network\": \"string\",\n  \"organization\": {\n    \"name\": \"string\",\n    \"slug\": \"string\"\n  }\n}",
               "cookie": [],
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "400b4b6a-23d4-4234-af16-8594ad0ab96b",
-              "name": "Invalid request parameters or body.",
+              "id": "015e01d6-d1c6-49e6-80e3-8968fd098955",
+              "name": "Bad request due to invalid parameters or request body.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "extensions"
+                    "v1",
+                    "apps"
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -153,7 +318,7 @@
                 "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"<string>\",\n  \"id\": \"<string>\",\n  \"organization_id\": \"<string>\",\n  \"organization_name\": \"<string>\",\n  \"user_email\": \"<email>\",\n  \"user_id\": \"<string>\",\n  \"user_role\": \"<string>\",\n  \"primary_region\": \"iad\",\n  \"read_regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"ip_address\": \"<string>\"\n}",
+                  "raw": "{\n  \"app_name\": \"<string>\",\n  \"org_slug\": \"<string>\",\n  \"enable_subdomains\": \"<boolean>\",\n  \"network\": \"<string>\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -169,17 +334,18 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"error\": \"string\",\n  \"status\": 1793\n}",
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 7266\n}",
               "cookie": [],
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "e6b0183c-3b79-4ab3-865c-19d2ede82797",
-              "name": "Missing or invalid authentication credentials.",
+              "id": "4220e68f-7e37-4242-8c79-f81738679223",
+              "name": "Missing or invalid API token.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "extensions"
+                    "v1",
+                    "apps"
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -211,7 +377,7 @@
                 "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"name\": \"<string>\",\n  \"id\": \"<string>\",\n  \"organization_id\": \"<string>\",\n  \"organization_name\": \"<string>\",\n  \"user_email\": \"<email>\",\n  \"user_id\": \"<string>\",\n  \"user_role\": \"<string>\",\n  \"primary_region\": \"iad\",\n  \"read_regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"ip_address\": \"<string>\"\n}",
+                  "raw": "{\n  \"app_name\": \"<string>\",\n  \"org_slug\": \"<string>\",\n  \"enable_subdomains\": \"<boolean>\",\n  \"network\": \"<string>\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -227,7 +393,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"error\": \"string\",\n  \"status\": 1793\n}",
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 7266\n}",
               "cookie": [],
               "_postman_previewlanguage": "json"
             }
@@ -238,18 +404,19 @@
           }
         },
         {
-          "id": "8b6f60d2-1107-4d3e-8861-df80a298c108",
-          "name": "Get extension resource details",
+          "id": "d2492a38-9829-4b8a-9e7f-a8145f32e5e3",
+          "name": "Get a Fly App",
           "request": {
-            "name": "Get extension resource details",
+            "name": "Get a Fly App",
             "description": {
-              "content": "Called by Fly.io to fetch the current status and usage information for a specific extension resource. This endpoint is used for polling when an extension is provisioned asynchronously and takes longer than 5 seconds to become ready.",
+              "content": "Retrieves details about a specific Fly App by its name, including the app status, organization, and associated network configuration.",
               "type": "text/plain"
             },
             "url": {
               "path": [
-                "extensions",
-                ":extension_id"
+                "v1",
+                "apps",
+                ":app_name"
               ],
               "host": [
                 "{{baseUrl}}"
@@ -260,8 +427,8 @@
                   "disabled": false,
                   "type": "any",
                   "value": "<string>",
-                  "key": "extension_id",
-                  "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                  "key": "app_name",
+                  "description": "(Required) The name of the Fly App."
                 },
                 {
                   "description": "The base URL registered by the extension provider with Fly.io.",
@@ -282,13 +449,14 @@
           },
           "response": [
             {
-              "id": "0e02a96b-645a-4367-b60c-3ef69e7d7af1",
-              "name": "Extension resource details.",
+              "id": "955a34d8-0639-410b-b3f1-1788c2bcd6ea",
+              "name": "App details.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "extensions",
-                    ":extension_id"
+                    "v1",
+                    "apps",
+                    ":app_name"
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -299,8 +467,8 @@
                       "disabled": false,
                       "type": "any",
                       "value": "<string>",
-                      "key": "extension_id",
-                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
                     },
                     {
                       "description": "The base URL registered by the extension provider with Fly.io.",
@@ -335,18 +503,19 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"status\": \"pending\",\n  \"config\": {\n    \"key_0\": \"string\",\n    \"key_1\": \"string\",\n    \"key_2\": \"string\"\n  }\n}",
+              "body": "{\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"status\": \"string\",\n  \"machine_count\": 904,\n  \"volume_count\": 4663,\n  \"network\": \"string\",\n  \"organization\": {\n    \"name\": \"string\",\n    \"slug\": \"string\"\n  }\n}",
               "cookie": [],
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "f5110240-6b07-4a4b-b51a-8deae038d97f",
-              "name": "Missing or invalid authentication credentials.",
+              "id": "e65dde77-408c-40a5-8e00-5c58393328c2",
+              "name": "Missing or invalid API token.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "extensions",
-                    ":extension_id"
+                    "v1",
+                    "apps",
+                    ":app_name"
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -357,8 +526,8 @@
                       "disabled": false,
                       "type": "any",
                       "value": "<string>",
-                      "key": "extension_id",
-                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
                     },
                     {
                       "description": "The base URL registered by the extension provider with Fly.io.",
@@ -393,18 +562,19 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"error\": \"string\",\n  \"status\": 1793\n}",
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 7266\n}",
               "cookie": [],
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "5279d572-1707-4c4a-938d-2f4a1970a198",
-              "name": "The requested extension resource was not found.",
+              "id": "3a074627-c4fa-4c11-a3c3-5c90ddcbaeb5",
+              "name": "The requested resource was not found.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "extensions",
-                    ":extension_id"
+                    "v1",
+                    "apps",
+                    ":app_name"
                   ],
                   "host": [
                     "{{baseUrl}}"
@@ -415,8 +585,8 @@
                       "disabled": false,
                       "type": "any",
                       "value": "<string>",
-                      "key": "extension_id",
-                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
                     },
                     {
                       "description": "The base URL registered by the extension provider with Fly.io.",
@@ -451,7 +621,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"error\": \"string\",\n  \"status\": 1793\n}",
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 7266\n}",
               "cookie": [],
               "_postman_previewlanguage": "json"
             }
@@ -462,357 +632,38 @@
           }
         },
         {
-          "id": "4cbd2a76-b3ff-4a4b-bf10-7d12e1837d4a",
-          "name": "Update an extension resource",
+          "id": "766220c1-8024-47af-9dd1-113a37dea30f",
+          "name": "Delete a Fly App",
           "request": {
-            "name": "Update an extension resource",
+            "name": "Delete a Fly App",
             "description": {
-              "content": "Called by Fly.io when a user updates the configuration of an extension resource, such as changing the region or plan. The provider applies the updated configuration and returns the updated resource details.",
+              "content": "Permanently deletes a Fly App and all of its associated Machines, volumes, and IP addresses. This operation is irreversible. Use the force query parameter to stop all running Machines before deletion.",
               "type": "text/plain"
             },
             "url": {
               "path": [
-                "extensions",
-                ":extension_id"
+                "v1",
+                "apps",
+                ":app_name"
               ],
               "host": [
                 "{{baseUrl}}"
               ],
-              "query": [],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "force",
+                  "value": "<boolean>",
+                  "description": "When true, all running Machines in the app are stopped before deletion proceeds. Without this flag, deletion fails if any Machines are running."
+                }
+              ],
               "variable": [
                 {
                   "disabled": false,
                   "type": "any",
                   "value": "<string>",
-                  "key": "extension_id",
-                  "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
-                },
-                {
-                  "description": "The base URL registered by the extension provider with Fly.io.",
-                  "type": "any",
-                  "value": "{{provider_base_url}}",
-                  "key": "provider_base_url"
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "PATCH",
-            "auth": null,
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"<string>\",\n  \"id\": \"<string>\",\n  \"organization_id\": \"<string>\",\n  \"organization_name\": \"<string>\",\n  \"user_email\": \"<email>\",\n  \"user_id\": \"<string>\",\n  \"user_role\": \"<string>\",\n  \"primary_region\": \"<string>\",\n  \"read_regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"ip_address\": \"<string>\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": [
-            {
-              "id": "918f4ad6-be2a-4610-a1c8-52870c286e98",
-              "name": "Extension updated successfully.",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "extensions",
-                    ":extension_id"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "extension_id",
-                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
-                    },
-                    {
-                      "description": "The base URL registered by the extension provider with Fly.io.",
-                      "type": "any",
-                      "value": "{{provider_base_url}}",
-                      "key": "provider_base_url"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "PATCH",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"<string>\",\n  \"id\": \"<string>\",\n  \"organization_id\": \"<string>\",\n  \"organization_name\": \"<string>\",\n  \"user_email\": \"<email>\",\n  \"user_id\": \"<string>\",\n  \"user_role\": \"<string>\",\n  \"primary_region\": \"iad\",\n  \"read_regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"ip_address\": \"<string>\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"id\": \"string\",\n  \"config\": {\n    \"key_0\": \"string\"\n  },\n  \"name\": \"string\",\n  \"fly_app_name\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "89e4a0f4-4729-4fe0-9a48-faef5555ae39",
-              "name": "Invalid request parameters or body.",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "extensions",
-                    ":extension_id"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "extension_id",
-                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
-                    },
-                    {
-                      "description": "The base URL registered by the extension provider with Fly.io.",
-                      "type": "any",
-                      "value": "{{provider_base_url}}",
-                      "key": "provider_base_url"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "PATCH",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"<string>\",\n  \"id\": \"<string>\",\n  \"organization_id\": \"<string>\",\n  \"organization_name\": \"<string>\",\n  \"user_email\": \"<email>\",\n  \"user_id\": \"<string>\",\n  \"user_role\": \"<string>\",\n  \"primary_region\": \"iad\",\n  \"read_regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"ip_address\": \"<string>\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\",\n  \"status\": 1793\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "0f3c159e-550f-42cc-b5d0-ebcdfffc949a",
-              "name": "Missing or invalid authentication credentials.",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "extensions",
-                    ":extension_id"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "extension_id",
-                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
-                    },
-                    {
-                      "description": "The base URL registered by the extension provider with Fly.io.",
-                      "type": "any",
-                      "value": "{{provider_base_url}}",
-                      "key": "provider_base_url"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "PATCH",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"<string>\",\n  \"id\": \"<string>\",\n  \"organization_id\": \"<string>\",\n  \"organization_name\": \"<string>\",\n  \"user_email\": \"<email>\",\n  \"user_id\": \"<string>\",\n  \"user_role\": \"<string>\",\n  \"primary_region\": \"iad\",\n  \"read_regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"ip_address\": \"<string>\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\",\n  \"status\": 1793\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "74cac963-399a-4ccc-b329-a3b2af4cf8a1",
-              "name": "The requested extension resource was not found.",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "extensions",
-                    ":extension_id"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "extension_id",
-                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
-                    },
-                    {
-                      "description": "The base URL registered by the extension provider with Fly.io.",
-                      "type": "any",
-                      "value": "{{provider_base_url}}",
-                      "key": "provider_base_url"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "PATCH",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"<string>\",\n  \"id\": \"<string>\",\n  \"organization_id\": \"<string>\",\n  \"organization_name\": \"<string>\",\n  \"user_email\": \"<email>\",\n  \"user_id\": \"<string>\",\n  \"user_role\": \"<string>\",\n  \"primary_region\": \"iad\",\n  \"read_regions\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"ip_address\": \"<string>\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\",\n  \"status\": 1793\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "3d1cb60f-4b9c-416d-8184-a8bd5ad1f06d",
-          "name": "Delete an extension resource",
-          "request": {
-            "name": "Delete an extension resource",
-            "description": {
-              "content": "Called by Fly.io when a user removes an extension from their app. The provider should clean up all resources associated with this extension instance and remove the user's environment variables.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "extensions",
-                ":extension_id"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<string>",
-                  "key": "extension_id",
-                  "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                  "key": "app_name",
+                  "description": "(Required) The name of the Fly App."
                 },
                 {
                   "description": "The base URL registered by the extension provider with Fly.io.",
@@ -833,25 +684,31 @@
           },
           "response": [
             {
-              "id": "19d16c98-764b-4eb2-9966-ada82b484ed6",
-              "name": "Extension deleted successfully.",
+              "id": "1e7361bf-39f3-4897-af2d-208000dac942",
+              "name": "App deletion accepted.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "extensions",
-                    ":extension_id"
+                    "v1",
+                    "apps",
+                    ":app_name"
                   ],
                   "host": [
                     "{{baseUrl}}"
                   ],
-                  "query": [],
+                  "query": [
+                    {
+                      "key": "force",
+                      "value": "<boolean>"
+                    }
+                  ],
                   "variable": [
                     {
                       "disabled": false,
                       "type": "any",
                       "value": "<string>",
-                      "key": "extension_id",
-                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
                     },
                     {
                       "description": "The base URL registered by the extension provider with Fly.io.",
@@ -874,8 +731,8 @@
                 "method": "DELETE",
                 "body": {}
               },
-              "status": "OK",
-              "code": 200,
+              "status": "Accepted",
+              "code": 202,
               "header": [
                 {
                   "key": "Content-Type",
@@ -887,25 +744,31 @@
               "_postman_previewlanguage": "text"
             },
             {
-              "id": "0dece140-9209-44f5-8115-a4be33971800",
-              "name": "Missing or invalid authentication credentials.",
+              "id": "179cc252-8a4c-49b9-ad40-1f83bce15825",
+              "name": "Missing or invalid API token.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "extensions",
-                    ":extension_id"
+                    "v1",
+                    "apps",
+                    ":app_name"
                   ],
                   "host": [
                     "{{baseUrl}}"
                   ],
-                  "query": [],
+                  "query": [
+                    {
+                      "key": "force",
+                      "value": "<boolean>"
+                    }
+                  ],
                   "variable": [
                     {
                       "disabled": false,
                       "type": "any",
                       "value": "<string>",
-                      "key": "extension_id",
-                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
                     },
                     {
                       "description": "The base URL registered by the extension provider with Fly.io.",
@@ -940,30 +803,36 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"error\": \"string\",\n  \"status\": 1793\n}",
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 7266\n}",
               "cookie": [],
               "_postman_previewlanguage": "json"
             },
             {
-              "id": "f849953d-2d7c-4180-841a-de092a0ddc60",
-              "name": "The requested extension resource was not found.",
+              "id": "a082f632-3cdf-4599-8525-99fce9fbc283",
+              "name": "The requested resource was not found.",
               "originalRequest": {
                 "url": {
                   "path": [
-                    "extensions",
-                    ":extension_id"
+                    "v1",
+                    "apps",
+                    ":app_name"
                   ],
                   "host": [
                     "{{baseUrl}}"
                   ],
-                  "query": [],
+                  "query": [
+                    {
+                      "key": "force",
+                      "value": "<boolean>"
+                    }
+                  ],
                   "variable": [
                     {
                       "disabled": false,
                       "type": "any",
                       "value": "<string>",
-                      "key": "extension_id",
-                      "description": "(Required) The unique identifier of the extension resource, as returned by the provider."
+                      "key": "app_name",
+                      "description": "(Required) The name of the Fly App."
                     },
                     {
                       "description": "The base URL registered by the extension provider with Fly.io.",
@@ -998,7 +867,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"error\": \"string\",\n  \"status\": 1793\n}",
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 7266\n}",
               "cookie": [],
               "_postman_previewlanguage": "json"
             }
@@ -1039,8 +908,8 @@
     ]
   },
   "info": {
-    "_postman_id": "a337e8ad-dd4d-4905-9e20-d370771c1f65",
-    "name": "Fly.io Apps Extensions API",
+    "_postman_id": "b49e07b8-090b-404e-82a9-0e156bf4d6c0",
+    "name": "Fly.io Extensions Apps API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "description": {
       "content": "The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with the Fly.io platform as extension providers. When a Fly.io user provisions an extension via the flyctl CLI, Fly.io forwards the provisioning request to the provider's API with details about the requesting organization and user, and the provider responds with environment variable configuration that is attached to the target application. Providers must also support single sign-on login flows using OAuth, daily billing detail endpoints, and webhook delivery for resource lifecycle events. Extensions currently available through this program include Sentry, Supabase, Tigris object storage, Upstash Redis and Vector, and others.\n\nContact Support:\n Name: Fly.io Extensions Program",

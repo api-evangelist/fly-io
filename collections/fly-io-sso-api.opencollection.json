@@ -1,0 +1,43 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Fly.io Extensions Apps SSO API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "SSO",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Initiate SSO for an extension",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{provider_base_url}/extensions/:extension_id/sso",
+            "params": [
+              {
+                "name": "extension_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the extension resource, as returned by the provider."
+              }
+            ]
+          },
+          "docs": "Called by Fly.io when a user runs a flyctl command to access the provider's dashboard (e.g., flyctl ext redis dashboard). The provider should verify the request signature and redirect the user to the appropriate dashboard page, using information from the Fly.io OAuth token to identify the user."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

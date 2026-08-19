@@ -1,0 +1,39 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Fly.io Extensions Apps Tokens API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Tokens",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get an OIDC token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{provider_base_url}/v1/tokens/oidc",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Requests an OpenID Connect (OIDC) token for the calling Fly Machine. The token can be used to authenticate to third-party services that support OIDC workload identity, such as AWS, GCP, or Vault. The optional aud field controls the audience claim embedded in the JWT."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

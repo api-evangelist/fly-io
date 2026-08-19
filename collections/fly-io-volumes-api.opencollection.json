@@ -1,0 +1,224 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Fly.io Extensions Apps Volumes API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Volumes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List volumes in an app",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{provider_base_url}/v1/apps/:app_name/volumes",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              }
+            ]
+          },
+          "docs": "Returns a list of all Fly Volumes belonging to the specified app, including their size, region, encryption status, attachment state, and snapshot retention settings."
+        },
+        {
+          "info": {
+            "name": "Create a volume",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{provider_base_url}/v1/apps/:app_name/volumes",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new Fly Volume in the specified app for use as persistent storage attached to a Fly Machine. Volumes are region-specific and are encrypted by default. Specify unique_zones_only to distribute redundant volumes across separate physical hardware for higher availability."
+        },
+        {
+          "info": {
+            "name": "Get a volume",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{provider_base_url}/v1/apps/:app_name/volumes/:volume_id",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "volume_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Volume."
+              }
+            ]
+          },
+          "docs": "Retrieves the current state and configuration of a specific Fly Volume by its ID, including size, region, filesystem type, encryption status, and attachment information."
+        },
+        {
+          "info": {
+            "name": "Update a volume",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://{provider_base_url}/v1/apps/:app_name/volumes/:volume_id",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "volume_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Volume."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the configuration of an existing Fly Volume, such as adjusting the snapshot retention period. Volume size can only be increased via the extend endpoint; it cannot be reduced."
+        },
+        {
+          "info": {
+            "name": "Delete a volume",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://{provider_base_url}/v1/apps/:app_name/volumes/:volume_id",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "volume_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Volume."
+              }
+            ]
+          },
+          "docs": "Permanently deletes a Fly Volume. The volume must not be currently attached to a running Machine. Deleting a volume also removes all snapshots associated with it. This operation is irreversible."
+        },
+        {
+          "info": {
+            "name": "Extend a volume",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://{provider_base_url}/v1/apps/:app_name/volumes/:volume_id/extend",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "volume_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Volume."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Increases the size of a Fly Volume without downtime or data loss. Volume size can only be increased; shrinking a volume is not supported. The Machine attached to the volume may need to be restarted for the operating system to recognize the additional space."
+        },
+        {
+          "info": {
+            "name": "List volume snapshots",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{provider_base_url}/v1/apps/:app_name/volumes/:volume_id/snapshots",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "volume_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Volume."
+              }
+            ]
+          },
+          "docs": "Returns a list of all snapshots for a specific Fly Volume. Snapshots are created automatically on a daily schedule and can also be created on-demand. They are retained according to the volume's snapshot retention setting."
+        },
+        {
+          "info": {
+            "name": "Create a volume snapshot",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{provider_base_url}/v1/apps/:app_name/volumes/:volume_id/snapshots",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "volume_id",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier of the Fly Volume."
+              }
+            ]
+          },
+          "docs": "Creates an on-demand snapshot of a Fly Volume. Snapshots capture the current state of the volume and can be used to restore data or create new volumes from a known-good state."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

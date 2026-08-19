@@ -1,0 +1,227 @@
+{
+  "item": [
+    {
+      "id": "bdfdce3d-ae01-4f44-9adb-97fa98a01049",
+      "name": "Tokens",
+      "description": {
+        "content": "Operations for requesting OpenID Connect (OIDC) tokens from third-party services, enabling Fly Machines to authenticate to external systems using workload identity.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "8a7e2d30-0f5b-4827-8173-a0d476a73a2e",
+          "name": "Get an OIDC token",
+          "request": {
+            "name": "Get an OIDC token",
+            "description": {
+              "content": "Requests an OpenID Connect (OIDC) token for the calling Fly Machine. The token can be used to authenticate to third-party services that support OIDC workload identity, such as AWS, GCP, or Vault. The optional aud field controls the audience claim embedded in the JWT.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tokens",
+                "oidc"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "description": "The base URL registered by the extension provider with Fly.io.",
+                  "type": "any",
+                  "value": "{{provider_base_url}}",
+                  "key": "provider_base_url"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"aud\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b1976db7-9cb6-43a4-80a9-081d14e52a28",
+              "name": "OIDC token as a raw JWT string.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tokens",
+                    "oidc"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"aud\": \"https://fly.io/my-org-slug\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"string\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "20e8241b-18e6-416d-af32-d68ae0331221",
+              "name": "Missing or invalid API token.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tokens",
+                    "oidc"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "description": "The base URL registered by the extension provider with Fly.io.",
+                      "type": "any",
+                      "value": "{{provider_base_url}}",
+                      "key": "provider_base_url"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"aud\": \"https://fly.io/my-org-slug\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"status\": 3815\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "description": {
+        "content": "The base URL registered by the extension provider with Fly.io.",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "api.example.com",
+      "key": "provider_base_url"
+    },
+    {
+      "type": "string",
+      "value": "https://{{provider_base_url}}",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "0ab628ef-f067-46ac-8d56-6fdf5c3d04eb",
+    "name": "Fly.io Extensions Apps Tokens API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with the Fly.io platform as extension providers. When a Fly.io user provisions an extension via the flyctl CLI, Fly.io forwards the provisioning request to the provider's API with details about the requesting organization and user, and the provider responds with environment variable configuration that is attached to the target application. Providers must also support single sign-on login flows using OAuth, daily billing detail endpoints, and webhook delivery for resource lifecycle events. Extensions currently available through this program include Sentry, Supabase, Tigris object storage, Upstash Redis and Vector, and others.\n\nContact Support:\n Name: Fly.io Extensions Program",
+      "type": "text/plain"
+    }
+  }
+}

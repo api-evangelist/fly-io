@@ -1,0 +1,102 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Fly.io Extensions Apps API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Apps",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List apps in an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{provider_base_url}/v1/apps",
+            "params": [
+              {
+                "name": "org_slug",
+                "value": "",
+                "type": "query",
+                "description": "The organization slug to filter apps by."
+              }
+            ]
+          },
+          "docs": "Returns a list of all Fly Apps belonging to the specified organization. Results include the app name, machine count, volume count, and network configuration for each app."
+        },
+        {
+          "info": {
+            "name": "Create a Fly App",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{provider_base_url}/v1/apps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new Fly App under the specified organization. An app is a logical grouping of Fly Machines that share a name, network, and routing configuration. Machines must belong to an app before they can be created."
+        },
+        {
+          "info": {
+            "name": "Get a Fly App",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{provider_base_url}/v1/apps/:app_name",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              }
+            ]
+          },
+          "docs": "Retrieves details about a specific Fly App by its name, including the app status, organization, and associated network configuration."
+        },
+        {
+          "info": {
+            "name": "Delete a Fly App",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://{provider_base_url}/v1/apps/:app_name",
+            "params": [
+              {
+                "name": "app_name",
+                "value": "",
+                "type": "path",
+                "description": "The name of the Fly App."
+              },
+              {
+                "name": "force",
+                "value": "",
+                "type": "query",
+                "description": "When true, all running Machines in the app are stopped before deletion proceeds. Without this flag, deletion fails if any Machines are running."
+              }
+            ]
+          },
+          "docs": "Permanently deletes a Fly App and all of its associated Machines, volumes, and IP addresses. This operation is irreversible. Use the force query parameter to stop all running Machines before deletion."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
