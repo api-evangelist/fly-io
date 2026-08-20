@@ -96,6 +96,8 @@ apis:
   humanURL: https://fly.io/docs/machines/api/
   baseURL: https://api.machines.dev
   tags:
+  - Application
+  tags_raw:
   - Apps
   properties:
   - type: OpenAPI
@@ -108,6 +110,8 @@ apis:
   humanURL: https://fly.io/docs/machines/api/
   baseURL: https://api.machines.dev
   tags:
+  - Authentication
+  tags_raw:
   - OAuth
   properties:
   - type: OpenAPI
@@ -156,6 +160,8 @@ apis:
   humanURL: https://fly.io/docs/machines/api/
   baseURL: https://api.machines.dev
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
