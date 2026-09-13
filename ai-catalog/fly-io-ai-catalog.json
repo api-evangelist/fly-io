@@ -1,0 +1,47 @@
+{
+  "entries": [
+    {
+      "description": "Create Sprites, run commands in them, manage services, checkpoints, and network policy.",
+      "displayName": "Sprites MCP server",
+      "identifier": "urn:air:fly.io:mcp:sprites",
+      "representativeQueries": [
+        "give my agent a Linux machine to work in",
+        "run this test suite somewhere other than my laptop",
+        "snapshot the filesystem before the agent changes it",
+        "keep a dev server running between sessions"
+      ],
+      "type": "application/mcp-server+json",
+      "url": "https://sprites.dev/mcp"
+    },
+    {
+      "description": "REST API for creating, starting, stopping, and destroying Fly Machines.",
+      "displayName": "Fly.io Machines API",
+      "identifier": "urn:air:fly.io:openapi:machines",
+      "representativeQueries": [
+        "create a virtual machine programmatically",
+        "start and stop a Fly Machine over HTTP",
+        "deploy a container to multiple regions"
+      ],
+      "type": "application/json",
+      "url": "https://docs.machines.dev/openapi.json"
+    },
+    {
+      "description": "Skill documents describing how to use Fly.io and Sprites.",
+      "displayName": "Fly.io agent skills",
+      "identifier": "urn:air:fly.io:skills:index",
+      "representativeQueries": [
+        "how do I create a Sprite",
+        "how do I call the Fly.io Machines API"
+      ],
+      "type": "application/json",
+      "url": "https://fly.io/.well-known/agent-skills/index.json"
+    }
+  ],
+  "host": {
+    "description": "Public cloud that runs applications and agent workloads close to users.",
+    "displayName": "Fly.io",
+    "identifier": "fly.io",
+    "url": "https://fly.io"
+  },
+  "specVersion": "1.0"
+}
