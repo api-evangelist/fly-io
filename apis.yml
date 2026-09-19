@@ -80,6 +80,12 @@ apis:
   tags:
   - Extensions
   - Integration
+  - Partners
+  - Platform
+  - Provisioning
+  tags_raw:
+  - Extensions
+  - Integration
   - Partner
   - Platform
   - Provisioning
@@ -173,6 +179,8 @@ apis:
   humanURL: https://fly.io/docs/machines/api/
   baseURL: https://api.machines.dev
   tags:
+  - Authentication
+  tags_raw:
   - OAuth
   properties:
   - type: OpenAPI
