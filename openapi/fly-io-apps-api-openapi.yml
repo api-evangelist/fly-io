@@ -1,7 +1,7 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
   title: Fly.io Extensions Apps API
-  description: The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with the Fly.io platform as extension providers. When a Fly.io user provisions an extension via the flyctl CLI, Fly.io forwards the provisioning request to the provider's API with details about the requesting organization and user, and the provider responds with environment variable configuration that is attached to the target application. Providers must also support single sign-on login flows using OAuth, daily billing detail endpoints, and webhook delivery for resource lifecycle events. Extensions currently available through this program include Sentry, Supabase, Tigris object storage, Upstash Redis and Vector, and others.
+  description: The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with the Fly.io platform as extension providers.
   version: '1.0'
   contact:
     name: Fly.io Extensions Program
@@ -114,6 +114,25 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  responses:
+    Unauthorized:
+      description: Missing or invalid API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadRequest:
+      description: Bad request due to invalid parameters or request body.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   parameters:
     appName:
       name: app_name
@@ -130,26 +149,6 @@ components:
       schema:
         type: string
   schemas:
-    Organization:
-      type: object
-      description: A Fly.io organization that owns apps and resources.
-      properties:
-        name:
-          type: string
-          description: The organization name.
-        slug:
-          type: string
-          description: The organization's URL-safe identifier slug.
-    ErrorResponse:
-      type: object
-      description: A standard error response returned by the API on failure.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message describing what went wrong.
-        status:
-          type: integer
-          description: HTTP status code.
     CreateAppRequest:
       type: object
       description: Request body for creating a new Fly App.
@@ -169,6 +168,16 @@ components:
         network:
           type: string
           description: Name of the private WireGuard network to attach this app to. If omitted, the organization's default network is used.
+    ErrorResponse:
+      type: object
+      description: A standard error response returned by the API on failure.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message describing what went wrong.
+        status:
+          type: integer
+          description: HTTP status code.
     App:
       type: object
       description: A Fly App, which is a logical grouping of related Fly Machines.
@@ -193,25 +202,16 @@ components:
           description: The private network name this app is attached to.
         organization:
           $ref: '#/components/schemas/Organization'
-  responses:
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Unauthorized:
-      description: Missing or invalid API token.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    BadRequest:
-      description: Bad request due to invalid parameters or request body.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
+    Organization:
+      type: object
+      description: A Fly.io organization that owns apps and resources.
+      properties:
+        name:
+          type: string
+          description: The organization name.
+        slug:
+          type: string
+          description: The organization's URL-safe identifier slug.
   securitySchemes:
     flySharedSecret:
       type: http

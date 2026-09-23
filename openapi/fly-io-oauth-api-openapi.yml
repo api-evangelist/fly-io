@@ -1,7 +1,7 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Fly.io Extensions Apps OAuth API
-  description: The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with the Fly.io platform as extension providers. When a Fly.io user provisions an extension via the flyctl CLI, Fly.io forwards the provisioning request to the provider's API with details about the requesting organization and user, and the provider responds with environment variable configuration that is attached to the target application. Providers must also support single sign-on login flows using OAuth, daily billing detail endpoints, and webhook delivery for resource lifecycle events. Extensions currently available through this program include Sentry, Supabase, Tigris object storage, Upstash Redis and Vector, and others.
+  title: Fly.io Extensions Apps O Auth API
+  description: The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with the Fly.io platform as extension providers.
   version: '1.0'
   contact:
     name: Fly.io Extensions Program
@@ -137,22 +137,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    OAuthTokenResponse:
-      type: object
-      description: OAuth access token response from the Fly.io token endpoint.
-      properties:
-        access_token:
-          type: string
-          description: The OAuth access token to use for authenticated API calls.
-        token_type:
-          type: string
-          description: Token type, always Bearer.
-        expires_in:
-          type: integer
-          description: Token validity duration in seconds.
-        scope:
-          type: string
-          description: Space-separated list of granted OAuth scopes.
     TokenInfo:
       type: object
       description: User and organization information for a Fly.io OAuth token.
@@ -172,6 +156,22 @@ components:
         role:
           type: string
           description: The user's role within the organization.
+    OAuthTokenResponse:
+      type: object
+      description: OAuth access token response from the Fly.io token endpoint.
+      properties:
+        access_token:
+          type: string
+          description: The OAuth access token to use for authenticated API calls.
+        token_type:
+          type: string
+          description: Token type, always Bearer.
+        expires_in:
+          type: integer
+          description: Token validity duration in seconds.
+        scope:
+          type: string
+          description: Space-separated list of granted OAuth scopes.
     ErrorResponse:
       type: object
       description: A standard error response.
