@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: Fly.io Extensions Apps O Auth API
+  title: Fly.io Extensions Apps O Auth OAuth API
   description: The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with the Fly.io platform as extension providers.
   version: '1.0'
   contact:
@@ -136,7 +136,36 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
+  responses:
+    BadRequest:
+      description: Invalid request parameters or body.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Missing or invalid authentication credentials.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   schemas:
+    OAuthTokenResponse:
+      type: object
+      description: OAuth access token response from the Fly.io token endpoint.
+      properties:
+        access_token:
+          type: string
+          description: The OAuth access token to use for authenticated API calls.
+        token_type:
+          type: string
+          description: Token type, always Bearer.
+        expires_in:
+          type: integer
+          description: Token validity duration in seconds.
+        scope:
+          type: string
+          description: Space-separated list of granted OAuth scopes.
     TokenInfo:
       type: object
       description: User and organization information for a Fly.io OAuth token.
@@ -156,22 +185,6 @@ components:
         role:
           type: string
           description: The user's role within the organization.
-    OAuthTokenResponse:
-      type: object
-      description: OAuth access token response from the Fly.io token endpoint.
-      properties:
-        access_token:
-          type: string
-          description: The OAuth access token to use for authenticated API calls.
-        token_type:
-          type: string
-          description: Token type, always Bearer.
-        expires_in:
-          type: integer
-          description: Token validity duration in seconds.
-        scope:
-          type: string
-          description: Space-separated list of granted OAuth scopes.
     ErrorResponse:
       type: object
       description: A standard error response.
@@ -182,19 +195,6 @@ components:
         status:
           type: integer
           description: HTTP status code.
-  responses:
-    Unauthorized:
-      description: Missing or invalid authentication credentials.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    BadRequest:
-      description: Invalid request parameters or body.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
   securitySchemes:
     flySharedSecret:
       type: http

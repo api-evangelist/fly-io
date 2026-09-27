@@ -73,7 +73,24 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
+  responses:
+    Unauthorized:
+      description: Missing or invalid authentication credentials.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   schemas:
+    ErrorResponse:
+      type: object
+      description: A standard error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        status:
+          type: integer
+          description: HTTP status code.
     CloudEventPayload:
       type: object
       description: A CloudEvents-format payload sent by Fly.io to the extension provider for machine and account lifecycle events.
@@ -108,16 +125,6 @@ components:
           type: object
           description: Event-specific payload data.
           additionalProperties: true
-    ErrorResponse:
-      type: object
-      description: A standard error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        status:
-          type: integer
-          description: HTTP status code.
     ExtensionWebhookPayload:
       type: object
       description: Payload sent by extension providers to notify Fly.io of resource lifecycle changes.
@@ -140,13 +147,6 @@ components:
           description: Updated environment variable configuration, if applicable. Include when responding to async provisioning completion.
           additionalProperties:
             type: string
-  responses:
-    Unauthorized:
-      description: Missing or invalid authentication credentials.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
   securitySchemes:
     flySharedSecret:
       type: http

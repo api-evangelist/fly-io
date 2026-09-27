@@ -342,6 +342,28 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  parameters:
+    machineId:
+      name: machine_id
+      in: path
+      description: The unique identifier of the Fly Machine.
+      required: true
+      schema:
+        type: string
+    appName:
+      name: app_name
+      in: path
+      description: The name of the Fly App.
+      required: true
+      schema:
+        type: string
+    metadataKey:
+      name: key
+      in: path
+      description: The metadata key to get, set, or delete.
+      required: true
+      schema:
+        type: string
   schemas:
     MachineRestart:
       type: object
@@ -354,34 +376,6 @@ components:
           - false
           - on-failure
           - always
-    MachineCheck:
-      type: object
-      description: A health check definition for a Fly Machine.
-      properties:
-        type:
-          type: string
-          description: Check protocol type.
-          enum:
-          - tcp
-          - http
-        port:
-          type: integer
-          description: Port to run the health check against.
-        interval:
-          type: string
-          description: How often to run the check (e.g., 10s, 1m).
-        timeout:
-          type: string
-          description: Maximum time to wait for the check to respond.
-        grace_period:
-          type: string
-          description: Time to wait after Machine start before running checks.
-        path:
-          type: string
-          description: HTTP path for http-type checks.
-        method:
-          type: string
-          description: HTTP method for http-type checks. Defaults to GET.
     MachinePort:
       type: object
       description: An external port mapping for a Machine service.
@@ -424,58 +418,34 @@ components:
         tty:
           type: boolean
           description: When true, allocates a pseudo-TTY for the Machine's init process.
-    MachineConfig:
+    MachineCheck:
       type: object
-      description: Configuration for a Fly Machine.
-      required:
-      - image
+      description: A health check definition for a Fly Machine.
       properties:
-        image:
+        type:
           type: string
-          description: The container registry path for the image that defines this Machine.
-          example: registry-1.docker.io/library/ubuntu:latest
-        guest:
-          $ref: '#/components/schemas/MachineGuest'
-        env:
-          type: object
-          description: Environment variables to inject into the Machine at runtime.
-          additionalProperties:
-            type: string
-        services:
-          type: array
-          description: Network service definitions for exposing this Machine externally.
-          items:
-            $ref: '#/components/schemas/MachineService'
-        checks:
-          type: object
-          description: Named health check definitions. Keys are check names; values are check configuration objects.
-          additionalProperties:
-            $ref: '#/components/schemas/MachineCheck'
-        mounts:
-          type: array
-          description: Persistent volume mount definitions.
-          items:
-            $ref: '#/components/schemas/MachineMount'
-        init:
-          $ref: '#/components/schemas/MachineInit'
-        restart:
-          $ref: '#/components/schemas/MachineRestart'
-        schedule:
-          type: string
-          description: Run this Machine on a recurring schedule. Valid values are hourly, daily, weekly, and monthly.
+          description: Check protocol type.
           enum:
-          - hourly
-          - daily
-          - weekly
-          - monthly
-        auto_destroy:
-          type: boolean
-          description: When true, the Machine is automatically destroyed after it exits.
-        metadata:
-          type: object
-          description: Arbitrary key-value metadata for internal routing and configuration.
-          additionalProperties:
-            type: string
+          - tcp
+          - http
+        port:
+          type: integer
+          description: Port to run the health check against.
+        interval:
+          type: string
+          description: How often to run the check (e.g., 10s, 1m).
+        timeout:
+          type: string
+          description: Maximum time to wait for the check to respond.
+        grace_period:
+          type: string
+          description: Time to wait after Machine start before running checks.
+        path:
+          type: string
+          description: HTTP path for http-type checks.
+        method:
+          type: string
+          description: HTTP method for http-type checks. Defaults to GET.
     MachineServiceConcurrency:
       type: object
       description: Concurrency-based load balancing configuration for a service.
@@ -531,34 +501,6 @@ components:
           description: Timestamp when the Machine was last updated.
         config:
           $ref: '#/components/schemas/MachineConfig'
-    CreateMachineRequest:
-      type: object
-      description: Request body for creating or updating a Fly Machine.
-      required:
-      - config
-      properties:
-        name:
-          type: string
-          description: Optional human-readable name for the Machine.
-        region:
-          type: string
-          description: The three-letter region code where the Machine should be deployed. If omitted, Fly.io chooses the nearest available region.
-          example: iad
-        config:
-          $ref: '#/components/schemas/MachineConfig'
-        skip_service_registration:
-          type: boolean
-          description: When true, the Machine is created without being added to the load balancer. Useful for blue-green deployments.
-    ErrorResponse:
-      type: object
-      description: A standard error response returned by the API on failure.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message describing what went wrong.
-        status:
-          type: integer
-          description: HTTP status code.
     MachineService:
       type: object
       description: A network service definition for exposing a Machine to external traffic.
@@ -598,6 +540,86 @@ components:
           enum:
           - shared
           - performance
+    MachineConfig:
+      type: object
+      description: Configuration for a Fly Machine.
+      required:
+      - image
+      properties:
+        image:
+          type: string
+          description: The container registry path for the image that defines this Machine.
+          example: registry-1.docker.io/library/ubuntu:latest
+        guest:
+          $ref: '#/components/schemas/MachineGuest'
+        env:
+          type: object
+          description: Environment variables to inject into the Machine at runtime.
+          additionalProperties:
+            type: string
+        services:
+          type: array
+          description: Network service definitions for exposing this Machine externally.
+          items:
+            $ref: '#/components/schemas/MachineService'
+        checks:
+          type: object
+          description: Named health check definitions. Keys are check names; values are check configuration objects.
+          additionalProperties:
+            $ref: '#/components/schemas/MachineCheck'
+        mounts:
+          type: array
+          description: Persistent volume mount definitions.
+          items:
+            $ref: '#/components/schemas/MachineMount'
+        init:
+          $ref: '#/components/schemas/MachineInit'
+        restart:
+          $ref: '#/components/schemas/MachineRestart'
+        schedule:
+          type: string
+          description: Run this Machine on a recurring schedule. Valid values are hourly, daily, weekly, and monthly.
+          enum:
+          - hourly
+          - daily
+          - weekly
+          - monthly
+        auto_destroy:
+          type: boolean
+          description: When true, the Machine is automatically destroyed after it exits.
+        metadata:
+          type: object
+          description: Arbitrary key-value metadata for internal routing and configuration.
+          additionalProperties:
+            type: string
+    ErrorResponse:
+      type: object
+      description: A standard error response returned by the API on failure.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message describing what went wrong.
+        status:
+          type: integer
+          description: HTTP status code.
+    CreateMachineRequest:
+      type: object
+      description: Request body for creating or updating a Fly Machine.
+      required:
+      - config
+      properties:
+        name:
+          type: string
+          description: Optional human-readable name for the Machine.
+        region:
+          type: string
+          description: The three-letter region code where the Machine should be deployed. If omitted, Fly.io chooses the nearest available region.
+          example: iad
+        config:
+          $ref: '#/components/schemas/MachineConfig'
+        skip_service_registration:
+          type: boolean
+          description: When true, the Machine is created without being added to the load balancer. Useful for blue-green deployments.
     MachineMount:
       type: object
       description: A volume mount definition for a Fly Machine.
@@ -612,12 +634,6 @@ components:
           type: integer
           description: Size of the volume in gigabytes.
   responses:
-    Unauthorized:
-      description: Missing or invalid API token.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
     BadRequest:
       description: Bad request due to invalid parameters or request body.
       content:
@@ -630,28 +646,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-  parameters:
-    appName:
-      name: app_name
-      in: path
-      description: The name of the Fly App.
-      required: true
-      schema:
-        type: string
-    machineId:
-      name: machine_id
-      in: path
-      description: The unique identifier of the Fly Machine.
-      required: true
-      schema:
-        type: string
-    metadataKey:
-      name: key
-      in: path
-      description: The metadata key to get, set, or delete.
-      required: true
-      schema:
-        type: string
+    Unauthorized:
+      description: Missing or invalid API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   securitySchemes:
     flySharedSecret:
       type: http
