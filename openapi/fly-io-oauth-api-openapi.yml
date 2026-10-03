@@ -150,22 +150,16 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
   schemas:
-    OAuthTokenResponse:
+    ErrorResponse:
       type: object
-      description: OAuth access token response from the Fly.io token endpoint.
+      description: A standard error response.
       properties:
-        access_token:
+        error:
           type: string
-          description: The OAuth access token to use for authenticated API calls.
-        token_type:
-          type: string
-          description: Token type, always Bearer.
-        expires_in:
+          description: Human-readable error message.
+        status:
           type: integer
-          description: Token validity duration in seconds.
-        scope:
-          type: string
-          description: Space-separated list of granted OAuth scopes.
+          description: HTTP status code.
     TokenInfo:
       type: object
       description: User and organization information for a Fly.io OAuth token.
@@ -185,16 +179,22 @@ components:
         role:
           type: string
           description: The user's role within the organization.
-    ErrorResponse:
+    OAuthTokenResponse:
       type: object
-      description: A standard error response.
+      description: OAuth access token response from the Fly.io token endpoint.
       properties:
-        error:
+        access_token:
           type: string
-          description: Human-readable error message.
-        status:
+          description: The OAuth access token to use for authenticated API calls.
+        token_type:
+          type: string
+          description: Token type, always Bearer.
+        expires_in:
           type: integer
-          description: HTTP status code.
+          description: Token validity duration in seconds.
+        scope:
+          type: string
+          description: Space-separated list of granted OAuth scopes.
   securitySchemes:
     flySharedSecret:
       type: http

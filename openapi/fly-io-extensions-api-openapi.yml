@@ -109,15 +109,23 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  parameters:
+    extensionId:
+      name: extension_id
+      in: path
+      description: The unique identifier of the extension resource, as returned by the provider.
+      required: true
+      schema:
+        type: string
   responses:
-    BadRequest:
-      description: Invalid request parameters or body.
+    NotFound:
+      description: The requested extension resource was not found.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-    NotFound:
-      description: The requested extension resource was not found.
+    BadRequest:
+      description: Invalid request parameters or body.
       content:
         application/json:
           schema:
@@ -150,28 +158,16 @@ components:
         fly_app_name:
           type: string
           description: If the provider runs a Fly App to serve this extension, specify its name here to enable Flycast routing from the customer's private network.
-    ExtensionResource:
+    ErrorResponse:
       type: object
-      description: Full details about a provisioned extension resource.
+      description: A standard error response.
       properties:
-        id:
+        error:
           type: string
-          description: Unique identifier for this extension resource.
-        name:
-          type: string
-          description: Human-readable name for the resource.
+          description: Human-readable error message.
         status:
-          type: string
-          description: Current status of the resource (e.g., pending, ready, error).
-          enum:
-          - pending
-          - ready
-          - error
-        config:
-          type: object
-          description: Current environment variable configuration for the resource.
-          additionalProperties:
-            type: string
+          type: integer
+          description: HTTP status code.
     ProvisionRequest:
       type: object
       description: Request body sent by Fly.io to the provider when provisioning or updating an extension resource.
@@ -218,24 +214,28 @@ components:
         ip_address:
           type: string
           description: A Fly.io private IP address allocated for Flycast routing, enabling the extension to receive traffic over the Fly.io private network.
-    ErrorResponse:
+    ExtensionResource:
       type: object
-      description: A standard error response.
+      description: Full details about a provisioned extension resource.
       properties:
-        error:
+        id:
           type: string
-          description: Human-readable error message.
+          description: Unique identifier for this extension resource.
+        name:
+          type: string
+          description: Human-readable name for the resource.
         status:
-          type: integer
-          description: HTTP status code.
-  parameters:
-    extensionId:
-      name: extension_id
-      in: path
-      description: The unique identifier of the extension resource, as returned by the provider.
-      required: true
-      schema:
-        type: string
+          type: string
+          description: Current status of the resource (e.g., pending, ready, error).
+          enum:
+          - pending
+          - ready
+          - error
+        config:
+          type: object
+          description: Current environment variable configuration for the resource.
+          additionalProperties:
+            type: string
   securitySchemes:
     flySharedSecret:
       type: http

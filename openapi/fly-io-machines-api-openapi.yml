@@ -342,40 +342,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  parameters:
-    machineId:
-      name: machine_id
-      in: path
-      description: The unique identifier of the Fly Machine.
-      required: true
-      schema:
-        type: string
-    appName:
-      name: app_name
-      in: path
-      description: The name of the Fly App.
-      required: true
-      schema:
-        type: string
-    metadataKey:
-      name: key
-      in: path
-      description: The metadata key to get, set, or delete.
-      required: true
-      schema:
-        type: string
   schemas:
-    MachineRestart:
-      type: object
-      description: Restart policy configuration for a Fly Machine.
-      properties:
-        policy:
-          type: string
-          description: When to restart the Machine after it exits. no disables restarts; on-failure restarts only on non-zero exit codes; always restarts unconditionally.
-          enum:
-          - false
-          - on-failure
-          - always
     MachinePort:
       type: object
       description: An external port mapping for a Machine service.
@@ -396,72 +363,17 @@ components:
         force_https:
           type: boolean
           description: When true, HTTP traffic is redirected to HTTPS.
-    MachineInit:
+    MachineRestart:
       type: object
-      description: Startup process configuration for a Fly Machine.
+      description: Restart policy configuration for a Fly Machine.
       properties:
-        exec:
-          type: array
-          description: Command to execute as the Machine's init process.
-          items:
-            type: string
-        entrypoint:
-          type: array
-          description: Override the container image's entrypoint.
-          items:
-            type: string
-        cmd:
-          type: array
-          description: Override the container image's default command.
-          items:
-            type: string
-        tty:
-          type: boolean
-          description: When true, allocates a pseudo-TTY for the Machine's init process.
-    MachineCheck:
-      type: object
-      description: A health check definition for a Fly Machine.
-      properties:
-        type:
+        policy:
           type: string
-          description: Check protocol type.
+          description: When to restart the Machine after it exits. no disables restarts; on-failure restarts only on non-zero exit codes; always restarts unconditionally.
           enum:
-          - tcp
-          - http
-        port:
-          type: integer
-          description: Port to run the health check against.
-        interval:
-          type: string
-          description: How often to run the check (e.g., 10s, 1m).
-        timeout:
-          type: string
-          description: Maximum time to wait for the check to respond.
-        grace_period:
-          type: string
-          description: Time to wait after Machine start before running checks.
-        path:
-          type: string
-          description: HTTP path for http-type checks.
-        method:
-          type: string
-          description: HTTP method for http-type checks. Defaults to GET.
-    MachineServiceConcurrency:
-      type: object
-      description: Concurrency-based load balancing configuration for a service.
-      properties:
-        type:
-          type: string
-          description: Concurrency metric type.
-          enum:
-          - connections
-          - requests
-        soft_limit:
-          type: integer
-          description: Soft connection/request limit. The load balancer deprioritizes this Machine above this threshold.
-        hard_limit:
-          type: integer
-          description: Hard connection/request limit. No new traffic is routed to this Machine above this threshold.
+          - false
+          - on-failure
+          - always
     Machine:
       type: object
       description: A Fly Machine is a fast-booting virtual machine deployed on Fly.io's global edge infrastructure.
@@ -501,6 +413,28 @@ components:
           description: Timestamp when the Machine was last updated.
         config:
           $ref: '#/components/schemas/MachineConfig'
+    MachineInit:
+      type: object
+      description: Startup process configuration for a Fly Machine.
+      properties:
+        exec:
+          type: array
+          description: Command to execute as the Machine's init process.
+          items:
+            type: string
+        entrypoint:
+          type: array
+          description: Override the container image's entrypoint.
+          items:
+            type: string
+        cmd:
+          type: array
+          description: Override the container image's default command.
+          items:
+            type: string
+        tty:
+          type: boolean
+          description: When true, allocates a pseudo-TTY for the Machine's init process.
     MachineService:
       type: object
       description: A network service definition for exposing a Machine to external traffic.
@@ -521,6 +455,75 @@ components:
             $ref: '#/components/schemas/MachinePort'
         concurrency:
           $ref: '#/components/schemas/MachineServiceConcurrency'
+    ErrorResponse:
+      type: object
+      description: A standard error response returned by the API on failure.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message describing what went wrong.
+        status:
+          type: integer
+          description: HTTP status code.
+    MachineMount:
+      type: object
+      description: A volume mount definition for a Fly Machine.
+      properties:
+        volume:
+          type: string
+          description: The ID of the Fly Volume to mount.
+        path:
+          type: string
+          description: Filesystem path inside the Machine where the volume is mounted.
+        size_gb:
+          type: integer
+          description: Size of the volume in gigabytes.
+    MachineCheck:
+      type: object
+      description: A health check definition for a Fly Machine.
+      properties:
+        type:
+          type: string
+          description: Check protocol type.
+          enum:
+          - tcp
+          - http
+        port:
+          type: integer
+          description: Port to run the health check against.
+        interval:
+          type: string
+          description: How often to run the check (e.g., 10s, 1m).
+        timeout:
+          type: string
+          description: Maximum time to wait for the check to respond.
+        grace_period:
+          type: string
+          description: Time to wait after Machine start before running checks.
+        path:
+          type: string
+          description: HTTP path for http-type checks.
+        method:
+          type: string
+          description: HTTP method for http-type checks. Defaults to GET.
+    CreateMachineRequest:
+      type: object
+      description: Request body for creating or updating a Fly Machine.
+      required:
+      - config
+      properties:
+        name:
+          type: string
+          description: Optional human-readable name for the Machine.
+        region:
+          type: string
+          description: The three-letter region code where the Machine should be deployed. If omitted, Fly.io chooses the nearest available region.
+          example: iad
+        config:
+          $ref: '#/components/schemas/MachineConfig'
+        skip_service_registration:
+          type: boolean
+          description: When true, the Machine is created without being added to the load balancer. Useful for blue-green deployments.
     MachineGuest:
       type: object
       description: Compute resource specification for a Fly Machine.
@@ -540,6 +543,22 @@ components:
           enum:
           - shared
           - performance
+    MachineServiceConcurrency:
+      type: object
+      description: Concurrency-based load balancing configuration for a service.
+      properties:
+        type:
+          type: string
+          description: Concurrency metric type.
+          enum:
+          - connections
+          - requests
+        soft_limit:
+          type: integer
+          description: Soft connection/request limit. The load balancer deprioritizes this Machine above this threshold.
+        hard_limit:
+          type: integer
+          description: Hard connection/request limit. No new traffic is routed to this Machine above this threshold.
     MachineConfig:
       type: object
       description: Configuration for a Fly Machine.
@@ -592,47 +611,28 @@ components:
           description: Arbitrary key-value metadata for internal routing and configuration.
           additionalProperties:
             type: string
-    ErrorResponse:
-      type: object
-      description: A standard error response returned by the API on failure.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message describing what went wrong.
-        status:
-          type: integer
-          description: HTTP status code.
-    CreateMachineRequest:
-      type: object
-      description: Request body for creating or updating a Fly Machine.
-      required:
-      - config
-      properties:
-        name:
-          type: string
-          description: Optional human-readable name for the Machine.
-        region:
-          type: string
-          description: The three-letter region code where the Machine should be deployed. If omitted, Fly.io chooses the nearest available region.
-          example: iad
-        config:
-          $ref: '#/components/schemas/MachineConfig'
-        skip_service_registration:
-          type: boolean
-          description: When true, the Machine is created without being added to the load balancer. Useful for blue-green deployments.
-    MachineMount:
-      type: object
-      description: A volume mount definition for a Fly Machine.
-      properties:
-        volume:
-          type: string
-          description: The ID of the Fly Volume to mount.
-        path:
-          type: string
-          description: Filesystem path inside the Machine where the volume is mounted.
-        size_gb:
-          type: integer
-          description: Size of the volume in gigabytes.
+  parameters:
+    appName:
+      name: app_name
+      in: path
+      description: The name of the Fly App.
+      required: true
+      schema:
+        type: string
+    metadataKey:
+      name: key
+      in: path
+      description: The metadata key to get, set, or delete.
+      required: true
+      schema:
+        type: string
+    machineId:
+      name: machine_id
+      in: path
+      description: The unique identifier of the Fly Machine.
+      required: true
+      schema:
+        type: string
   responses:
     BadRequest:
       description: Bad request due to invalid parameters or request body.
