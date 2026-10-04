@@ -218,40 +218,6 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  parameters:
-    appName:
-      name: app_name
-      in: path
-      description: The name of the Fly App.
-      required: true
-      schema:
-        type: string
-    volumeId:
-      name: volume_id
-      in: path
-      description: The unique identifier of the Fly Volume.
-      required: true
-      schema:
-        type: string
-  responses:
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    BadRequest:
-      description: Bad request due to invalid parameters or request body.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Unauthorized:
-      description: Missing or invalid API token.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
   schemas:
     Volume:
       type: object
@@ -296,36 +262,6 @@ components:
           type: string
           format: date-time
           description: Timestamp when the volume was created.
-    ErrorResponse:
-      type: object
-      description: A standard error response returned by the API on failure.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message describing what went wrong.
-        status:
-          type: integer
-          description: HTTP status code.
-    VolumeSnapshot:
-      type: object
-      description: A point-in-time snapshot of a Fly Volume.
-      properties:
-        id:
-          type: string
-          description: Unique identifier for this snapshot.
-        size:
-          type: integer
-          description: Snapshot size in bytes.
-        digest:
-          type: string
-          description: Content digest of the snapshot for integrity verification.
-        created_at:
-          type: string
-          format: date-time
-          description: Timestamp when the snapshot was created.
-        status:
-          type: string
-          description: Status of the snapshot (e.g., created).
     CreateVolumeRequest:
       type: object
       description: Request body for creating a new Fly Volume.
@@ -360,6 +296,70 @@ components:
           description: Number of days to retain snapshots. Defaults to 5.
           minimum: 1
           maximum: 60
+    ErrorResponse:
+      type: object
+      description: A standard error response returned by the API on failure.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message describing what went wrong.
+        status:
+          type: integer
+          description: HTTP status code.
+    VolumeSnapshot:
+      type: object
+      description: A point-in-time snapshot of a Fly Volume.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this snapshot.
+        size:
+          type: integer
+          description: Snapshot size in bytes.
+        digest:
+          type: string
+          description: Content digest of the snapshot for integrity verification.
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the snapshot was created.
+        status:
+          type: string
+          description: Status of the snapshot (e.g., created).
+  parameters:
+    appName:
+      name: app_name
+      in: path
+      description: The name of the Fly App.
+      required: true
+      schema:
+        type: string
+    volumeId:
+      name: volume_id
+      in: path
+      description: The unique identifier of the Fly Volume.
+      required: true
+      schema:
+        type: string
+  responses:
+    Unauthorized:
+      description: Missing or invalid API token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadRequest:
+      description: Bad request due to invalid parameters or request body.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   securitySchemes:
     flySharedSecret:
       type: http

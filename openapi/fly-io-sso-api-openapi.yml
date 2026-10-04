@@ -56,14 +56,6 @@ components:
         status:
           type: integer
           description: HTTP status code.
-  parameters:
-    extensionId:
-      name: extension_id
-      in: path
-      description: The unique identifier of the extension resource, as returned by the provider.
-      required: true
-      schema:
-        type: string
   responses:
     NotFound:
       description: The requested extension resource was not found.
@@ -77,6 +69,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
+  parameters:
+    extensionId:
+      name: extension_id
+      in: path
+      description: The unique identifier of the extension resource, as returned by the provider.
+      required: true
+      schema:
+        type: string
   securitySchemes:
     flySharedSecret:
       type: http

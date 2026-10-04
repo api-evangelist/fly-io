@@ -109,65 +109,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  parameters:
-    extensionId:
-      name: extension_id
-      in: path
-      description: The unique identifier of the extension resource, as returned by the provider.
-      required: true
-      schema:
-        type: string
-  responses:
-    NotFound:
-      description: The requested extension resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    BadRequest:
-      description: Invalid request parameters or body.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Unauthorized:
-      description: Missing or invalid authentication credentials.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
   schemas:
-    ProvisionResponse:
-      type: object
-      description: Response body returned by the provider after successfully provisioning or updating an extension resource.
-      required:
-      - id
-      - config
-      properties:
-        id:
-          type: string
-          description: The provider's unique identifier for this extension resource.
-        name:
-          type: string
-          description: Human-readable name for the provisioned resource.
-        config:
-          type: object
-          description: Environment variables to inject into the user's Fly App. Keys are variable names and values are the corresponding secrets or connection strings.
-          additionalProperties:
-            type: string
-        fly_app_name:
-          type: string
-          description: If the provider runs a Fly App to serve this extension, specify its name here to enable Flycast routing from the customer's private network.
-    ErrorResponse:
-      type: object
-      description: A standard error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        status:
-          type: integer
-          description: HTTP status code.
     ProvisionRequest:
       type: object
       description: Request body sent by Fly.io to the provider when provisioning or updating an extension resource.
@@ -214,6 +156,27 @@ components:
         ip_address:
           type: string
           description: A Fly.io private IP address allocated for Flycast routing, enabling the extension to receive traffic over the Fly.io private network.
+    ProvisionResponse:
+      type: object
+      description: Response body returned by the provider after successfully provisioning or updating an extension resource.
+      required:
+      - id
+      - config
+      properties:
+        id:
+          type: string
+          description: The provider's unique identifier for this extension resource.
+        name:
+          type: string
+          description: Human-readable name for the provisioned resource.
+        config:
+          type: object
+          description: Environment variables to inject into the user's Fly App. Keys are variable names and values are the corresponding secrets or connection strings.
+          additionalProperties:
+            type: string
+        fly_app_name:
+          type: string
+          description: If the provider runs a Fly App to serve this extension, specify its name here to enable Flycast routing from the customer's private network.
     ExtensionResource:
       type: object
       description: Full details about a provisioned extension resource.
@@ -236,6 +199,43 @@ components:
           description: Current environment variable configuration for the resource.
           additionalProperties:
             type: string
+    ErrorResponse:
+      type: object
+      description: A standard error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        status:
+          type: integer
+          description: HTTP status code.
+  parameters:
+    extensionId:
+      name: extension_id
+      in: path
+      description: The unique identifier of the extension resource, as returned by the provider.
+      required: true
+      schema:
+        type: string
+  responses:
+    Unauthorized:
+      description: Missing or invalid authentication credentials.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadRequest:
+      description: Invalid request parameters or body.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: The requested extension resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   securitySchemes:
     flySharedSecret:
       type: http

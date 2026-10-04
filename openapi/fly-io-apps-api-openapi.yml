@@ -114,21 +114,6 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  parameters:
-    appName:
-      name: app_name
-      in: path
-      description: The name of the Fly App.
-      required: true
-      schema:
-        type: string
-    orgSlug:
-      name: org_slug
-      in: query
-      description: The organization slug to filter apps by.
-      required: true
-      schema:
-        type: string
   schemas:
     Organization:
       type: object
@@ -140,6 +125,25 @@ components:
         slug:
           type: string
           description: The organization's URL-safe identifier slug.
+    CreateAppRequest:
+      type: object
+      description: Request body for creating a new Fly App.
+      required:
+      - app_name
+      - org_slug
+      properties:
+        app_name:
+          type: string
+          description: The unique name for the new app.
+        org_slug:
+          type: string
+          description: The slug of the organization that will own this app.
+        enable_subdomains:
+          type: boolean
+          description: When true, enables wildcard subdomain routing for this app.
+        network:
+          type: string
+          description: Name of the private WireGuard network to attach this app to. If omitted, the organization's default network is used.
     ErrorResponse:
       type: object
       description: A standard error response returned by the API on failure.
@@ -174,28 +178,24 @@ components:
           description: The private network name this app is attached to.
         organization:
           $ref: '#/components/schemas/Organization'
-    CreateAppRequest:
-      type: object
-      description: Request body for creating a new Fly App.
-      required:
-      - app_name
-      - org_slug
-      properties:
-        app_name:
-          type: string
-          description: The unique name for the new app.
-        org_slug:
-          type: string
-          description: The slug of the organization that will own this app.
-        enable_subdomains:
-          type: boolean
-          description: When true, enables wildcard subdomain routing for this app.
-        network:
-          type: string
-          description: Name of the private WireGuard network to attach this app to. If omitted, the organization's default network is used.
+  parameters:
+    appName:
+      name: app_name
+      in: path
+      description: The name of the Fly App.
+      required: true
+      schema:
+        type: string
+    orgSlug:
+      name: org_slug
+      in: query
+      description: The organization slug to filter apps by.
+      required: true
+      schema:
+        type: string
   responses:
-    NotFound:
-      description: The requested resource was not found.
+    Unauthorized:
+      description: Missing or invalid API token.
       content:
         application/json:
           schema:
@@ -206,8 +206,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-    Unauthorized:
-      description: Missing or invalid API token.
+    NotFound:
+      description: The requested resource was not found.
       content:
         application/json:
           schema:
