@@ -162,3 +162,78 @@ plans:
     elements:
       - name: Managed Kubernetes
       - name: Plus underlying compute/storage cost
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - metered
+  - subscription
+  units:
+  - compute
+  - data
+  - period
+  plans:
+  - name: Shared CPU Machines
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - compute
+    periods:
+    - per-use
+  - name: Performance CPU Machines
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - compute
+    periods:
+    - per-use
+  - name: Stopped Machines (rootfs)
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - data
+    periods:
+    - month
+  - name: Fly Volumes
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - data
+    periods:
+    - month
+  - name: Volume Snapshots
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - data
+    periods:
+    - month
+  - name: Data Transfer
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - data
+    periods:
+    - per-use
+  - name: Machine Reservation Blocks
+    access: other
+    model: subscription
+    model_how: stated
+    units:
+    - period
+    periods:
+    - year
+  - name: Fly Kubernetes (FKS)
+    access: other
+    model: subscription
+    model_how: stated
+    units:
+    - period
+    periods:
+    - month
