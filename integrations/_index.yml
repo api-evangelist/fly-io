@@ -28,3 +28,28 @@
   relationship: platform-app
   status: not-a-workflow
   arazzo: null
+- slug: fly-io-zapier
+  label: Zapier
+  partner: zapier
+  partner_name: Zapier
+  type: marketplace
+  marketplace: zapier-directory
+  channel: ipaas-listing
+  evidence: https://zapier.com/apps/flyio-machines-api/integrations
+  source: edge
+  relationship: ipaas-bridge
+  contract_reference:
+    register: Zapier app directory (zapier.com/api/v4/apps)
+    spec_file: null
+    role: ipaas-connector:zapier
+    registered_name: Fly.io Machines API
+    matched_domain: fly.io
+    matched_by: domain
+    detected_by: sweep-workflow-automation.py
+    detected: '2026-10-15'
+    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
+    app_slug: flyio-machines-api
+    beta: false
+    builder: unknown (not in the directory record)
+  status: pending-generation
+  arazzo: null
