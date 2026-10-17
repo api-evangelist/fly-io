@@ -219,49 +219,26 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    Volume:
+    VolumeSnapshot:
       type: object
-      description: A Fly Volume providing persistent block storage for Fly Machines.
+      description: A point-in-time snapshot of a Fly Volume.
       properties:
         id:
           type: string
-          description: Unique identifier for this volume.
-        name:
-          type: string
-          description: Human-readable name for the volume.
-        state:
-          type: string
-          description: Current state of the volume (e.g., created, hydrating, available).
-        size_gb:
+          description: Unique identifier for this snapshot.
+        size:
           type: integer
-          description: Volume size in gigabytes.
-        region:
+          description: Snapshot size in bytes.
+        digest:
           type: string
-          description: The region where this volume is provisioned.
-        zone:
-          type: string
-          description: The availability zone within the region.
-        encrypted:
-          type: boolean
-          description: Whether the volume is encrypted at rest. Enabled by default.
-        attached_machine_id:
-          type: string
-          description: The ID of the Machine this volume is currently attached to, if any.
-        attached_alloc_id:
-          type: string
-          description: The allocation ID of the Machine this volume is attached to.
-        filesystem_type:
-          type: string
-          description: The filesystem type of the volume (e.g., ext4).
-        snapshot_retention:
-          type: integer
-          description: Number of days snapshots are retained. Defaults to 5.
-          minimum: 1
-          maximum: 60
+          description: Content digest of the snapshot for integrity verification.
         created_at:
           type: string
           format: date-time
-          description: Timestamp when the volume was created.
+          description: Timestamp when the snapshot was created.
+        status:
+          type: string
+          description: Status of the snapshot (e.g., created).
     CreateVolumeRequest:
       type: object
       description: Request body for creating a new Fly Volume.
@@ -306,34 +283,50 @@ components:
         status:
           type: integer
           description: HTTP status code.
-    VolumeSnapshot:
+    Volume:
       type: object
-      description: A point-in-time snapshot of a Fly Volume.
+      description: A Fly Volume providing persistent block storage for Fly Machines.
       properties:
         id:
           type: string
-          description: Unique identifier for this snapshot.
-        size:
-          type: integer
-          description: Snapshot size in bytes.
-        digest:
+          description: Unique identifier for this volume.
+        name:
           type: string
-          description: Content digest of the snapshot for integrity verification.
+          description: Human-readable name for the volume.
+        state:
+          type: string
+          description: Current state of the volume (e.g., created, hydrating, available).
+        size_gb:
+          type: integer
+          description: Volume size in gigabytes.
+        region:
+          type: string
+          description: The region where this volume is provisioned.
+        zone:
+          type: string
+          description: The availability zone within the region.
+        encrypted:
+          type: boolean
+          description: Whether the volume is encrypted at rest. Enabled by default.
+        attached_machine_id:
+          type: string
+          description: The ID of the Machine this volume is currently attached to, if any.
+        attached_alloc_id:
+          type: string
+          description: The allocation ID of the Machine this volume is attached to.
+        filesystem_type:
+          type: string
+          description: The filesystem type of the volume (e.g., ext4).
+        snapshot_retention:
+          type: integer
+          description: Number of days snapshots are retained. Defaults to 5.
+          minimum: 1
+          maximum: 60
         created_at:
           type: string
           format: date-time
-          description: Timestamp when the snapshot was created.
-        status:
-          type: string
-          description: Status of the snapshot (e.g., created).
+          description: Timestamp when the volume was created.
   parameters:
-    appName:
-      name: app_name
-      in: path
-      description: The name of the Fly App.
-      required: true
-      schema:
-        type: string
     volumeId:
       name: volume_id
       in: path
@@ -341,7 +334,20 @@ components:
       required: true
       schema:
         type: string
+    appName:
+      name: app_name
+      in: path
+      description: The name of the Fly App.
+      required: true
+      schema:
+        type: string
   responses:
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
     Unauthorized:
       description: Missing or invalid API token.
       content:
@@ -350,12 +356,6 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
     BadRequest:
       description: Bad request due to invalid parameters or request body.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    NotFound:
-      description: The requested resource was not found.
       content:
         application/json:
           schema:

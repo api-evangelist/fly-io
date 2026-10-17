@@ -74,16 +74,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
 components:
   schemas:
-    ErrorResponse:
-      type: object
-      description: A standard error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        status:
-          type: integer
-          description: HTTP status code.
     CloudEventPayload:
       type: object
       description: A CloudEvents-format payload sent by Fly.io to the extension provider for machine and account lifecycle events.
@@ -140,6 +130,16 @@ components:
           description: Updated environment variable configuration, if applicable. Include when responding to async provisioning completion.
           additionalProperties:
             type: string
+    ErrorResponse:
+      type: object
+      description: A standard error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        status:
+          type: integer
+          description: HTTP status code.
   responses:
     Unauthorized:
       description: Missing or invalid authentication credentials.

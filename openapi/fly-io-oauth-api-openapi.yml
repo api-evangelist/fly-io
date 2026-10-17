@@ -156,6 +156,16 @@ components:
         role:
           type: string
           description: The user's role within the organization.
+    ErrorResponse:
+      type: object
+      description: A standard error response.
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        status:
+          type: integer
+          description: HTTP status code.
     OAuthTokenResponse:
       type: object
       description: OAuth access token response from the Fly.io token endpoint.
@@ -172,16 +182,6 @@ components:
         scope:
           type: string
           description: Space-separated list of granted OAuth scopes.
-    ErrorResponse:
-      type: object
-      description: A standard error response.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message.
-        status:
-          type: integer
-          description: HTTP status code.
   responses:
     Unauthorized:
       description: Missing or invalid authentication credentials.
