@@ -1,0 +1,301 @@
+openapi: 3.2.0
+info:
+  title: Machines Organizations API
+  description: This site hosts documentation generated from the Fly.io Machines API OpenAPI specification. Visit our complete Machines API docs for how to get started, more information about each endpoint, parameter descriptions, and examples.
+  contact: {}
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: '1.0'
+servers:
+- url: https://api.machines.dev
+security:
+- FlyBearerAuth: []
+tags:
+- name: Organizations
+paths:
+  /v1/orgs/{org_slug}/machines:
+    get:
+      tags:
+      - Organizations
+      summary: List All Machines
+      description: 'List all Machines associated with a specific organization. Machines are sorted by their `updated_at` timestamps, oldest to newest.
+
+
+        This API call represents "a point in time". Recent machine changes, including creations and destructions, may take time to propagate. When polling with `updated_after`, offset your timestamps to catch late-arriving events.'
+      operationId: Machines_org_list
+      parameters:
+      - name: org_slug
+        in: path
+        description: Fly Organization Slug
+        required: true
+        schema:
+          type: string
+      - name: include_deleted
+        in: query
+        description: Include deleted machines
+        schema:
+          type: boolean
+      - name: region
+        in: query
+        description: Region filter
+        schema:
+          type: string
+      - name: state
+        in: query
+        description: Comma separated list of states to filter (created, started, stopped, suspended)
+        schema:
+          type: string
+      - name: summary
+        in: query
+        description: Omit config from responses
+        schema:
+          type: boolean
+      - name: updated_after
+        in: query
+        description: Only return machines updated after this time. Timestamp must be in the RFC 3339 format
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: Pagination cursor from previous response (takes precedence over updated_after). Note that there is no guarantee that all machines returned by this endpoint are sorted by their updated_at fields. Pagination may reveal machines older than the last updated_at.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: The number of machines to fetch (max of 1000). This limit is advisory. Responses may be shorter, or even empty, even when more machines remain. If omitted, the maximum is used
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgMachinesResponse'
+  /v1/orgs/{org_slug}/volumes:
+    get:
+      tags:
+      - Organizations
+      summary: List All Volumes
+      description: List all volumes for an organization with optional filters and cursor-based pagination.
+      operationId: Volumes_org_list
+      parameters:
+      - name: org_slug
+        in: path
+        description: Fly Organization Slug
+        required: true
+        schema:
+          type: string
+      - name: include_deleted
+        in: query
+        description: Include deleted volumes
+        schema:
+          type: boolean
+      - name: region
+        in: query
+        description: Region filter
+        schema:
+          type: string
+      - name: state
+        in: query
+        description: Comma separated list of volume states to filter
+        schema:
+          type: string
+      - name: summary
+        in: query
+        description: Only return summary info about volumes (omit blocks, block size, etc)
+        schema:
+          type: boolean
+      - name: updated_after
+        in: query
+        description: Only return volumes updated after this time. Timestamp must be in the RFC 3339 format
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: Pagination cursor from previous response (takes precedence over updated_after)
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: The number of volumes to fetch (max of 1000). This limit is advisory. Responses may be shorter, even when more volumes remain. If omitted, the maximum is used
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrgVolumesResponse'
+components:
+  schemas:
+    MachineOverviewConfig:
+      type: object
+      properties:
+        guest:
+          $ref: '#/components/schemas/fly.MachineGuest'
+        image:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+    OrgVolumesResponse:
+      type: object
+      properties:
+        last_updated_at:
+          type: string
+        last_volume_id:
+          type: string
+        next_cursor:
+          type: string
+        volumes:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrgVolume'
+    OrgVolume:
+      type: object
+      properties:
+        app_name:
+          type: string
+        attached_alloc_id:
+          type: string
+        attached_machine_id:
+          type: string
+        auto_backup_enabled:
+          type: boolean
+        block_size:
+          type: integer
+        blocks:
+          type: integer
+        blocks_avail:
+          type: integer
+        blocks_free:
+          type: integer
+        bytes_total:
+          type: integer
+        bytes_used:
+          type: integer
+        created_at:
+          type: string
+        encrypted:
+          type: boolean
+        fstype:
+          type: string
+        host_features:
+          type: array
+          items:
+            type: string
+        host_status:
+          type: string
+          enum:
+          - ok
+          - unknown
+          - unreachable
+        id:
+          type: string
+        name:
+          type: string
+        region:
+          type: string
+        required_host_features:
+          type: array
+          items:
+            type: string
+        size_gb:
+          type: integer
+        snapshot_retention:
+          type: integer
+        state:
+          type: string
+        type:
+          type: string
+          enum:
+          - local
+          - cache
+        updated_at:
+          type: string
+        zone:
+          type: string
+    OrgMachinesResponse:
+      type: object
+      properties:
+        error_regions:
+          type: array
+          items:
+            type: string
+        last_machine_id:
+          type: string
+        last_updated_at:
+          type: string
+        machines:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrgMachine'
+        next_cursor:
+          type: string
+    fly.MachineGuest:
+      type: object
+      properties:
+        cpu_kind:
+          type: string
+        cpus:
+          type: integer
+        gpu_kind:
+          type: string
+        gpus:
+          type: integer
+        host_dedication_id:
+          type: string
+        kernel_args:
+          type: array
+          items:
+            type: string
+        max_memory_mb:
+          type: integer
+        memory_mb:
+          type: integer
+        persist_rootfs:
+          type: string
+          description: 'Deprecated: use MachineConfig.Rootfs instead'
+          enum:
+          - never
+          - always
+          - restart
+        required_host_features:
+          type: array
+          items:
+            type: string
+    OrgMachine:
+      type: object
+      properties:
+        app_name:
+          type: string
+        config:
+          $ref: '#/components/schemas/MachineOverviewConfig'
+        created_at:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        private_ip:
+          type: string
+        region:
+          type: string
+        state:
+          type: string
+        updated_at:
+          type: string
+        version:
+          type: string
+  securitySchemes:
+    FlyBearerAuth:
+      type: http
+      scheme: bearer
+      description: 'A Fly API token with access to the requested organization or resource. Send it as `Authorization: Bearer <Fly API token>`.'
+externalDocs:
+  url: https://fly.io/docs/machines/working-with-machines/
+x-original-swagger-version: '2.0'

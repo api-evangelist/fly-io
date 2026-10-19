@@ -185,6 +185,60 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/fly-io-oauth-api-openapi.yml
+- aid: fly-io:fly-io-organizations-api
+  name: Fly Io Organizations API
+  description: The Organizations API from Fly Io — 2 operation(s) for organizations.
+  humanURL: https://fly.io/docs/machines/api/
+  baseURL: https://api.machines.dev
+  tags:
+  - Organizations
+  properties:
+  - type: OpenAPI
+    url: openapi/fly-io-organizations-api-openapi.yml
+- aid: fly-io:fly-io-platform-api
+  name: Fly Io Platform API
+  description: The Platform API from Fly Io — 2 operation(s) for platform.
+  humanURL: https://fly.io/docs/machines/api/
+  baseURL: https://api.machines.dev
+  tags:
+  - Platform
+  properties:
+  - type: OpenAPI
+    url: openapi/fly-io-platform-api-openapi.yml
+- aid: fly-io:fly-io-postgres-clusters-api
+  name: Fly Io Postgres Clusters API
+  description: >-
+    Create and manage Postgres clusters, including databases, users, extensions, backups, and app attachments.
+  humanURL: https://fly.io/docs/machines/api/
+  baseURL: https://api.machines.dev
+  tags:
+  - Postgres Clusters
+  properties:
+  - type: OpenAPI
+    url: openapi/fly-io-postgres-clusters-api-openapi.yml
+- aid: fly-io:fly-io-secrets-api
+  name: Fly Io Secrets API
+  description: The Secrets API from Fly Io — 9 operation(s) for secrets.
+  humanURL: https://fly.io/docs/machines/api/
+  baseURL: https://api.machines.dev
+  tags:
+  - Secrets
+  properties:
+  - type: OpenAPI
+    url: openapi/fly-io-secrets-api-openapi.yml
+- aid: fly-io:fly-io-tls-certificates-api
+  name: Fly Io TLS Certificates API
+  description: >-
+    This site hosts documentation generated from the Fly.io Machines API OpenAPI specification. Visit
+    our complete [Machines API docs](https://fly.io/docs/machines/api/certificates-resource/) for details
+    about using the TLS Certificates resource.
+  humanURL: https://fly.io/docs/machines/api/
+  baseURL: https://api.machines.dev
+  tags:
+  - TLS Certificates
+  properties:
+  - type: OpenAPI
+    url: openapi/fly-io-tls-certificates-api-openapi.yml
 common:
 - type: Plans
   url: plans/fly-io-plans-pricing.yml

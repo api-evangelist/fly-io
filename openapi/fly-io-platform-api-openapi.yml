@@ -1,0 +1,183 @@
+openapi: 3.2.0
+info:
+  title: Machines Platform API
+  description: This site hosts documentation generated from the Fly.io Machines API OpenAPI specification. Visit our complete Machines API docs for how to get started, more information about each endpoint, parameter descriptions, and examples.
+  contact: {}
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: '1.0'
+servers:
+- url: https://api.machines.dev
+security:
+- FlyBearerAuth: []
+tags:
+- name: Platform
+paths:
+  /v1/platform/placements:
+    post:
+      tags:
+      - Platform
+      summary: Get Placements
+      description: Simulates placing the specified number of machines into regions, depending on available capacity and limits.
+      operationId: Platform_placements_post
+      requestBody:
+        description: Get placements request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/main.getPlacementsRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/main.getPlacementsResponse'
+      x-codegen-request-body-name: request
+  /v1/platform/regions:
+    get:
+      tags:
+      - Platform
+      summary: Get Regions
+      description: List all regions on the platform with their details.
+      operationId: Platform_regions_get
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/main.regionResponse'
+      security: []
+components:
+  schemas:
+    placement.RegionPlacement:
+      type: object
+      properties:
+        concurrency:
+          type: integer
+        count:
+          type: integer
+        region:
+          type: string
+    main.getPlacementsResponse:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/placement.RegionPlacement'
+    fly.MachineGuest:
+      type: object
+      properties:
+        cpu_kind:
+          type: string
+        cpus:
+          type: integer
+        gpu_kind:
+          type: string
+        gpus:
+          type: integer
+        host_dedication_id:
+          type: string
+        kernel_args:
+          type: array
+          items:
+            type: string
+        max_memory_mb:
+          type: integer
+        memory_mb:
+          type: integer
+        persist_rootfs:
+          type: string
+          description: 'Deprecated: use MachineConfig.Rootfs instead'
+          enum:
+          - never
+          - always
+          - restart
+        required_host_features:
+          type: array
+          items:
+            type: string
+    main.regionResponse:
+      type: object
+      properties:
+        nearest:
+          type: string
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/main.regionRow'
+    main.getPlacementsRequest:
+      required:
+      - org_slug
+      type: object
+      properties:
+        compute:
+          type: object
+          description: Resource requirements for the Machine to simulate. Defaults to a performance-1x machine
+          allOf:
+          - $ref: '#/components/schemas/fly.MachineGuest'
+        count:
+          type: integer
+          description: 'Number of machines to simulate placement.
+
+            Defaults to 0, which returns the org-specific limit for each region.'
+        org_slug:
+          type: string
+          example: personal
+        region:
+          type: string
+          description: 'Region expression for placement as a comma-delimited set of regions or aliases.
+
+            Defaults to "[region],any", to prefer the API endpoint''s local region with any other region as fallback.'
+          example: lhr,eu
+        volume_name:
+          type: string
+          example: ''
+        volume_size_bytes:
+          type: integer
+        weights:
+          type: object
+          description: Optional weights to override default placement preferences.
+          example:
+            region: 1000
+            spread: 0
+          allOf:
+          - $ref: '#/components/schemas/placement.Weights'
+    main.regionRow:
+      type: object
+      properties:
+        code:
+          type: string
+        deprecated:
+          type: boolean
+        gateway_available:
+          type: boolean
+        geo_region:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+        mpg_available:
+          type: boolean
+        name:
+          type: string
+        requires_paid_plan:
+          type: boolean
+    placement.Weights:
+      type: object
+      additionalProperties:
+        type: integer
+        format: int64
+  securitySchemes:
+    FlyBearerAuth:
+      type: http
+      scheme: bearer
+      description: 'A Fly API token with access to the requested organization or resource. Send it as `Authorization: Bearer <Fly API token>`.'
+externalDocs:
+  url: https://fly.io/docs/machines/working-with-machines/
+x-original-swagger-version: '2.0'

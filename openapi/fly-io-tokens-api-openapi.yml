@@ -1,88 +1,374 @@
 openapi: 3.2.0
 info:
-  title: Fly.io Extensions Apps Tokens API
-  description: The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with the Fly.io platform as extension providers.
+  title: Machines Tokens API
+  description: This site hosts documentation generated from the Fly.io Machines API OpenAPI specification. Visit our complete Machines API docs for how to get started, more information about each endpoint, parameter descriptions, and examples.
+  contact: {}
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: '1.0'
-  contact:
-    name: Fly.io Extensions Program
-    url: https://fly.io/docs/reference/extensions_api/
-  termsOfService: https://fly.io/legal/terms-of-service/
 servers:
-- url: https://{provider_base_url}
-  description: Provider-hosted API server. Each extension provider hosts their own implementation of this API at a URL they register with Fly.io.
-  variables:
-    provider_base_url:
-      default: api.example.com
-      description: The base URL registered by the extension provider with Fly.io.
-- url: https://api.fly.io
-  description: Fly.io platform server for OAuth and webhook endpoints.
+- url: https://api.machines.dev
 security:
-- flySharedSecret: []
+- FlyBearerAuth: []
 tags:
 - name: Tokens
-  description: Operations for requesting OpenID Connect (OIDC) tokens from third-party services, enabling Fly Machines to authenticate to external systems using workload identity.
 paths:
-  /v1/tokens/oidc:
+  /v1/tokens/authenticate:
     post:
-      operationId: getOidcToken
-      summary: Get an OIDC token
-      description: Requests an OpenID Connect (OIDC) token for the calling Fly Machine. The token can be used to authenticate to third-party services that support OIDC workload identity, such as AWS, GCP, or Vault. The optional aud field controls the audience claim embedded in the JWT.
       tags:
       - Tokens
+      summary: Authenticate token header
+      description: Verify a token header without checking resource access.
+      operationId: Tokens_authenticate
       requestBody:
-        required: false
+        description: Authenticate token request
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                aud:
-                  type: string
-                  description: The audience claim for the OIDC token. Specifies the recipient service that will accept this token, such as https://fly.io/my-org-slug.
-                  example: https://fly.io/my-org-slug
+              $ref: '#/components/schemas/authenticateTokenRequest'
+        required: true
       responses:
         '200':
-          description: OIDC token as a raw JWT string.
+          description: OK
           content:
             application/json:
               schema:
-                type: string
-                description: A signed JWT OIDC token.
+                type: array
+                items:
+                  $ref: '#/components/schemas/root.VerifiedToken'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security: []
+      x-codegen-request-body-name: request
+  /v1/tokens/authorize:
+    post:
+      tags:
+      - Tokens
+      summary: Authorize token for resource access
+      description: Verify a token header and validate it against a requested access scope.
+      operationId: Tokens_authorize
+      requestBody:
+        description: Authorize token request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/authorizeTokenRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/authorizeResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security: []
+      x-codegen-request-body-name: request
+  /v1/tokens/current:
+    get:
+      tags:
+      - Tokens
+      summary: Get Current Token Information
+      description: Get information about the current macaroon token(s), including organizations, apps, user identity hashes, and machine restrictions
+      operationId: CurrentToken_show
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentTokenResponse'
         '401':
-          $ref: '#/components/responses/Unauthorized'
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/tokens/kms:
+    post:
+      tags:
+      - Tokens
+      summary: Request a Petsem token for accessing KMS
+      operationId: Tokens_request_Kms
+      responses:
+        '200':
+          description: KMS token
+          content:
+            text/plain:
+              schema:
+                type: string
+  /v1/tokens/oidc:
+    post:
+      tags:
+      - Tokens
+      summary: Request an OIDC token
+      description: Request an Open ID Connect token for your machine. Customize the audience claim with the `aud` parameter. This returns a JWT token. Learn more about using OpenID Connect on Fly.io.
+      operationId: Tokens_request_OIDC
+      requestBody:
+        description: Optional request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOIDCTokenRequest'
+        required: false
+      responses:
+        '200':
+          description: OIDC token
+          content:
+            text/plain:
+              schema:
+                type: string
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codegen-request-body-name: request
 components:
   schemas:
+    main.tokenInfo:
+      type: object
+      properties:
+        apps:
+          type: array
+          items:
+            type: string
+        org_slug:
+          type: string
+        organization:
+          type: string
+        restricted_to_machine:
+          type: string
+          description: Machine the token is restricted to (FromMachine caveat)
+        source_machine_id:
+          type: string
+          description: Machine making the request
+        token_id:
+          type: string
+        user:
+          type: string
+          description: User identifier if token is for a user
+    macaroon.Nonce:
+      type: object
+      properties:
+        kid:
+          type: array
+          items:
+            type: integer
+        proof:
+          type: boolean
+        rnd:
+          type: array
+          items:
+            type: integer
+    authenticateTokenRequest:
+      type: object
+      properties:
+        header:
+          type: string
+    flyio.Access:
+      type: object
+      properties:
+        action:
+          $ref: '#/components/schemas/resset.Action'
+        app_feature:
+          type: string
+        appid:
+          type: integer
+        cluster:
+          type: string
+        command:
+          type: array
+          items:
+            type: string
+        feature:
+          type: string
+        machine:
+          type: string
+        machine_feature:
+          type: string
+        mutation:
+          type: string
+        orgid:
+          type: integer
+        sourceApp:
+          type: string
+        sourceMachine:
+          type: string
+        sourceOrganization:
+          type: string
+        storage_object:
+          type: string
+        volume:
+          type: string
+    authorizeResponse:
+      type: object
+      properties:
+        access:
+          $ref: '#/components/schemas/flyio.Access'
+        verified_token:
+          $ref: '#/components/schemas/root.VerifiedToken'
+    CreateOIDCTokenRequest:
+      type: object
+      properties:
+        aud:
+          type: string
+          example: https://fly.io/org-slug
+        aws_principal_tags:
+          type: boolean
+      description: Optional parameters
+    authorizeTokenRequest:
+      type: object
+      properties:
+        access:
+          $ref: '#/components/schemas/main.TokenAccess'
+        header:
+          type: string
+    main.statusCode:
+      type: string
+      enum:
+      - unknown
+      - insufficient_capacity
+      - volume_placement_capacity
+      - name_taken
+      x-enum-varnames:
+      - unknown
+      - capacityErr
+      - volumePlacementCapacityErr
+      - nameTakenErr
+    root.VerifiedToken:
+      type: object
+      properties:
+        caveats:
+          $ref: '#/components/schemas/macaroon.CaveatSet'
+        header:
+          type: string
+        nonce:
+          $ref: '#/components/schemas/macaroon.Nonce'
+        permission_token:
+          type: array
+          items:
+            type: integer
+    macaroon.CaveatSet:
+      type: object
+      properties:
+        caveats:
+          type: array
+          items:
+            type: object
+    resset.Action:
+      type: integer
+      format: int32
+      enum:
+      - 1
+      - 2
+      - 4
+      - 8
+      - 16
+      - 31
+      - 0
+      x-enum-varnames:
+      - ActionRead
+      - ActionWrite
+      - ActionCreate
+      - ActionDelete
+      - ActionControl
+      - ActionAll
+      - ActionNone
+    CurrentTokenResponse:
+      type: object
+      properties:
+        tokens:
+          type: array
+          items:
+            $ref: '#/components/schemas/main.tokenInfo'
     ErrorResponse:
       type: object
-      description: A standard error response returned by the API on failure.
       properties:
+        details:
+          type: object
+          description: Deprecated
         error:
           type: string
-          description: Human-readable error message describing what went wrong.
         status:
-          type: integer
-          description: HTTP status code.
-  responses:
-    Unauthorized:
-      description: Missing or invalid API token.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
+          $ref: '#/components/schemas/main.statusCode'
+    main.TokenAccess:
+      type: object
+      properties:
+        action:
+          type: object
+          description: "Action is the action being taken on the specified resource. This is the\ncombination of individual action characters (e.g \"rw\")\n  - r: read\n  - w: write\n  - c: create\n  - d: delete\n  - C: control"
+          allOf:
+          - $ref: '#/components/schemas/resset.Action'
+        app_feature:
+          type: string
+          description: "AppFeature is a named set of functionality associated with the app. If\nthis is specified, the AppName field must be set.\n  - images: images in the fly.io registry"
+        app_name:
+          type: string
+          description: AppName is the name of the app being accessed.
+        command:
+          type: array
+          description: 'Command is the command being executed on a machine. If this is specified,
+
+            the Machine must be set.'
+          items:
+            type: string
+        machine_feature:
+          type: string
+          description: "MachineFeature is a named set of functionality associated with the\nmachine. If this is specified, the Machine field must be set.\n  - metadata: machine metadata service\n  - oidc: OIDC tokens\n  - kmstoken: Petsem tokens for KMS access"
+        machine_id:
+          type: string
+          description: MachineID is the ID of the machine being accessed (e.g. 7811701f564258).
+        mutation:
+          type: string
+          description: Mutation is the GraphQL mutation being performed.
+        org_feature:
+          type: string
+          description: "OrgFeature is a named set of functionality associated with the\norganization. If this is specified, the OrgSlug field must be set.\n  - wg: WireGuard peers\n  - builder: remote builders\n  - addon: addons\n  - membership: organization membership\n  - billing: billing\n  - litefs-cloud: LiteFS Cloud\n  - authentication: authentication settings"
+        org_slug:
+          type: string
+          description: OrgSlug is the slug of the organization being accessed.
+        source_machine:
+          type: string
+          description: SourceMachine is the machine ID of the actor attempting access.
+        storage_object:
+          type: string
+          description: 'StorageObject is the storage object being accessed. If this is specified,
+
+            the OrgSlug must be set.'
+        volume_id:
+          type: string
+          description: 'VolumeID is the encoded ID of the volume being accessed (e.g.
+
+            vol_r1p6pln1k9m9j7zr).'
   securitySchemes:
-    flySharedSecret:
+    FlyBearerAuth:
       type: http
       scheme: bearer
-      description: Shared secret provided by Fly.io to the extension provider. Fly.io includes this secret in an Authorization Bearer header on all requests to the provider's API for verification.
-    oauthBearerAuth:
-      type: http
-      scheme: bearer
-      description: Fly.io OAuth access token obtained from the token exchange endpoint.
-    webhookHmac:
-      type: apiKey
-      in: header
-      name: X-Fly-Signature
-      description: HMAC-SHA256 signature of the raw request body, computed using the webhook signing secret. Recipients must verify this signature before processing the payload.
+      description: 'A Fly API token with access to the requested organization or resource. Send it as `Authorization: Bearer <Fly API token>`.'
 externalDocs:
-  description: Fly.io Extensions API Documentation
-  url: https://fly.io/docs/reference/extensions_api/
+  url: https://fly.io/docs/machines/working-with-machines/
+x-original-swagger-version: '2.0'

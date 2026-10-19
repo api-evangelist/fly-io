@@ -1,32 +1,48 @@
 {
   "provider": "fly-io",
   "sources": [
-    "fly-io-apps-api-openapi.yml",
+    "_original/fly-io-openapi.json",
     "fly-io-extensions-api-openapi.yml",
-    "fly-io-machines-api-openapi.yml",
     "fly-io-oauth-api-openapi.yml",
     "fly-io-sso-api-openapi.yml",
-    "fly-io-tokens-api-openapi.yml",
-    "fly-io-volumes-api-openapi.yml",
     "fly-io-webhooks-api-openapi.yml"
   ],
   "outputs": [
     "fly-io-apps-api-openapi.yml",
-    "fly-io-extensions-api-openapi.yml",
     "fly-io-machines-api-openapi.yml",
-    "fly-io-oauth-api-openapi.yml",
-    "fly-io-sso-api-openapi.yml",
+    "fly-io-organizations-api-openapi.yml",
+    "fly-io-platform-api-openapi.yml",
+    "fly-io-postgres-clusters-api-openapi.yml",
+    "fly-io-secrets-api-openapi.yml",
+    "fly-io-tls-certificates-api-openapi.yml",
     "fly-io-tokens-api-openapi.yml",
     "fly-io-volumes-api-openapi.yml",
+    "fly-io-extensions-api-openapi.yml",
+    "fly-io-oauth-api-openapi.yml",
+    "fly-io-sso-api-openapi.yml",
     "fly-io-webhooks-api-openapi.yml"
   ],
   "archived": [],
   "errors": [],
   "warnings": [
-    "no openapi/_original/ archive: this run re-split PREVIOUSLY REFINED output, so any base URL it carries is inherited from an earlier pass rather than read from a document the provider published"
+    "fly-io-extensions-api-openapi.yml: previously refined output kept for 4 operation(s) no archived document covers (e.g. /extensions post, /extensions/{extension_id} delete, /extensions/{extension_id} get); its other 0 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth.",
+    "fly-io-oauth-api-openapi.yml: previously refined output kept for 3 operation(s) no archived document covers (e.g. /oauth/authorize get, /oauth/token post, /oauth/token/info get); its other 0 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth.",
+    "fly-io-sso-api-openapi.yml: previously refined output kept for 1 operation(s) no archived document covers (e.g. /extensions/{extension_id}/sso get); its other 0 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth.",
+    "fly-io-webhooks-api-openapi.yml: previously refined output kept for 2 operation(s) no archived document covers (e.g. /api/hooks/extensions/{provider_name} post, /extensions/events post); its other 0 operation(s) came from the archive and were dropped from it. The archive is incomplete for this provider \u2014 re-harvest to restore _original/ as the full source of truth."
   ],
   "notes": [
-    "apis.yml register: already-registered"
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "fly-io-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "fly-io-openapi.json: declared missing tag: Organizations",
+    "fly-io-openapi.json: declared missing tag: Platform",
+    "fly-io-openapi.json: declared missing tag: Secrets",
+    "fly-io-openapi.json: declared missing tag: Tokens",
+    "apis.yml register: written (+5 apis, 14 total)"
   ],
-  "skipped": []
+  "skipped": [
+    "fly-io-apps-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "fly-io-machines-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "fly-io-tokens-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "fly-io-volumes-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

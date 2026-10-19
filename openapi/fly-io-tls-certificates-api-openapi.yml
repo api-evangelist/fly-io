@@ -1,0 +1,533 @@
+openapi: 3.2.0
+info:
+  title: Machines TLS Certificates API
+  description: This site hosts documentation generated from the Fly.io Machines API OpenAPI specification. Visit our complete Machines API docs for how to get started, more information about each endpoint, parameter descriptions, and examples.
+  contact: {}
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: '1.0'
+servers:
+- url: https://api.machines.dev
+security:
+- FlyBearerAuth: []
+tags:
+- name: TLS Certificates
+  description: This site hosts documentation generated from the Fly.io Machines API OpenAPI specification. Visit our complete Machines API docs for details about using the TLS Certificates resource.
+paths:
+  /v1/apps/{app_name}/certificates:
+    get:
+      tags:
+      - TLS Certificates
+      summary: List certificates for app
+      operationId: App_Certificates_list
+      parameters:
+      - name: app_name
+        in: path
+        description: Fly App Name
+        required: true
+        schema:
+          type: string
+      - name: filter
+        in: query
+        description: Hostname filter (substring match)
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: Pagination cursor from previous response
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Number of results per page (default 25, max 500)
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listCertificatesResponse'
+  /v1/apps/{app_name}/certificates/acme:
+    post:
+      tags:
+      - TLS Certificates
+      summary: Request ACME certificate
+      operationId: App_Certificates_acme_create
+      parameters:
+      - name: app_name
+        in: path
+        description: Fly App Name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: ACME certificate request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createAcmeCertificateRequest'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateDetail'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codegen-request-body-name: request
+  /v1/apps/{app_name}/certificates/custom:
+    post:
+      tags:
+      - TLS Certificates
+      summary: Upload custom certificate
+      operationId: App_Certificates_custom_create
+      parameters:
+      - name: app_name
+        in: path
+        description: Fly App Name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Custom certificate request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createCustomCertificateRequest'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateDetail'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codegen-request-body-name: request
+  /v1/apps/{app_name}/certificates/{hostname}:
+    get:
+      tags:
+      - TLS Certificates
+      summary: Get certificate details
+      operationId: App_Certificates_show
+      parameters:
+      - name: app_name
+        in: path
+        description: Fly App Name
+        required: true
+        schema:
+          type: string
+      - name: hostname
+        in: path
+        description: Certificate Hostname
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateDetail'
+    delete:
+      tags:
+      - TLS Certificates
+      summary: Remove certificate
+      operationId: App_Certificates_delete
+      parameters:
+      - name: app_name
+        in: path
+        description: Fly App Name
+        required: true
+        schema:
+          type: string
+      - name: hostname
+        in: path
+        description: Certificate Hostname
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+          content: {}
+  /v1/apps/{app_name}/certificates/{hostname}/acme:
+    delete:
+      tags:
+      - TLS Certificates
+      summary: Remove ACME certificates
+      operationId: App_Certificates_acme_delete
+      parameters:
+      - name: app_name
+        in: path
+        description: Fly App Name
+        required: true
+        schema:
+          type: string
+      - name: hostname
+        in: path
+        description: Certificate Hostname
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateDetail'
+  /v1/apps/{app_name}/certificates/{hostname}/check:
+    post:
+      tags:
+      - TLS Certificates
+      summary: Check DNS and re-validate certificate
+      operationId: App_Certificates_check
+      parameters:
+      - name: app_name
+        in: path
+        description: Fly App Name
+        required: true
+        schema:
+          type: string
+      - name: hostname
+        in: path
+        description: Certificate Hostname
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateCheckResponse'
+  /v1/apps/{app_name}/certificates/{hostname}/custom:
+    delete:
+      tags:
+      - TLS Certificates
+      summary: Remove custom certificate
+      operationId: App_Certificates_custom_delete
+      parameters:
+      - name: app_name
+        in: path
+        description: Fly App Name
+        required: true
+        schema:
+          type: string
+      - name: hostname
+        in: path
+        description: Certificate Hostname
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/destroyCustomCertificateResponse'
+components:
+  schemas:
+    CertificateSummary:
+      type: object
+      properties:
+        acme_alpn_configured:
+          type: boolean
+        acme_dns_configured:
+          type: boolean
+        acme_http_configured:
+          type: boolean
+        acme_requested:
+          type: boolean
+        configured:
+          type: boolean
+        created_at:
+          type: string
+        dns_provider:
+          type: string
+        has_custom_certificate:
+          type: boolean
+        has_fly_certificate:
+          type: boolean
+        hostname:
+          type: string
+        ownership_txt_configured:
+          type: boolean
+        status:
+          type: string
+        updated_at:
+          type: string
+    CertificateCheckResponse:
+      type: object
+      properties:
+        acme_requested:
+          type: boolean
+        certificates:
+          type: array
+          items:
+            $ref: '#/components/schemas/CertificateEntry'
+        configured:
+          type: boolean
+        dns_provider:
+          type: string
+        dns_records:
+          $ref: '#/components/schemas/DNSRecords'
+        dns_requirements:
+          $ref: '#/components/schemas/DNSRequirements'
+        hostname:
+          type: string
+        rate_limited_until:
+          type: string
+        status:
+          type: string
+        validation:
+          $ref: '#/components/schemas/CertificateValidation'
+        validation_errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/CertificateValidationError'
+    AcmeChallenge:
+      type: object
+      properties:
+        name:
+          type: string
+        target:
+          type: string
+    destroyCustomCertificateResponse:
+      type: object
+      properties:
+        acme_requested:
+          type: boolean
+        certificates:
+          type: array
+          items:
+            $ref: '#/components/schemas/CertificateEntry'
+        configured:
+          type: boolean
+        dns_provider:
+          type: string
+        dns_requirements:
+          $ref: '#/components/schemas/DNSRequirements'
+        hostname:
+          type: string
+        rate_limited_until:
+          type: string
+        status:
+          type: string
+        validation:
+          $ref: '#/components/schemas/CertificateValidation'
+        validation_errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/CertificateValidationError'
+        warning:
+          type: string
+    createCustomCertificateRequest:
+      type: object
+      properties:
+        fullchain:
+          type: string
+        hostname:
+          type: string
+        private_key:
+          type: string
+    DNSRecords:
+      type: object
+      properties:
+        a:
+          type: array
+          items:
+            type: string
+        aaaa:
+          type: array
+          items:
+            type: string
+        acme_challenge_cname:
+          type: string
+        cname:
+          type: array
+          items:
+            type: string
+        ownership_txt:
+          type: string
+        resolved_addresses:
+          type: array
+          items:
+            type: string
+        soa:
+          type: string
+    IssuedCertificate:
+      type: object
+      properties:
+        certificate_authority:
+          type: string
+        expires_at:
+          type: string
+        type:
+          type: string
+          enum:
+          - rsa
+          - ecdsa
+    main.statusCode:
+      type: string
+      enum:
+      - unknown
+      - insufficient_capacity
+      - volume_placement_capacity
+      - name_taken
+      x-enum-varnames:
+      - unknown
+      - capacityErr
+      - volumePlacementCapacityErr
+      - nameTakenErr
+    OwnershipVerification:
+      type: object
+      properties:
+        app_value:
+          type: string
+        name:
+          type: string
+        org_value:
+          type: string
+    DNSRequirements:
+      type: object
+      properties:
+        a:
+          type: array
+          items:
+            type: string
+        aaaa:
+          type: array
+          items:
+            type: string
+        acme_challenge:
+          $ref: '#/components/schemas/AcmeChallenge'
+        cname:
+          type: string
+        ownership:
+          $ref: '#/components/schemas/OwnershipVerification'
+    listCertificatesResponse:
+      type: object
+      properties:
+        certificates:
+          type: array
+          items:
+            $ref: '#/components/schemas/CertificateSummary'
+        next_cursor:
+          type: string
+        total_count:
+          type: integer
+    createAcmeCertificateRequest:
+      type: object
+      properties:
+        hostname:
+          type: string
+    CertificateValidationError:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        remediation:
+          type: string
+        timestamp:
+          type: string
+    CertificateDetail:
+      type: object
+      properties:
+        acme_requested:
+          type: boolean
+        certificates:
+          type: array
+          items:
+            $ref: '#/components/schemas/CertificateEntry'
+        configured:
+          type: boolean
+        dns_provider:
+          type: string
+        dns_requirements:
+          $ref: '#/components/schemas/DNSRequirements'
+        hostname:
+          type: string
+        rate_limited_until:
+          type: string
+        status:
+          type: string
+        validation:
+          $ref: '#/components/schemas/CertificateValidation'
+        validation_errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/CertificateValidationError'
+    ErrorResponse:
+      type: object
+      properties:
+        details:
+          type: object
+          description: Deprecated
+        error:
+          type: string
+        status:
+          $ref: '#/components/schemas/main.statusCode'
+    CertificateEntry:
+      type: object
+      properties:
+        created_at:
+          type: string
+        expires_at:
+          type: string
+        issued:
+          type: array
+          items:
+            $ref: '#/components/schemas/IssuedCertificate'
+        issuer:
+          type: string
+        source:
+          type: string
+          enum:
+          - custom
+          - fly
+        status:
+          type: string
+          enum:
+          - active
+          - pending_ownership
+          - pending_validation
+    CertificateValidation:
+      type: object
+      properties:
+        alpn_configured:
+          type: boolean
+        dns_configured:
+          type: boolean
+        http_configured:
+          type: boolean
+        ownership_txt_configured:
+          type: boolean
+  securitySchemes:
+    FlyBearerAuth:
+      type: http
+      scheme: bearer
+      description: 'A Fly API token with access to the requested organization or resource. Send it as `Authorization: Bearer <Fly API token>`.'
+externalDocs:
+  url: https://fly.io/docs/machines/working-with-machines/
+x-original-swagger-version: '2.0'

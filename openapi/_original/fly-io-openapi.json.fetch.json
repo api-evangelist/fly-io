@@ -1,0 +1,12 @@
+{
+ "url": "https://fly.io/openapi.json",
+ "final": "https://fly.io/openapi.json",
+ "status": 200,
+ "content_type": "application/json",
+ "bytes": 298860,
+ "sha256": "0e800519539e4e98f0d3bce609bd7b50d81fb8c4762fefb6d4c6221e4bba2034",
+ "fetched_at": "2026-10-19",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "re-archived: the provider's current document replaced a stale archive (roadmap#793); the old files are in openapi/_superseded/2026-10-19-stale"
+}

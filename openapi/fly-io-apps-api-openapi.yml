@@ -1,231 +1,450 @@
 openapi: 3.2.0
 info:
-  title: Fly.io Extensions Apps API
-  description: The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with the Fly.io platform as extension providers.
+  title: Machines Apps API
+  description: This site hosts documentation generated from the Fly.io Machines API OpenAPI specification. Visit our complete Machines API docs for how to get started, more information about each endpoint, parameter descriptions, and examples.
+  contact: {}
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: '1.0'
-  contact:
-    name: Fly.io Extensions Program
-    url: https://fly.io/docs/reference/extensions_api/
-  termsOfService: https://fly.io/legal/terms-of-service/
 servers:
-- url: https://{provider_base_url}
-  description: Provider-hosted API server. Each extension provider hosts their own implementation of this API at a URL they register with Fly.io.
-  variables:
-    provider_base_url:
-      default: api.example.com
-      description: The base URL registered by the extension provider with Fly.io.
-- url: https://api.fly.io
-  description: Fly.io platform server for OAuth and webhook endpoints.
+- url: https://api.machines.dev
 security:
-- flySharedSecret: []
+- FlyBearerAuth: []
 tags:
 - name: Apps
-  description: Operations for creating, listing, and deleting Fly Apps. Every Fly Machine belongs to a Fly App, which groups related Machines together.
+  description: This site hosts documentation generated from the Fly.io Machines API OpenAPI specification. Visit our complete Machines API docs for details about using the Apps resource.
 paths:
   /v1/apps:
     get:
-      operationId: listApps
-      summary: List apps in an organization
-      description: Returns a list of all Fly Apps belonging to the specified organization. Results include the app name, machine count, volume count, and network configuration for each app.
       tags:
       - Apps
+      summary: List Apps
+      description: List all apps with the ability to filter by organization slug.
+      operationId: Apps_list
       parameters:
-      - $ref: '#/components/parameters/orgSlug'
+      - name: org_slug
+        in: query
+        description: The org slug, or 'personal', to filter apps
+        required: true
+        schema:
+          type: string
+      - name: app_role
+        in: query
+        description: Filter apps by role
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: The number of apps to fetch (must be between 1 and 5000). Providing a limit enables pagination. Without it, all apps are returned in one response.
+        schema:
+          type: integer
+      - name: cursor
+        in: query
+        description: Value of next_cursor from the previous page. Requires limit. Later pages only include apps that existed when the first page was requested. Apps created in the seconds before the first page was requested may be missing. Cursors expire 30 minutes after the first page was requested.
+        schema:
+          type: string
       responses:
         '200':
-          description: A list of apps in the organization.
+          description: OK
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  total_apps:
-                    type: integer
-                    description: Total number of apps in the organization.
-                  apps:
-                    type: array
-                    description: Array of app objects.
-                    items:
-                      $ref: '#/components/schemas/App'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                $ref: '#/components/schemas/ListAppsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     post:
-      operationId: createApp
-      summary: Create a Fly App
-      description: Creates a new Fly App under the specified organization. An app is a logical grouping of Fly Machines that share a name, network, and routing configuration. Machines must belong to an app before they can be created.
       tags:
       - Apps
+      summary: Create App
+      description: Create an app with the specified details in the request body.
+      operationId: Apps_create
       requestBody:
-        required: true
+        description: App body
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateAppRequest'
+        required: true
       responses:
         '201':
-          description: App created successfully.
+          description: Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/App'
+                $ref: '#/components/schemas/CreateAppResponse'
         '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Rejected by validation. status is name_taken when the app name is already in use.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-codegen-request-body-name: request
   /v1/apps/{app_name}:
     get:
-      operationId: getApp
-      summary: Get a Fly App
-      description: Retrieves details about a specific Fly App by its name, including the app status, organization, and associated network configuration.
       tags:
       - Apps
+      summary: Get App
+      description: Retrieve details about a specific app by its name.
+      operationId: Apps_show
       parameters:
-      - $ref: '#/components/parameters/appName'
+      - name: app_name
+        in: path
+        description: Fly App Name
+        required: true
+        schema:
+          type: string
       responses:
         '200':
-          description: App details.
+          description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/App'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
     delete:
-      operationId: deleteApp
-      summary: Delete a Fly App
-      description: Permanently deletes a Fly App and all of its associated Machines, volumes, and IP addresses. This operation is irreversible. Use the force query parameter to stop all running Machines before deletion.
       tags:
       - Apps
+      summary: Destroy App
+      description: Delete an app by its name.
+      operationId: Apps_delete
       parameters:
-      - $ref: '#/components/parameters/appName'
-      - name: force
-        in: query
-        description: When true, all running Machines in the app are stopped before deletion proceeds. Without this flag, deletion fails if any Machines are running.
-        required: false
+      - name: app_name
+        in: path
+        description: Fly App Name
+        required: true
         schema:
-          type: boolean
+          type: string
       responses:
         '202':
-          description: App deletion accepted.
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
+          description: Accepted
+          content: {}
+  /v1/apps/{app_name}/deploy_token:
+    post:
+      tags:
+      - Apps
+      summary: Create App deploy token
+      operationId: App_create_deploy_token
+      parameters:
+      - name: app_name
+        in: path
+        description: Fly App Name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAppDeployTokenRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAppDeployTokenResponse'
+      x-codegen-request-body-name: request
+  /v1/apps/{app_name}/ip_assignments:
+    get:
+      tags:
+      - Apps
+      summary: List IP assignments for app
+      operationId: App_IPAssignments_list
+      parameters:
+      - name: app_name
+        in: path
+        description: Fly App Name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listIPAssignmentsResponse'
+    post:
+      tags:
+      - Apps
+      summary: Assign new IP address to app
+      operationId: App_IPAssignments_create
+      parameters:
+      - name: app_name
+        in: path
+        description: Fly App Name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Assign IP request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/assignIPRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssignIPResponse'
+      x-codegen-request-body-name: request
+  /v1/apps/{app_name}/ip_assignments/{ip}:
+    delete:
+      tags:
+      - Apps
+      summary: Remove IP assignment from app
+      operationId: App_IPAssignments_delete
+      parameters:
+      - name: app_name
+        in: path
+        description: Fly App Name
+        required: true
+        schema:
+          type: string
+      - name: ip
+        in: path
+        description: IP address
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+          content: {}
 components:
-  parameters:
-    orgSlug:
-      name: org_slug
-      in: query
-      description: The organization slug to filter apps by.
-      required: true
-      schema:
-        type: string
-    appName:
-      name: app_name
-      in: path
-      description: The name of the Fly App.
-      required: true
-      schema:
-        type: string
   schemas:
-    Organization:
-      type: object
-      description: A Fly.io organization that owns apps and resources.
-      properties:
-        name:
-          type: string
-          description: The organization name.
-        slug:
-          type: string
-          description: The organization's URL-safe identifier slug.
-    ErrorResponse:
-      type: object
-      description: A standard error response returned by the API on failure.
-      properties:
-        error:
-          type: string
-          description: Human-readable error message describing what went wrong.
-        status:
-          type: integer
-          description: HTTP status code.
     App:
       type: object
-      description: A Fly App, which is a logical grouping of related Fly Machines.
       properties:
         id:
           type: string
-          description: Unique identifier for the app.
-        name:
-          type: string
-          description: The app name, used in routing and DNS.
-        status:
-          type: string
-          description: Current status of the app (e.g., running, suspended).
+        internal_numeric_id:
+          type: integer
         machine_count:
           type: integer
-          description: Number of Machines currently in the app.
+        name:
+          type: string
+        network:
+          type: string
+        network_cidr:
+          type: string
+        organization:
+          $ref: '#/components/schemas/AppOrganizationInfo'
+        status:
+          type: string
         volume_count:
           type: integer
-          description: Number of Volumes currently in the app.
-        network:
-          type: string
-          description: The private network name this app is attached to.
-        organization:
-          $ref: '#/components/schemas/Organization'
-    CreateAppRequest:
+    IPAssignmentType:
+      type: string
+      description: Type of IP address to allocate. "egress-pair" allocates both v4 and v6 egress IP addresses (recommended when using egress IPs).
+      enum:
+      - v4
+      - v6
+      - shared_v4
+      - private_v6
+      - egress_v4
+      - egress_v6
+      - egress_pair
+      x-enum-varnames:
+      - IPAssignmentType_v4
+      - IPAssignmentType_v6
+      - IPAssignmentType_shared_v4
+      - IPAssignmentType_private_v6
+      - IPAssignmentType_egress_v4
+      - IPAssignmentType_egress_v6
+      - IPAssignmentType_egress_pair
+    IPAssignmentNetwork:
       type: object
-      description: Request body for creating a new Fly App.
-      required:
-      - app_name
-      - org_slug
       properties:
-        app_name:
+        name:
           type: string
-          description: The unique name for the new app.
+          description: Network name; empty for the organization's default network.
         org_slug:
           type: string
-          description: The slug of the organization that will own this app.
+      description: The 6PN network a Flycast (private_v6) address belongs to. Null for all other IP types.
+    listIPAssignmentsResponse:
+      type: object
+      properties:
+        ips:
+          type: array
+          items:
+            $ref: '#/components/schemas/IPAssignment'
+    CreateAppRequest:
+      type: object
+      properties:
         enable_subdomains:
           type: boolean
-          description: When true, enables wildcard subdomain routing for this app.
+        idempotency_key:
+          type: string
+          description: 'When set, makes a retry of this exact request safe: a
+
+            second create with the same key and the same name (or no name) returns
+
+            the app the first request created, instead of erroring on a false name
+
+            conflict or creating a duplicate. A second create with the same key
+
+            but a *different* name is rejected outright; it won''t silently
+
+            hand back the first app.'
+        name:
+          type: string
         network:
           type: string
-          description: Name of the private WireGuard network to attach this app to. If omitted, the organization's default network is used.
-  responses:
-    NotFound:
-      description: The requested resource was not found.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Unauthorized:
-      description: Missing or invalid API token.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    BadRequest:
-      description: Bad request due to invalid parameters or request body.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
+        org_slug:
+          type: string
+    assignIPRequest:
+      type: object
+      properties:
+        network:
+          type: string
+        org_slug:
+          type: string
+        region:
+          type: string
+        service_name:
+          type: string
+        type:
+          $ref: '#/components/schemas/IPAssignmentType'
+    main.statusCode:
+      type: string
+      enum:
+      - unknown
+      - insufficient_capacity
+      - volume_placement_capacity
+      - name_taken
+      x-enum-varnames:
+      - unknown
+      - capacityErr
+      - volumePlacementCapacityErr
+      - nameTakenErr
+    CreateAppDeployTokenResponse:
+      type: object
+      properties:
+        token:
+          type: string
+    CreateAppResponse:
+      type: object
+      properties:
+        created_at:
+          type: integer
+        id:
+          type: string
+    ListAppsResponse:
+      type: object
+      properties:
+        apps:
+          type: array
+          items:
+            $ref: '#/components/schemas/App'
+        next_cursor:
+          type: string
+          description: 'Pagination cursor for the next page. Absent when no more apps remain.
+
+            Cursors expire 30 minutes after the first page was requested.'
+        total_apps:
+          type: integer
+          description: 'The number of apps matching the request, across all pages. When
+
+            paginating, it is counted once when the first page is requested and not
+
+            updated afterwards, so it may differ slightly from the number of apps
+
+            returned: it excludes apps created later and includes apps deleted while
+
+            paginating. Apps created in the seconds before the first page may also be
+
+            counted but missing from the pages.'
+    IPAssignment:
+      type: object
+      properties:
+        created_at:
+          type: string
+        egress:
+          type: boolean
+        ip:
+          type: string
+        network:
+          $ref: '#/components/schemas/IPAssignmentNetwork'
+        region:
+          type: string
+        service_name:
+          type: string
+        shared:
+          type: boolean
+    CreateAppDeployTokenRequest:
+      type: object
+      properties:
+        expiry:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        details:
+          type: object
+          description: Deprecated
+        error:
+          type: string
+        status:
+          $ref: '#/components/schemas/main.statusCode'
+    AppOrganizationInfo:
+      type: object
+      properties:
+        internal_numeric_id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+    IPPair:
+      type: object
+      properties:
+        v4:
+          type: string
+        v6:
+          type: string
+    AssignIPResponse:
+      type: object
+      properties:
+        created_at:
+          type: string
+        egress:
+          type: boolean
+        ip:
+          type: string
+        ip_pair:
+          type: object
+          description: ip_pair is returned when "egress-pair" IP type is requested; in this case, ip is null.
+          allOf:
+          - $ref: '#/components/schemas/IPPair'
+        network:
+          $ref: '#/components/schemas/IPAssignmentNetwork'
+        region:
+          type: string
+        service_name:
+          type: string
+        shared:
+          type: boolean
   securitySchemes:
-    flySharedSecret:
+    FlyBearerAuth:
       type: http
       scheme: bearer
-      description: Shared secret provided by Fly.io to the extension provider. Fly.io includes this secret in an Authorization Bearer header on all requests to the provider's API for verification.
-    oauthBearerAuth:
-      type: http
-      scheme: bearer
-      description: Fly.io OAuth access token obtained from the token exchange endpoint.
-    webhookHmac:
-      type: apiKey
-      in: header
-      name: X-Fly-Signature
-      description: HMAC-SHA256 signature of the raw request body, computed using the webhook signing secret. Recipients must verify this signature before processing the payload.
+      description: 'A Fly API token with access to the requested organization or resource. Send it as `Authorization: Bearer <Fly API token>`.'
 externalDocs:
-  description: Fly.io Extensions API Documentation
-  url: https://fly.io/docs/reference/extensions_api/
+  url: https://fly.io/docs/machines/working-with-machines/
+x-original-swagger-version: '2.0'

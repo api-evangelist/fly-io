@@ -1,0 +1,1936 @@
+openapi: 3.2.0
+info:
+  title: Machines Postgres Clusters API
+  description: This site hosts documentation generated from the Fly.io Machines API OpenAPI specification. Visit our complete Machines API docs for how to get started, more information about each endpoint, parameter descriptions, and examples.
+  contact: {}
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: '1.0'
+servers:
+- url: https://api.machines.dev
+security:
+- FlyBearerAuth: []
+tags:
+- name: Postgres Clusters
+  description: Create and manage Postgres clusters, including databases, users, extensions, backups, and app attachments.
+paths:
+  /v1/postgres:
+    get:
+      tags:
+      - Postgres Clusters
+      summary: List Postgres Clusters
+      description: List Managed Postgres clusters for an organization.
+      operationId: Postgres_list
+      parameters:
+      - name: org_slug
+        in: query
+        description: Fly Organization Slug, or 'personal' for the caller's personal organization
+        required: true
+        schema:
+          type: string
+      - name: include_deleted
+        in: query
+        description: Include deleted clusters
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listPostgresClustersResponse'
+        '400':
+          description: org_slug is required and must be a string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: Organization not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '422':
+          description: include_deleted must be true or false
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+    post:
+      tags:
+      - Postgres Clusters
+      summary: Create Postgres Cluster
+      description: 'Create a Managed Postgres cluster for the organization named in the request body. Provisioning is asynchronous: poll `GET /v1/postgres/{id}` until `status == ready` before calling database, user, extension, or credential endpoints.'
+      operationId: Postgres_create
+      requestBody:
+        description: Cluster details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createPostgresClusterRequest'
+        required: true
+      responses:
+        '201':
+          description: Cluster accepted for provisioning
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/showPostgresClusterResponse'
+        '400':
+          description: org_slug is required and must be a string, or creation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: Organization not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '422':
+          description: Invalid attributes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+      x-codegen-request-body-name: request
+  /v1/postgres/plans:
+    get:
+      tags:
+      - Postgres Clusters
+      summary: List Postgres Plans
+      description: List the Managed Postgres plans the caller can choose when creating or forking a cluster in an organization, cheapest first.
+      operationId: Postgres_plans_list
+      parameters:
+      - name: org_slug
+        in: query
+        description: Fly Organization Slug, or 'personal' for the caller's personal organization
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listPostgresPlansResponse'
+        '400':
+          description: org_slug is required and must be a string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: Organization not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+  /v1/postgres/{postgres_cluster_id}:
+    get:
+      tags:
+      - Postgres Clusters
+      summary: Get Postgres Cluster
+      description: Get details of a specific Managed Postgres cluster.
+      operationId: Postgres_show
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/showPostgresClusterResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: Cluster not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+    delete:
+      tags:
+      - Postgres Clusters
+      summary: Delete Postgres Cluster
+      description: Delete a Managed Postgres cluster. The cluster is marked for deletion and removed asynchronously.
+      operationId: Postgres_delete
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Accepted
+          content: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: Cluster not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '410':
+          description: '''This cluster has been deleted'' or ''This cluster is being deleted'''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+  /v1/postgres/{postgres_cluster_id}/attachments:
+    post:
+      tags:
+      - Postgres Clusters
+      summary: Attach Cluster to App
+      description: Record an attachment between a cluster and a Fly app. This endpoint records the relationship but does not set DATABASE_URL or other app secrets; configure the connection string separately. The attachment is created if it does not already exist.
+      operationId: Postgres_attachments_create
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Attachment details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createPostgresAttachmentRequest'
+        required: true
+      responses:
+        '200':
+          description: Cluster was already attached
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createPostgresAttachmentResponse'
+        '201':
+          description: Attachment created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createPostgresAttachmentResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: '''Cluster not found'' for the cluster; ''App not found'' for the app'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '410':
+          description: '''This cluster has been deleted'' or ''This cluster is being deleted'''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+      x-codegen-request-body-name: request
+  /v1/postgres/{postgres_cluster_id}/attachments/{app_name}:
+    delete:
+      tags:
+      - Postgres Clusters
+      summary: Detach Cluster from App
+      description: Detach a specific cluster from a Fly app.
+      operationId: Postgres_attachments_delete
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      - name: app_name
+        in: path
+        description: Fly App Name
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: '''Cluster not found'' for the cluster; ''App not found'' for the app; ''Attachment not found'' for the attachment'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '410':
+          description: '''This cluster has been deleted'' or ''This cluster is being deleted'''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+  /v1/postgres/{postgres_cluster_id}/backups:
+    get:
+      tags:
+      - Postgres Clusters
+      summary: List Backups
+      description: List all backups associated with a specific cluster.
+      operationId: Postgres_backups_list
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listPostgresBackupsResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: Cluster not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+    post:
+      tags:
+      - Postgres Clusters
+      summary: Create Backup
+      description: Create a backup for a specific cluster. The backup runs asynchronously and is rejected if one is already in progress.
+      operationId: Postgres_backups_create
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Backup details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createPostgresBackupRequest'
+        required: true
+      responses:
+        '202':
+          description: Accepted
+          content: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: Cluster not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '409':
+          description: A backup is currently running
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+      x-codegen-request-body-name: request
+  /v1/postgres/{postgres_cluster_id}/databases:
+    get:
+      tags:
+      - Postgres Clusters
+      summary: List Databases
+      description: List all databases within a specific cluster.
+      operationId: Postgres_databases_list
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listPostgresDatabasesResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: Cluster not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '503':
+          description: pg-admin is unavailable; retry after the interval given by the Retry-After header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+    post:
+      tags:
+      - Postgres Clusters
+      summary: Create Database
+      description: Create a database within a specific cluster.
+      operationId: Postgres_databases_create
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Database details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createPostgresDatabaseRequest'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/postgresDatabaseResponse'
+        '400':
+          description: Database name is reserved, a system database, or malformed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: Cluster not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '422':
+          description: name is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '503':
+          description: pg-admin is unavailable; retry after the interval given by the Retry-After header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+      x-codegen-request-body-name: request
+  /v1/postgres/{postgres_cluster_id}/databases/{database_name}:
+    delete:
+      tags:
+      - Postgres Clusters
+      summary: Drop Database
+      description: Delete a specific database within a cluster, along with objects that depend on it.
+      operationId: Postgres_databases_delete
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      - name: database_name
+        in: path
+        description: Database Name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/postgresDatabaseResponse'
+        '400':
+          description: Database name is reserved, a system database, or malformed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: '''Cluster not found'' for the cluster; ''Database not found'' for the database'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '503':
+          description: pg-admin is unavailable; retry after the interval given by the Retry-After header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+  /v1/postgres/{postgres_cluster_id}/databases/{database_name}/extensions:
+    get:
+      tags:
+      - Postgres Clusters
+      summary: List Extensions
+      description: List all extensions available within a specific database, indicating which are installed.
+      operationId: Postgres_extensions_list
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      - name: database_name
+        in: path
+        description: Database Name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listPostgresExtensionsResponse'
+        '400':
+          description: Database name is malformed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: Cluster not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '503':
+          description: pg-admin is unavailable; retry after the interval given by the Retry-After header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+    post:
+      tags:
+      - Postgres Clusters
+      summary: Enable Extension
+      description: Enable a Postgres extension within a specific database. PostGIS extensions require a PostGIS-enabled cluster.
+      operationId: Postgres_extensions_enable
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      - name: database_name
+        in: path
+        description: Database Name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Extension details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/enablePostgresExtensionRequest'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '400':
+          description: Database name is malformed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: Cluster not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '409':
+          description: '''PostGIS is not enabled on this cluster'' or ''Extension <name> is already installed in schema <schema>'''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '422':
+          description: Unknown or unsupported extension
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '503':
+          description: pg-admin is unavailable; retry after the interval given by the Retry-After header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+      x-codegen-request-body-name: request
+  /v1/postgres/{postgres_cluster_id}/databases/{database_name}/extensions/{extension_name}:
+    delete:
+      tags:
+      - Postgres Clusters
+      summary: Disable Extension
+      description: Disable a specific Postgres extension within a database, optionally dropping objects that depend on it. System extensions cannot be disabled.
+      operationId: Postgres_extensions_disable
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      - name: database_name
+        in: path
+        description: Database Name
+        required: true
+        schema:
+          type: string
+      - name: extension_name
+        in: path
+        description: Extension Name
+        required: true
+        schema:
+          type: string
+      - name: force
+        in: query
+        description: Also drop objects that depend on the extension
+        schema:
+          type: boolean
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '400':
+          description: '''System extensions cannot be disabled'' or ''Database name is malformed'''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: Cluster not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '422':
+          description: Invalid extension name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '503':
+          description: pg-admin is unavailable; retry after the interval given by the Retry-After header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+  /v1/postgres/{postgres_cluster_id}/fork:
+    post:
+      tags:
+      - Postgres Clusters
+      summary: Fork Cluster to New Cluster
+      description: Fork a ready Managed Postgres cluster into a new cluster that inherits the source's settings, on the source's plan unless `plan` is given. The source cluster is left unchanged, and the fork is provisioned asynchronously.
+      operationId: Postgres_fork
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Fork details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/forkPostgresClusterRequest'
+        required: false
+      responses:
+        '201':
+          description: New cluster provisioned from the fork
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/showPostgresClusterResponse'
+        '400':
+          description: Fork failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: Cluster not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '409':
+          description: The source cluster is not ready to be forked yet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '410':
+          description: '''This cluster has been deleted'' or ''This cluster is being deleted'''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '422':
+          description: Invalid attributes, such as an unknown or unavailable plan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+      x-codegen-request-body-name: request
+  /v1/postgres/{postgres_cluster_id}/queries/active:
+    get:
+      tags:
+      - Postgres Clusters
+      summary: List Active Queries
+      description: List active queries in the supplied database. The database query parameter is required and must not be empty or whitespace-only. Returns full query text and durations in seconds.
+      operationId: Postgres_queries_active
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      - name: database
+        in: query
+        description: Database to inspect (must not be empty or whitespace-only)
+        required: true
+        schema:
+          minLength: 1
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listPostgresActiveQueriesResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: Cluster not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '422':
+          description: database must be a non-empty string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '500':
+          description: Unable to load active queries
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+  /v1/postgres/{postgres_cluster_id}/queries/slow:
+    get:
+      tags:
+      - Postgres Clusters
+      summary: List Slow Queries
+      description: List the top 20 queries by cumulative total execution time, excluding the postgres database. Uses the latest available metrics within the lookback range; statistics are cumulative PostgreSQL counters, not deltas over that range. Returns full query text and execution times in seconds.
+      operationId: Postgres_queries_slow
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      - name: range
+        in: query
+        description: Metrics lookback in seconds
+        schema:
+          maximum: 604800
+          minimum: 1
+          type: integer
+          default: 3600
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listPostgresSlowQueriesResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: Cluster not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '422':
+          description: range must be an integer between 1 and 604800 seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '500':
+          description: Unable to load slow query metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+  /v1/postgres/{postgres_cluster_id}/restore:
+    post:
+      tags:
+      - Postgres Clusters
+      summary: Restore Backup or Point in Time to New Cluster
+      description: Restore a backup, or a point in time within the cluster's PITR recovery window, into a new Managed Postgres cluster. The source cluster is left unchanged, and a new cluster is provisioned asynchronously.
+      operationId: Postgres_restore
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Restore details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/restorePostgresClusterRequest'
+        required: true
+      responses:
+        '201':
+          description: New cluster provisioned from the backup or point in time
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/showPostgresClusterResponse'
+        '400':
+          description: Restore failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: '''Cluster not found'' for the cluster; ''Backup <backup_id> not found for cluster <postgres_cluster_id>'' for the backup'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '422':
+          description: A restore target is missing, both backup_id and pitr_time were supplied, point-in-time restore is outside the recovery window or unavailable, or name is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+      x-codegen-request-body-name: request
+  /v1/postgres/{postgres_cluster_id}/users:
+    get:
+      tags:
+      - Postgres Clusters
+      summary: List Users
+      description: List all Postgres users within a specific cluster.
+      operationId: Postgres_users_list
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listPostgresUsersResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: Cluster not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '503':
+          description: pg-admin is unavailable; retry after the interval given by the Retry-After header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+    post:
+      tags:
+      - Postgres Clusters
+      summary: Create User
+      description: Create a Postgres user within a specific cluster. Fetch the generated password from the credentials endpoint.
+      operationId: Postgres_users_create
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: User details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createPostgresUserRequest'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createPostgresUserResponse'
+        '400':
+          description: Username is reserved, a system user, or malformed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: Cluster not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '409':
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '422':
+          description: username or role missing, or role invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '503':
+          description: pg-admin is unavailable; retry after the interval given by the Retry-After header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+      x-codegen-request-body-name: request
+  /v1/postgres/{postgres_cluster_id}/users/{username}:
+    delete:
+      tags:
+      - Postgres Clusters
+      summary: Delete User
+      description: Delete a specific Postgres user within a cluster.
+      operationId: Postgres_users_delete
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      - name: username
+        in: path
+        description: Postgres User Name
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '400':
+          description: Username is reserved, a system user, or malformed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: '''Cluster not found'' for the cluster; ''User not found'' for the user'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '503':
+          description: pg-admin is unavailable; retry after the interval given by the Retry-After header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+    patch:
+      tags:
+      - Postgres Clusters
+      summary: Update User Role
+      description: Update a specific Postgres user's role within a cluster.
+      operationId: Postgres_users_update_role
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      - name: username
+        in: path
+        description: Postgres User Name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Role details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updatePostgresUserRoleRequest'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '400':
+          description: Username is reserved, a system user, or malformed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: '''Cluster not found'' for the cluster; ''User not found'' for the user'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '422':
+          description: role missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '503':
+          description: pg-admin is unavailable; retry after the interval given by the Retry-After header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+      x-codegen-request-body-name: request
+  /v1/postgres/{postgres_cluster_id}/users/{username}/credentials:
+    get:
+      tags:
+      - Postgres Clusters
+      summary: Get User Credentials
+      description: Get the connection credentials for a specific Postgres user within a cluster.
+      operationId: Postgres_users_credentials
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      - name: username
+        in: path
+        description: Postgres User Name
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getPostgresUserCredentialsResponse'
+        '400':
+          description: Username is reserved, a system user, or malformed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: '''Cluster not found'' for the cluster; ''User not found'' for the user'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '503':
+          description: pg-admin is unavailable; retry after the interval given by the Retry-After header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+  /v1/postgres/{postgres_cluster_id}/users/{username}/rotate_password:
+    post:
+      tags:
+      - Postgres Clusters
+      summary: Rotate User Password
+      description: Rotate a specific Postgres user's password within a cluster, optionally terminating the user's existing sessions.
+      operationId: Postgres_users_rotate_password
+      parameters:
+      - name: postgres_cluster_id
+        in: path
+        description: Managed Postgres Cluster ID
+        required: true
+        schema:
+          type: string
+      - name: username
+        in: path
+        description: Postgres User Name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Password rotation details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/rotatePostgresPasswordRequest'
+        required: false
+      responses:
+        '200':
+          description: Rotated user credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/rotatePostgresPasswordResponse'
+        '400':
+          description: Username is reserved, a system user, or malformed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '404':
+          description: '''Cluster not found'' for the cluster; ''User not found'' for the user'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '410':
+          description: '''This cluster has been deleted'' or ''This cluster is being deleted'''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '422':
+          description: kill_sessions must be true or false
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '500':
+          description: 'Password rotation failed, or rotation succeeded but session termination failed (status: sessions_not_terminated)'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+        '503':
+          description: pg-admin is unavailable; retry after the interval given by the Retry-After header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostgresErrorResponse'
+      x-codegen-request-body-name: request
+components:
+  schemas:
+    PostgresUserCredentials:
+      type: object
+      properties:
+        password:
+          type: string
+          description: User password.
+        username:
+          type: string
+          description: User name.
+    listPostgresUsersResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostgresUser'
+    PostgresAttachedApp:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Attached Fly app name.
+    PostgresExtension:
+      type: object
+      properties:
+        default_version:
+          type: string
+          description: Default version installed when enabled.
+        description:
+          type: string
+          description: Human-readable description.
+        installed:
+          type:
+          - object
+          - 'null'
+          properties:
+            schema:
+              type: string
+              description: Schema the extension is installed into.
+              example: public
+            version:
+              type: string
+              description: Installed version.
+              example: '1.0'
+          description: Installation details, or null when the extension is not installed.
+        name:
+          type: string
+          description: Extension name.
+          example: citext
+        system:
+          type: boolean
+          description: Whether this is a system extension that cannot be disabled.
+    postgresDatabaseResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/PostgresDatabase'
+    listPostgresPlansResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostgresPlan'
+    PostgresNodeEndpoints:
+      type: object
+      properties:
+        direct:
+          type: object
+          description: Unpooled connection to the cluster node.
+          allOf:
+          - $ref: '#/components/schemas/PostgresEndpoint'
+        pooler:
+          type: object
+          description: Pooled connection to the cluster node (through PgBouncer).
+          allOf:
+          - $ref: '#/components/schemas/PostgresEndpoint'
+    listPostgresActiveQueriesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostgresActiveQuery'
+    listPostgresBackupsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostgresBackup'
+    listPostgresSlowQueriesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostgresSlowQuery'
+    getPostgresUserCredentialsResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/PostgresUserCredentials'
+    OrganizationRef:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Organization name.
+        slug:
+          type: string
+          description: Organization slug.
+    PostgresClusterEndpoints:
+      type: object
+      properties:
+        primary:
+          type: object
+          description: Endpoints for connecting to the primary node.
+          allOf:
+          - $ref: '#/components/schemas/PostgresNodeEndpoints'
+    createPostgresDatabaseRequest:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: 'Name of the database to create. Must start and end with an alphanumeric
+
+            character and may contain hyphens and underscores, up to 63 characters.'
+          example: customer_data
+    listPostgresExtensionsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostgresExtension'
+    createPostgresBackupRequest:
+      required:
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+          description: Backup type.
+          example: full
+          enum:
+          - full
+          - incr
+          - diff
+    rotatePostgresPasswordResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/PostgresUserCredentials'
+    createPostgresAttachmentResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/PostgresAttachment'
+    listPostgresDatabasesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostgresDatabase'
+    PostgresSlowQuery:
+      type: object
+      properties:
+        calls:
+          type: integer
+          description: Cumulative number of executions.
+        database:
+          type: string
+          description: Database name.
+        max_exec_time_seconds:
+          type: number
+          description: Maximum execution time in seconds.
+        mean_exec_time_seconds:
+          type: number
+          description: Mean execution time in seconds.
+        query:
+          type: string
+          description: Full query pattern.
+        query_id:
+          type: string
+          description: Query identifier.
+        total_exec_time_seconds:
+          type: number
+          description: Cumulative total execution time in seconds.
+        user:
+          type: string
+          description: User running the query.
+    PostgresAttachment:
+      type: object
+      properties:
+        app_name:
+          type: string
+          description: Attached Fly app name.
+        attached_at:
+          type: string
+          description: RFC 3339 timestamp when the attachment was created.
+        postgres_cluster_id:
+          type: string
+          description: Cluster ID the app is attached to.
+    createPostgresUserRequest:
+      required:
+      - role
+      - username
+      type: object
+      properties:
+        role:
+          type: string
+          description: Role to grant the user.
+          example: writer
+          enum:
+          - schema_admin
+          - writer
+          - reader
+        username:
+          type: string
+          description: 'Name for the new user. Must start and end with a lowercase alphanumeric
+
+            character and may contain hyphens and underscores, up to 63 characters.'
+          example: app_user
+    PostgresDatabase:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Database name.
+    PostgresErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+        status:
+          type: string
+          description: Optional machine-readable error status.
+          example: sessions_not_terminated
+    createPostgresClusterRequest:
+      required:
+      - org_slug
+      - plan
+      - region
+      type: object
+      properties:
+        disk_size_gb:
+          maximum: 1000
+          minimum: 10
+          type: integer
+          description: Disk size in gigabytes.
+          example: 10
+        name:
+          type: string
+          description: Name for the cluster. A name is generated when omitted.
+        org_slug:
+          type: string
+          description: Slug of the organization that will own the cluster, or "personal" for the caller's personal organization.
+          example: my-org
+        pg_major_version:
+          type: string
+          description: Postgres major version.
+          example: '17'
+          enum:
+          - '16'
+          - '17'
+        plan:
+          type: string
+          description: Plan slug selecting CPU, memory, and disk sizing. Matched case-insensitively.
+          example: basic
+          enum:
+          - basic
+          - starter
+          - launch
+          - scale
+          - Performance
+        pool_mode:
+          type: string
+          description: Connection pooler mode.
+          example: transaction
+          enum:
+          - session
+          - transaction
+        postgis_enabled:
+          type: boolean
+          description: Enable PostGIS support, required to later enable PostGIS extensions.
+        region:
+          type: string
+          description: Fly region code where the cluster's primary runs.
+          example: iad
+    PostgresClusterSummary:
+      type: object
+      properties:
+        attached_apps:
+          type: array
+          description: Apps attached to the cluster.
+          items:
+            $ref: '#/components/schemas/PostgresAttachedApp'
+        created_at:
+          type: string
+          description: RFC 3339 creation timestamp.
+          format: date-time
+        deleted_at:
+          type: string
+          description: RFC 3339 deletion timestamp; present for deleted clusters.
+        id:
+          type: string
+          description: Cluster ID.
+        name:
+          type: string
+          description: Cluster name.
+        plan:
+          type: string
+          description: Plan slug.
+          example: basic
+          enum:
+          - basic
+          - starter
+          - launch
+          - scale
+          - Performance
+        region:
+          type: string
+          description: Fly region code.
+          example: iad
+        status:
+          type: string
+          description: Current lifecycle status.
+          example: ready
+          enum:
+          - creating
+          - initializing
+          - ready
+          - deleting
+          - deleted
+          - failed
+    PostgresCluster:
+      type: object
+      properties:
+        attached_apps:
+          type: array
+          description: Apps attached to the cluster.
+          items:
+            $ref: '#/components/schemas/PostgresAttachedApp'
+        cpu_kind:
+          type: string
+          description: CPU class.
+          example: shared
+          enum:
+          - shared
+          - performance
+        cpus:
+          type: integer
+          description: vCPUs per node.
+          example: 2
+        created_at:
+          type: string
+          description: RFC 3339 creation timestamp.
+          format: date-time
+        disk_size_gb:
+          type: integer
+          description: Disk size in gigabytes, for one replica.
+          example: 10
+        endpoints:
+          type: object
+          description: Connection endpoints. Populated once the cluster is ready.
+          allOf:
+          - $ref: '#/components/schemas/PostgresClusterEndpoints'
+        id:
+          type: string
+          description: Cluster ID.
+        memory_mb:
+          type: integer
+          description: Memory per node in megabytes.
+          example: 1024
+        name:
+          type: string
+          description: Cluster name.
+        organization:
+          $ref: '#/components/schemas/OrganizationRef'
+        pg_major_version:
+          type: string
+          description: Postgres major version.
+          example: '17'
+          enum:
+          - '16'
+          - '17'
+        plan:
+          type: string
+          description: Plan slug.
+          example: basic
+          enum:
+          - basic
+          - starter
+          - launch
+          - scale
+          - Performance
+        postgis_enabled:
+          type: boolean
+          description: Whether PostGIS support is enabled.
+        region:
+          type: string
+          description: Fly region code.
+          example: iad
+        replicas:
+          type: integer
+          description: Number of replicas.
+          example: 1
+        status:
+          type: string
+          description: Current lifecycle status.
+          example: ready
+          enum:
+          - creating
+          - initializing
+          - ready
+          - deleting
+          - deleted
+          - failed
+        storage_provisioned_bytes:
+          type:
+          - integer
+          - 'null'
+          description: 'Storage provisioned, summed across the cluster''s volumes and measured hourly.
+
+            Null until first measured.'
+          example: 10737418240
+        storage_used_bytes:
+          type:
+          - integer
+          - 'null'
+          description: 'Storage used, summed across the cluster''s volumes and measured hourly. Null
+
+            until first measured.'
+          example: 5368709120
+    listPostgresClustersResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostgresClusterSummary'
+    createPostgresUserResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/PostgresUser'
+    PostgresEndpoint:
+      type: object
+      properties:
+        host:
+          type: string
+          description: Hostname to connect to.
+        port:
+          type: integer
+          description: TCP port.
+    forkPostgresClusterRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name for the forked cluster. Defaults to the source name with a -fork suffix.
+        plan:
+          type: string
+          description: Plan slug selecting CPU and memory sizing for the fork. Defaults to the source cluster's plan. Matched case-insensitively.
+          example: launch
+          enum:
+          - basic
+          - starter
+          - launch
+          - scale
+          - Performance
+    updatePostgresUserRoleRequest:
+      required:
+      - role
+      type: object
+      properties:
+        role:
+          type: string
+          description: New role for the user.
+          example: reader
+          enum:
+          - schema_admin
+          - writer
+          - reader
+    showPostgresClusterResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/PostgresCluster'
+    PostgresBackup:
+      type: object
+      properties:
+        finished_at:
+          type: string
+          description: RFC 3339 stop timestamp.
+        id:
+          type: string
+          description: Backup ID.
+        size_bytes:
+          type: integer
+          description: Backup size in bytes.
+        started_at:
+          type: string
+          description: RFC 3339 start timestamp.
+        status:
+          type: string
+          description: Backup status.
+          example: completed
+        type:
+          type: string
+          description: Backup type.
+          enum:
+          - full
+          - incr
+          - diff
+    rotatePostgresPasswordRequest:
+      type: object
+      properties:
+        kill_sessions:
+          type: boolean
+          description: Terminate the user's existing sessions after rotating.
+    createPostgresAttachmentRequest:
+      required:
+      - app_name
+      type: object
+      properties:
+        app_name:
+          type: string
+          description: Name of the Fly app to attach.
+    enablePostgresExtensionRequest:
+      required:
+      - name
+      type: object
+      properties:
+        create_schema:
+          type: boolean
+          description: Create the schema first if it does not exist.
+        name:
+          type: string
+          description: Extension to enable.
+          example: citext
+        schema:
+          type: string
+          description: Schema to install the extension into. Defaults to the database's default schema.
+    PostgresActiveQuery:
+      type: object
+      properties:
+        application_name:
+          type: string
+          description: Application connected to the backend.
+        client:
+          type: string
+          description: Client address.
+        database:
+          type: string
+          description: Database name.
+        duration_seconds:
+          type: number
+          description: Query duration in seconds.
+        pid:
+          type: integer
+          description: Process ID of the backend running the query.
+        query:
+          type: string
+          description: Full query text.
+        state:
+          type: string
+          description: Current backend state.
+        state_duration_seconds:
+          type: number
+          description: Time spent in the current state, in seconds.
+        user:
+          type: string
+          description: User running the query.
+        wait_event:
+          type: string
+          description: Event the backend is waiting for.
+        wait_event_type:
+          type: string
+          description: Type of event the backend is waiting for.
+    restorePostgresClusterRequest:
+      type: object
+      properties:
+        backup_id:
+          type: string
+          description: Backup label to restore from, as returned by the backups list. Mutually exclusive with pitr_time.
+        name:
+          type: string
+          description: Name for the restored cluster. Defaults to a generated name derived from the source cluster and backup/point in time when omitted or blank.
+        pitr_time:
+          type: string
+          description: Point in time to restore to, as an RFC3339 timestamp with an explicit offset from UTC (e.g. Z or +02:00). Normalized to UTC and must fall within the cluster's PITR recovery window. Mutually exclusive with backup_id.
+    PostgresPlan:
+      type: object
+      properties:
+        cpu_kind:
+          type: string
+          description: CPU class.
+          example: shared
+          enum:
+          - shared
+          - performance
+        cpus:
+          type: integer
+          description: vCPUs per node.
+          example: 2
+        memory_mb:
+          type: integer
+          description: Memory per node in megabytes.
+          example: 1024
+        monthly_price_usd:
+          type: integer
+          description: Base monthly price in US dollars.
+          example: 38
+        plan:
+          type: string
+          description: Plan slug. Pass it as `plan` when creating or forking a cluster.
+          example: basic
+          enum:
+          - basic
+          - starter
+          - launch
+          - scale
+          - Performance
+    PostgresUser:
+      type: object
+      properties:
+        role:
+          type: string
+          description: User role.
+          enum:
+          - schema_admin
+          - writer
+          - reader
+        username:
+          type: string
+          description: User name.
+  securitySchemes:
+    FlyBearerAuth:
+      type: http
+      scheme: bearer
+      description: 'A Fly API token with access to the requested organization or resource. Send it as `Authorization: Bearer <Fly API token>`.'
+externalDocs:
+  url: https://fly.io/docs/machines/working-with-machines/
+x-original-swagger-version: '2.0'
