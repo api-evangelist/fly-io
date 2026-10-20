@@ -4,6 +4,17 @@ checked:
 - https://github.com/marketplace?type=actions
 - https://zapier.com/api/v4/apps/
 - stripe/integrations/stripe-integration-edges.yml
+- https://manrs.org/netops/participants/
+- https://www.peeringdb.com/api/fac
+- https://www.peeringdb.com/api/ix
+- https://www.peeringdb.com/api/net
+- https://cdn.winget.microsoft.com/cache
+- https://formulae.brew.sh/api/cask.json
+- https://formulae.brew.sh/api/formula.json
+- https://github.com/ScoopInstaller/Extras
+- https://github.com/ScoopInstaller/Main
+- https://pypi.org/pypi
+- https://registry.npmjs.org
 marketplace_apps: []
 edges:
 - partner_name: GitHub Marketplace (actions)
@@ -66,5 +77,66 @@ edges:
     builder: unknown (not in the directory record)
   detected_by: sweep-workflow-automation.py
   first_seen: '2026-10-15'
+- partner_name: PeeringDB (interconnection register)
+  partner: null
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://www.peeringdb.com/net/43486
+  category: network interconnection register
+  contract_reference:
+    register: PeeringDB (peeringdb.com/api net, ix, fac, org)
+    standard: null
+    spec_file: null
+    role: peeringdb-network
+    registered_name: FLY
+    register_id: https://www.peeringdb.com/net/43486
+    matched_domain: fly.io
+    matched_by: domain
+    asns:
+    - 40509
+    info_types:
+    - Content
+    ix_presence: 0
+    exchanges_operated: []
+    facilities_operated: 0
+    signal_note: 'participation only: PeeringDB is self-registered by network operators; ASNs, IX presence and facility
+      counts are context, never counted'
+    detected_by: sweep-network-edge.py
+    detected: '2026-10-20'
+  detected_by: sweep-network-edge.py
+  first_seen: '2026-10-20'
+- partner_name: winget (Windows Package Manager)
+  partner: null
+  partner_match: null
+  type: register
+  direction: provider-built
+  category: official CLI (winget (Windows Package Manager))
+  evidence: https://github.com/microsoft/winget-pkgs/tree/master/manifests/f/Fly-io/flyctl
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: winget (Windows Package Manager) (public package index)
+    spec_file: null
+    packages:
+    - name: Fly-io.flyctl
+      kind: manifest
+      version: 0.4.118
+      released: '2026-10-14'
+      lapsed: false
+      page: https://github.com/microsoft/winget-pkgs/tree/master/manifests/f/Fly-io/flyctl
+      cli: 'winget: Command line tools for fly.io services'
+      repo_leg: github-org:superfly
+      publisher_leg: artifact-github-org:superfly
+      matched_by: github-org
+    current: true
+    signal_note: 'the provider''s own command-line tool on a package manager: distribution, not an integration;
+      lapsed = no release in 24 months or deprecated / disabled by the manager'
+    detected_by: sweep-official-clis.py
+    detected: '2026-10-20'
+  detected_by: sweep-official-clis.py
+  first_seen: '2026-10-20'
 source:
 - https://github.com/marketplace?type=actions

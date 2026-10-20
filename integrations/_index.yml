@@ -53,3 +53,64 @@
     builder: unknown (not in the directory record)
   status: not-a-workflow
   arazzo: null
+- slug: fly-io-peeringdb-interconnection-register
+  label: PeeringDB (interconnection register)
+  partner_name: PeeringDB (interconnection register)
+  category: network interconnection register
+  type: register
+  channel: standard-directory
+  evidence: https://www.peeringdb.com/net/43486
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: PeeringDB (peeringdb.com/api net, ix, fac, org)
+    standard: null
+    spec_file: null
+    role: peeringdb-network
+    registered_name: FLY
+    register_id: https://www.peeringdb.com/net/43486
+    matched_domain: fly.io
+    matched_by: domain
+    asns:
+    - 40509
+    info_types:
+    - Content
+    ix_presence: 0
+    exchanges_operated: []
+    facilities_operated: 0
+    signal_note: 'participation only: PeeringDB is self-registered by network operators; ASNs, IX presence and facility
+      counts are context, never counted'
+    detected_by: sweep-network-edge.py
+    detected: '2026-10-20'
+  status: not-a-workflow
+  arazzo: null
+- slug: fly-io-winget-windows-package-manager
+  label: winget (Windows Package Manager)
+  partner_name: winget (Windows Package Manager)
+  category: official CLI (winget (Windows Package Manager))
+  type: register
+  channel: package-registry
+  evidence: https://github.com/microsoft/winget-pkgs/tree/master/manifests/f/Fly-io/flyctl
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: winget (Windows Package Manager) (public package index)
+    spec_file: null
+    packages:
+    - name: Fly-io.flyctl
+      kind: manifest
+      version: 0.4.118
+      released: '2026-10-14'
+      lapsed: false
+      page: https://github.com/microsoft/winget-pkgs/tree/master/manifests/f/Fly-io/flyctl
+      cli: 'winget: Command line tools for fly.io services'
+      repo_leg: github-org:superfly
+      publisher_leg: artifact-github-org:superfly
+      matched_by: github-org
+    current: true
+    signal_note: 'the provider''s own command-line tool on a package manager: distribution, not an integration;
+      lapsed = no release in 24 months or deprecated / disabled by the manager'
+    detected_by: sweep-official-clis.py
+    detected: '2026-10-20'
+  status: not-a-workflow
+  arazzo: null
