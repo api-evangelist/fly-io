@@ -1,4 +1,4 @@
-# fly-io (fly-io)
+# Fly Io
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -66,89 +66,205 @@
 
 Documentation and guides from the team at Fly.io.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/fly-io/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/fly-io/refs/heads/main/apis.yml)
+**Areas:** Platform · Infrastructure · Edge Computing · Networking · Hosting · Deployment · Serverless
 
-## Timestamps
+## Fly Io on APIs.io
 
-- **Modified:** 2026-05-19
+Everything profiled for Fly Io is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/fly-io/](https://apis.io/providers/fly-io/)** — or go straight to one of the APIs or properties below.
 
-## APIs
+### APIs (9)
 
-### Fly.io Machines API
+- [Fly.io Machines API](https://apis.io/apis/fly-io/machines-api/) — The Fly.io Machines API is a low-level REST interface for provisioning and managing Fly Machines, which are fast-booting virtual machines that run on…
+- [Fly.io GraphQL API](https://apis.io/apis/fly-io/graphql-api/) — The Fly.io GraphQL API provides a programmatic interface for managing Fly.io platform resources including applications, IP address allocations,…
+- [Fly.io Extensions API](https://apis.io/apis/fly-io/extensions-api/) — The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with the Fly.io platform as extension…
+- [fly-io Apps API](https://apis.io/apis/fly-io/fly-io-apps-api/) — Operations for creating, listing, and deleting Fly Apps. Every Fly Machine belongs to a Fly App, which groups related Machines together.
+- [fly-io SSO API](https://apis.io/apis/fly-io/fly-io-sso-api/) — Single sign-on operations allowing Fly.io users to access provider dashboards using their Fly.io credentials via OAuth.
+- [fly-io Tokens API](https://apis.io/apis/fly-io/fly-io-tokens-api/) — Operations for requesting OpenID Connect (OIDC) tokens from third-party services, enabling Fly Machines to authenticate to external systems using workload…
+- [fly-io Volumes API](https://apis.io/apis/fly-io/fly-io-volumes-api/) — Operations for managing persistent storage volumes that can be attached to Fly Machines. Volumes provide durable block storage that persists across Machine…
+- [fly-io Webhooks API](https://apis.io/apis/fly-io/fly-io-webhooks-api/) — Webhook endpoints for bidirectional event delivery between Fly.io and extension providers. Both sides sign their webhook payloads using HMAC-SHA256 for…
+- [Fly Io O Auth API](https://apis.io/apis/fly-io/fly-io-oauth-api/) — Fly.io platform OAuth endpoints used during the single sign-on flow to authorize users and exchange tokens.
 
-The Fly.io Machines API is a low-level REST interface for provisioning and managing Fly Machines, which are fast-booting virtual machines that run on Fly.io's global edge infrastructure. It provides endpoints for creating, starting, stopping, and destroying Machines, as well as managing Fly Apps, Fly Volumes, and TLS certificates. The API is accessible publicly at https://api.machines.dev or internally within the Fly.io private WireGuard network at http://_api.internal:4280.
+### Published properties
 
-- **Human URL:** [https://fly.io/docs/machines/api/](https://fly.io/docs/machines/api/)
-- **Base URL:** `https://api.machines.dev`
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-#### Tags
+#### AsyncAPI (1)
 
-- Deployment
-- Edge Computing
-- Infrastructure
-- Platform
-- Virtual Machines
+Event-driven and webhook contracts.
 
-#### Properties
+- [Fly.io Extensions Webhook Events](https://apis.io/asyncapis/fly-io/fly-io-extensions-webhooks-asyncapi/)
 
-- [Documentation](https://fly.io/docs/machines/api/)
-- [Documentation](https://fly.io/docs/machines/api/working-with-machines-api/)
-- [OpenAPI](openapi/fly-io-machines-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/fly-io-machines-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fly-io-machines-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+#### Event channels (2)
 
-### Fly.io GraphQL API
+Individual events and webhooks the provider emits.
 
-The Fly.io GraphQL API provides a programmatic interface for managing Fly.io platform resources including applications, IP address allocations, organizations, and networking configuration. The endpoint is available at https://api.fly.io/graphql and includes an interactive GraphiQL explorer with schema introspection and documentation tabs accessible directly in the browser. Authentication requires an Authorization Bearer token, which can be obtained by running `flyctl auth token`.
+- [/api/hooks/extensions/{provider_name}](https://apis.io/channels/fly-io/api-hooks-extensions-provider-name/)
+- [/extensions/events](https://apis.io/channels/fly-io/extensions-events/)
 
-- **Human URL:** [https://api.fly.io/graphql](https://api.fly.io/graphql)
-- **Base URL:** `https://api.fly.io/graphql`
+#### GraphQL (1)
 
-#### Tags
+GraphQL schemas.
 
-- Deployment
-- GraphQL
-- Infrastructure
-- Networking
-- Platform
+- [fly-io GraphQL API](https://apis.io/graphqls/fly-io/fly-io-graphql/)
 
-#### Properties
+#### Agentic access (1)
 
-- [Documentation](https://api.fly.io/graphql)
-- [Postman Collection](collections/fly-io-extensions-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fly-io-extensions-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Postman Collection](collections/fly-io-machines-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fly-io-machines-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+Which operations an agent can call, which act, and which need a human in the loop.
 
-### Fly.io Extensions API
+- [Fly Io Agentic Access](https://apis.io/agentic-access/fly-io/fly-io-agentic-access/)
 
-The Fly.io Extensions API is a provider-facing HTTP interface that enables third-party services to integrate with the Fly.io platform as extension providers. When a Fly.io user provisions an extension via the flyctl CLI, Fly.io forwards the provisioning request to the provider's API with details about the requesting organization, and the provider responds with environment variable configuration that is attached to the target application.
+#### JSON Schema (25)
 
-- **Human URL:** [https://fly.io/docs/reference/extensions_api/](https://fly.io/docs/reference/extensions_api/)
-- **Base URL:** `https://api.example.com`
+The data models the API reads and writes.
 
-#### Tags
+- [App](https://apis.io/schemas/fly-io/fly-io-app/)
+- [CloudEventPayload](https://apis.io/schemas/fly-io/fly-io-cloudeventpayload/)
+- [CreateAppRequest](https://apis.io/schemas/fly-io/fly-io-createapprequest/)
+- [CreateMachineRequest](https://apis.io/schemas/fly-io/fly-io-createmachinerequest/)
+- [CreateVolumeRequest](https://apis.io/schemas/fly-io/fly-io-createvolumerequest/)
+- [ErrorResponse](https://apis.io/schemas/fly-io/fly-io-errorresponse/)
+- [ExtensionResource](https://apis.io/schemas/fly-io/fly-io-extensionresource/)
+- [ExtensionWebhookPayload](https://apis.io/schemas/fly-io/fly-io-extensionwebhookpayload/)
+- [Fly.io Machine](https://apis.io/schemas/fly-io/fly-io-machine/)
+- [MachineCheck](https://apis.io/schemas/fly-io/fly-io-machinecheck/)
+- [MachineConfig](https://apis.io/schemas/fly-io/fly-io-machineconfig/)
+- [MachineGuest](https://apis.io/schemas/fly-io/fly-io-machineguest/)
+- [MachineInit](https://apis.io/schemas/fly-io/fly-io-machineinit/)
+- [MachineMount](https://apis.io/schemas/fly-io/fly-io-machinemount/)
+- [MachinePort](https://apis.io/schemas/fly-io/fly-io-machineport/)
+- [MachineRestart](https://apis.io/schemas/fly-io/fly-io-machinerestart/)
+- [MachineService](https://apis.io/schemas/fly-io/fly-io-machineservice/)
+- [MachineServiceConcurrency](https://apis.io/schemas/fly-io/fly-io-machineserviceconcurrency/)
+- [OAuthTokenResponse](https://apis.io/schemas/fly-io/fly-io-oauthtokenresponse/)
+- [Organization](https://apis.io/schemas/fly-io/fly-io-organization/)
+- [ProvisionRequest](https://apis.io/schemas/fly-io/fly-io-provisionrequest/)
+- [ProvisionResponse](https://apis.io/schemas/fly-io/fly-io-provisionresponse/)
+- [TokenInfo](https://apis.io/schemas/fly-io/fly-io-tokeninfo/)
+- [Fly.io Volume](https://apis.io/schemas/fly-io/fly-io-volume/)
+- [VolumeSnapshot](https://apis.io/schemas/fly-io/fly-io-volumesnapshot/)
 
-- Extensions
-- Integration
-- Partner
-- Platform
-- Provisioning
+#### JSON Structure (1)
 
-#### Properties
+Data models expressed in JSON Structure.
 
-- [Documentation](https://fly.io/docs/reference/extensions_api/)
-- [Documentation](https://fly.io/docs/about/extensions/)
-- [OpenAPI](openapi/fly-io-extensions-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/fly-io-extensions-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fly-io-extensions-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [AsyncAPI](asyncapi/fly-io-extensions-webhooks-asyncapi.yml) — [AsyncAPI Specification](https://www.asyncapi.com/docs/reference/specification/latest)
+- [Fly Io Structure](https://apis.io/json-structure/fly-io/fly-io-structure/)
 
-## Common Properties
+#### JSON-LD (1)
 
-- [GitHub Organization](https://github.com/superfly)
-- [LinkedIn](https://www.linkedin.com/company/fly-io)
-- [JSON Schema](json-schema/fly-io-machine-schema.json) — [JSON Schema](https://json-schema.org/specification)
-- [JSON Schema](json-schema/fly-io-volume-schema.json) — [JSON Schema](https://json-schema.org/specification)
-- [JSON-LD](json-ld/fly-io-context.jsonld) — [JSON-LD](https://www.w3.org/TR/json-ld11/)
-- [Features](undefined)
+Linked-data contexts for the provider's vocabulary.
+
+- [Fly Io Context](https://apis.io/jsonld/fly-io/fly-io-context/)
+
+#### Vocabulary (1)
+
+The provider's domain terms, defined.
+
+- [Fly-Io Domain Vocabulary](https://apis.io/vocabularies/fly-io/fly-io-vocabulary/)
+
+#### Collections (8)
+
+Postman and Open Collection request collections.
+
+- [Fly.io Extensions Apps API](https://apis.io/collections/fly-io/open-fly-io-apps-api/)
+- [Fly.io Apps Extensions API](https://apis.io/collections/fly-io/open-fly-io-extensions-api/)
+- [Fly.io Extensions Apps Machines API](https://apis.io/collections/fly-io/open-fly-io-machines-api/)
+- [Fly.io Extensions Apps OAuth API](https://apis.io/collections/fly-io/open-fly-io-oauth-api/)
+- [Fly.io Extensions Apps SSO API](https://apis.io/collections/fly-io/open-fly-io-sso-api/)
+- [Fly.io Extensions Apps Tokens API](https://apis.io/collections/fly-io/open-fly-io-tokens-api/)
+- [Fly.io Extensions Apps Volumes API](https://apis.io/collections/fly-io/open-fly-io-volumes-api/)
+- [Fly.io Extensions Apps Webhooks API](https://apis.io/collections/fly-io/open-fly-io-webhooks-api/)
+
+#### Governance rules (2)
+
+Spectral rulesets for the provider's contracts.
+
+- [Fly Io — asyncapi rules](https://apis.io/rules/fly-io/fly-io-asyncapi-spectral-rules/)
+- [Fly Io — jsonschema rules](https://apis.io/rules/fly-io/fly-io-jsonschema-spectral-rules/)
+
+#### Security (4)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Fly Io Authentication](https://apis.io/security/fly-io/fly-io-authentication/)
+- [Fly Io Domain Security](https://apis.io/security/fly-io/fly-io-domain-security/)
+- [Fly Io Trust Center](https://apis.io/security/fly-io/fly-io-trust-center/)
+- [Fly Io Vulnerability Disclosure](https://apis.io/security/fly-io/fly-io-vulnerability-disclosure/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Fly Io Plans Pricing](https://apis.io/plans/fly-io/fly-io-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Fly Io Rate Limits](https://apis.io/rate-limits/fly-io/fly-io-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Fly Io Finops](https://apis.io/finops/fly-io/fly-io-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://fly.io)
+- [Blog](https://fly.io/blog/feed.xml)
+- [GitHub](https://github.com/superfly)
+
+## API Evangelist rating
+
+**Kin Score 34.3** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 57.1 |
+| Contract quality | 66.0 |
+| Contract governance | 13.6 |
+| Operational transparency | 10.5 |
+| Developer ergonomics | 23.8 |
+| Access clarity | 15.8 |
+
+**Agent readiness 21.5** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | — |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | derived (partial credit) |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 27.5** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/fly-io/](https://apis.io/providers/fly-io/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Fly Io: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/fly-io/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
